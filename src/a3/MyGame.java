@@ -27,7 +27,7 @@ import ray.rage.rendersystem.shader.GpuShaderProgram;
 import ray.rage.rendersystem.states.FrontFaceState;
 import ray.rage.rendersystem.states.RenderState;
 import ray.rage.rendersystem.states.TextureState;
-
+//my comment
 public class MyGame extends VariableFrameRateGame {
 
 	//Declaration area
