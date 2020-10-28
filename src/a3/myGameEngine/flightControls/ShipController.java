@@ -103,7 +103,7 @@ public class ShipController {
 	}
 	
 	private void roll() {
-		
+		//roll
 	}
 	
 	private void yaw() {
