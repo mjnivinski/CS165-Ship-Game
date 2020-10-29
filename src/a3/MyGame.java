@@ -134,7 +134,6 @@ public class MyGame extends VariableFrameRateGame {
 		camera.getParentNode().setLocalPosition(0,0,0);
 		print("dolphin position: " + dolphinN.getWorldPosition());
 		
-		
 		//print("" + camera.getParentNode().getWorldPosition());
 
 		//setupPyramid(eng, sm);

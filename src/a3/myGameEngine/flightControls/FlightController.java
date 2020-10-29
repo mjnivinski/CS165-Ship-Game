@@ -34,6 +34,9 @@ public class FlightController {
 	LeftVertical LV;
 	RightHorizontal RH;
 	RightVertical RV;
+	LeftBumper LB;
+	RightBumper RB;
+	GamepadThrottle GT;
 	
 	//Keyboard Abastract Action Classes
 	
@@ -41,6 +44,10 @@ public class FlightController {
 	RollRight rollRight;
 	PitchForward pitchForward;
 	PitchBackward pitchBackward;
+	YawLeft yawLeft;
+	YawRight yawRight;
+	ThrottleUp throttleUp;
+	ThrottleDown throttleDown;
 	
 	//Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0.4f, -0.5f);
 	Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0.4f, -0.5f);
@@ -104,9 +111,12 @@ public class FlightController {
 		LV = new LeftVertical();
 		RH = new RightHorizontal();
 		RV = new RightVertical();
+		LB = new LeftBumper();
+		RB = new RightBumper();
+		GT = new GamepadThrottle();
 
-		//im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.X, LH,
-		//		InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.X, LH,
+				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
 		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.Y, LV,
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
@@ -114,9 +124,17 @@ public class FlightController {
 		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RX, RH,
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
-		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RY, RV,
+		//im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RY, RV,
+		//		InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Button._4, LB,
+				InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+		
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Button._5, RB,
+				InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+		
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.Z, GT,
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
-	
 		
 	
 		/*
@@ -125,7 +143,7 @@ public class FlightController {
 		
 		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Button._0, aBA,
 				InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
-				*/
+		*/
 	}
 	
 	private void setupKeyboard(InputManager im) {
@@ -141,6 +159,10 @@ public class FlightController {
 		rollRight = new RollRight();
 		pitchForward = new PitchForward();
 		pitchBackward = new PitchBackward();
+		throttleUp = new ThrottleUp();
+		throttleDown = new ThrottleDown();
+		yawLeft = new YawLeft();
+		yawRight = new YawRight();
 		
 		for (int i = 0; i < keyboards.size(); i++) {
 			
@@ -155,6 +177,18 @@ public class FlightController {
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.S, pitchBackward,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.R, throttleUp,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.F, throttleDown,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.Q, yawLeft,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.E, yawRight,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 		}
 	}
@@ -188,8 +222,10 @@ public class FlightController {
 		
 		@Override
 		public void performAction(float arg0, Event e) {
-			if(Math.abs(e.getValue()) > 0.25f) value = -1 * e.getValue();
+			if(Math.abs(e.getValue()) > 0.25f) value = e.getValue();
 			else value = 0;
+			
+			//print("leftHorizontal" + value);
 			
 			shipController.setLeftHorizontal(value);
 		}
@@ -197,16 +233,16 @@ public class FlightController {
 	
 	private class LeftVertical extends AbstractInputAction {
 		
-		float pValue;
-		float value;
+		//float pValue;
+		//float value;
 		float eValue;
-		float smoothSpeed = 15f;
+		//float smoothSpeed = 15f;
 		//float offset = 2;
 		
 		@Override
 		public void performAction(float arg0, Event e) {
 			if(Math.abs(e.getValue()) > 0.25f) eValue = -1 * e.getValue();
-			
+			else eValue = 0;
 			
 			/*
 			else eValue = 0;
@@ -223,6 +259,7 @@ public class FlightController {
 			
 			shipController.setLeftVertical(pValue);
 			*/
+			
 			shipController.setLeftVertical(eValue);
 		}
 	}
@@ -261,6 +298,32 @@ public class FlightController {
 		}
 	}
 	
+	private class GamepadThrottle extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			
+			if(Math.abs(e.getValue()) < 0.05) shipController.setThrottle(0);
+			else shipController.setThrottle(-1 * e.getValue());
+			//print("" + (-1 * e.getValue()));
+		}
+	}
+	
+	private class RightBumper extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			print("right bumper: " + e.getValue());
+			shipController.setRightBumper(e.getValue());
+		}
+	}
+	
+	private class LeftBumper extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			print("left bumper: " + e.getValue());
+			shipController.setLeftBumper(e.getValue());
+		}
+	}
+	
 	/*****************************************************************
 	 * KEYBOARD SECTION												 *
 	 *****************************************************************
@@ -270,7 +333,7 @@ public class FlightController {
 		@Override
 		public void performAction(float arg0, Event e) {
 			//print("rollLeft");
-			shipController.setRollLeft(e.getValue());
+			shipController.setRollLeft(-1 * e.getValue());
 		}
 	}
 	
@@ -278,31 +341,51 @@ public class FlightController {
 		@Override
 		public void performAction(float arg0, Event e) {
 			//print("rollRight");
-			shipController.setRollRight(e.getValue());
+			shipController.setRollRight(-1 * e.getValue());
 		}
 	}
 	
 	private class PitchForward extends AbstractInputAction {
-		
-		float pValue;
-		float value;
-		float eValue;
-		float smoothSpeed = 15f;
-		
 		@Override
 		public void performAction(float arg0, Event e) {
-			
 			shipController.setPitchFoward(e.getValue());
-			
-			
 		}
 	}
 	
 	private class PitchBackward extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
-			//print("pitchBackward");
 			shipController.setPitchBackward(e.getValue());
+		}
+	}
+	
+	private class YawRight extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			print("yawRight: " + e.getValue());
+			shipController.setYawRight(e.getValue());
+		}
+	}
+	
+	private class YawLeft extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			print("yawLeft: " + e.getValue());
+			shipController.setYawLeft(e.getValue());
+		}
+	}
+	
+	private class ThrottleUp extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			shipController.setThrottleUp(e.getValue());
+		}
+	}
+	
+	private class ThrottleDown extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			shipController.setThrottleDown(e.getValue());
 		}
 	}
 	
@@ -314,12 +397,11 @@ public class FlightController {
 		camera.setFd((Vector3f) target.getWorldForwardAxis().normalize());
 		camera.setUp((Vector3f) target.getWorldUpAxis().normalize());
 		Vector3f rV = (Vector3f) target.getWorldRightAxis();
-		rV = (Vector3f) Vector3f.createFrom(-1 * rV.x(), rV.y(), rV.z());
+		rV = (Vector3f) Vector3f.createFrom(-1 * rV.x(), -1 * rV.y(), -1 * rV.z());
 		camera.setRt((Vector3f) rV.normalize());
 		
 		cameraN.setLocalPosition(cameraN.getLocalPosition());
 		camera.setPo((Vector3f) cameraN.getWorldPosition());
-		
 		
 		//camera.setPo((Vector3f) target.getWorldPosition());
 	}

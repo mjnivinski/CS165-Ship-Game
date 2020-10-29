@@ -13,8 +13,11 @@ public class ShipController {
 	private SceneNode ship;
 	
 	private float pitchRate = 150f;
-	private float rollRate;
-	private float yawRate;
+	private float pitchAccel = 5f;
+	private float rollRate = 150f;
+	private float rollAccel = 5f;
+	private float yawRate = 15f;
+	private float shipSpeed = 10f;
 	
 	
 	private float pitch, leftVertical, pitchForward, pitchBackward;
@@ -22,7 +25,9 @@ public class ShipController {
 	
 	private float rightHorizontal, rightVertical;
 	
-	private float yawLeft, yawRight;
+	private float yaw, leftBumper, rightBumper, yawLeft, yawRight;
+	
+	private float throttle, throttleUp, throttleDown;
 	
 	public ShipController(Engine e, FlightController f, SceneNode ship) {
 		eng = e;
@@ -67,11 +72,17 @@ public class ShipController {
 		*/
 		
 		pitch();
+		roll();
+		yaw();
+		throttle();
 	}
 	
 	private void pitch() {
+		//System.out.println("leftVertical: " + leftVertical);
 		float value;
 		float keyValue = pitchForward - pitchBackward;
+		
+		
 		
 		if(keyValue > 0) {
 			if(leftVertical > 0) value = 1;
@@ -92,30 +103,100 @@ public class ShipController {
 		else value *= value;
 		
 		
-		pitch = SimpleMath.lerp(pitch, value, deltaTime);
+		pitch = SimpleMath.lerp(pitch, value, pitchAccel * deltaTime);
 		
-		//System.out.println("LERP: " + SimpleMath.lerp(10, 5, 0.5f));
-		
-		//System.out.println("" + deltaTime * pitchRate)
-		//System.out.println("pitch: " + pitch);
 		ship.pitch(Degreef.createFrom(pitchRate * pitch * deltaTime));
 		
 	}
 	
 	private void roll() {
-		//roll
+		
+		float value;
+		float keyValue = rollLeft - rollRight;
+		
+		if(keyValue > 0) {
+			if(leftHorizontal > 0) value = 1;
+			else value = keyValue + leftHorizontal;
+		}
+		else if(keyValue < 0) {
+			if(leftHorizontal <= 0) value = -1;
+			else value = keyValue + leftHorizontal;
+		}
+		else {
+			value = leftHorizontal;
+		}
+		
+		if(value < 0) {
+			value *= value;
+			value *= -1;
+		}
+		else value *= value;
+		
+		
+		roll = SimpleMath.lerp(roll, value, rollAccel * deltaTime);
+		
+		//System.out.println("LERP: " + SimpleMath.lerp(10, 5, 0.5f));
+		
+		//System.out.println("" + deltaTime * pitchRate)
+		//System.out.println("pitch: " + pitch);
+		
+		//System.out.println("pitch: " + value + " keyValue: " + keyValue + "  pitchForward: " + pitchForward + " - pitchBackward" + pitchBackward + "    " + leftVertical);
+		
+		//System.out.println("pitch: " + pitch);
+		
+		ship.roll(Degreef.createFrom(rollRate * roll * deltaTime));
 	}
 	
 	private void yaw() {
-		float value = yawLeft - yawRight;
+		
+		float value;
+		float keyValue = yawLeft - yawRight;
+		float bumperValue = leftBumper - rightBumper;
+		
+		value = keyValue + bumperValue;
+		
+		if(value > 0) value = 1;
+		else if(value < 0) value = -1;
+		else value = 0;
+		
+		
+		//POSITIVE IS LEFT
 		
 		ship.yaw(Degreef.createFrom(yawRate * value * deltaTime));
+		
+		//float value = yawLeft - yawRight;
+		
+		//ship.yaw(Degreef.createFrom(yawRate * value * deltaTime));
+	}
+	
+	private void throttle() {
+		float value;
+		float keyValue = throttleUp - throttleDown;
+		
+		if(keyValue > 0) {
+			if(throttle > 0) value = 1;
+			else value = keyValue + throttle;
+		}
+		else if(keyValue < 0) {
+			if(throttle <= 0) value = -1;
+			else value = keyValue + throttle;
+		}
+		else {
+			value = throttle;
+		}
+		
+		
+		ship.moveForward(shipSpeed * value * deltaTime);
 	}
 	
 	public void setLeftHorizontal(float v) { leftHorizontal = v;}
 	public void setLeftVertical(float v) { leftVertical = v;}
 	public void setRightHorizontal(float v) { rightHorizontal = v;}
 	public void setRightVertical(float v) { rightVertical = v;}
+	public void setLeftBumper(float v) { leftBumper = v; }
+	public void setRightBumper(float v) { rightBumper = v; }
+	public void setThrottle(float v) { throttle = v; }
+	
 	
 	public void setRollLeft(float v) { rollLeft = v;}
 	public void setRollRight(float v) { rollRight = v;}
@@ -123,4 +204,6 @@ public class ShipController {
 	public void setPitchBackward(float v) { pitchBackward = v;}
 	public void setYawLeft(float v) { yawLeft = v; }
 	public void setYawRight(float v) { yawRight = v; }
+	public void setThrottleUp(float v) { throttleUp = v; }
+	public void setThrottleDown(float v) { throttleDown = v; }
 }
