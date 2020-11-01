@@ -1,6 +1,7 @@
 package a3;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -15,6 +16,7 @@ import ray.input.InputManager;
 import ray.rage.*;
 import ray.rage.asset.material.Material;
 import ray.rage.asset.texture.Texture;
+import ray.rage.asset.texture.TextureManager;
 import ray.rage.game.*;
 import ray.rage.rendersystem.*;
 import ray.rage.rendersystem.Renderable.*;
@@ -46,6 +48,7 @@ public class MyGame extends VariableFrameRateGame {
 	private SceneNode[] earthPlanets = new SceneNode[13];
 
 	private InputManager im;
+	private TextureManager tm;
 	
 	private DolphinController playerOneDolphin;
 	private FlightController playerController;
@@ -122,6 +125,41 @@ public class MyGame extends VariableFrameRateGame {
 		print("Setup Scene");
 		setupPlanets(eng, sm);
 		setupDolphin(eng, sm);
+		
+	   	if (tm == null)
+				tm = eng.getTextureManager();
+	    	
+	    	SkyBox sky = sm.createSkyBox("thesky");
+	    	
+	    	Texture skyFront = tm.getAssetByPath("2front.png");
+	    	Texture skyBack = tm.getAssetByPath("2back.png");
+	    	Texture skyBottom = tm.getAssetByPath("2top.png");
+	    	Texture skyTop = tm.getAssetByPath("2bottom.png");
+	    	Texture skyLeft = tm.getAssetByPath("2left.png");
+	    	Texture skyRight = tm.getAssetByPath("2right.png");
+	    	
+	    	
+	    	AffineTransform skyTransform = new AffineTransform();
+	    	skyTransform.translate(0.0, skyFront.getImage().getHeight());
+	    	skyTransform.scale(1.0, 1.0);
+	    	skyFront.transform(skyTransform);
+	    	skyBack.transform(skyTransform);
+	    	skyLeft.transform(skyTransform);
+	    	skyRight.transform(skyTransform);
+			skyTop.transform(skyTransform);
+			skyBottom.transform(skyTransform);
+	    	
+	    	sky.setTexture(skyFront, SkyBox.Face.FRONT);
+	    	sky.setTexture(skyBack, SkyBox.Face.BACK);
+	    	sky.setTexture(skyTop, SkyBox.Face.TOP);
+	    	sky.setTexture(skyBottom, SkyBox.Face.BOTTOM);
+	    	sky.setTexture(skyLeft, SkyBox.Face.LEFT);
+	    	sky.setTexture(skyRight, SkyBox.Face.RIGHT);
+	    	
+	    	sm.setActiveSkyBox(sky);
+	    	
+		
+		
 		
 		setupFloor();
 		
