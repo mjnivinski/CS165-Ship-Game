@@ -158,10 +158,24 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 	    	sm.setActiveSkyBox(sky);
 	    	
+	    	Tessellation tessE = sm.createTessellation("tessE", 7);
+	    	// subdivisions per patch: min=0, try up to 32
+	    	tessE.setSubdivisions(8f);
+	    	SceneNode tessN =
+	    	sm.getRootSceneNode().
+	    	
+	    	
+	    	createChildSceneNode("TessN");
+	    	tessN.attachObject(tessE);
+	    	// to move it, note that X and Z must BOTH be positive OR negative
+	    	tessN.translate(Vector3f.createFrom(-6.2f, -2.2f, 2.7f));
+	    	// tessN.yaw(Degreef.createFrom(37.2f));
+	    	tessN.scale(10, 144, 35);
+	    	tessE.setHeightMap(this.getEngine(), "scribble.jpg");
+	    	tessE.setTexture(this.getEngine(), "carpet.png");
 		
 		
-		
-		setupFloor();
+		//setupFloor();
 		
 		//camera.getParentNode().lookAt(dolphinN);
 		camera.getParentNode().yaw(Degreef.createFrom(180));
