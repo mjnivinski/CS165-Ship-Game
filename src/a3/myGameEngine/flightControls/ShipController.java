@@ -6,8 +6,19 @@ import ray.rage.scene.SceneNode;
 import ray.rml.Degreef;
 import ray.rml.Vector3f;
 
-public class ShipController {
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.io.*;
+import java.util.*;
 
+public class ShipController {
+	
+	ScriptEngine jsEngine;
+	File paramFile;
+	long fileLastModifiedTime;
+			
 	private Engine eng;
 	private FlightController FC;
 	private SceneNode ship;
@@ -30,9 +41,62 @@ public class ShipController {
 	private float throttle, throttleUp, throttleDown;
 	
 	public ShipController(Engine e, FlightController f, SceneNode ship) {
+		
+		setupJavascript();
+		
 		eng = e;
 		FC = f;
 		this.ship = ship;
+		
+		setupParams();
+	}
+	
+	private void setupParams() {
+		pitchRate = (float)(double)jsEngine.get("pitchRate");
+		
+		pitchRate = (float)(double)jsEngine.get("pitchRate");
+		pitchAccel = (float)(double)jsEngine.get("pitchAccel");
+		rollRate = (float)(double)jsEngine.get("rollRate");
+		rollAccel = (float)(double)jsEngine.get("rollAccel");
+		yawRate = (float)(double)jsEngine.get("yawRate");
+		shipSpeed = (float)(double)jsEngine.get("shipSpeed");
+	}
+	
+	private void setupJavascript() {
+		ScriptEngineManager factory = new ScriptEngineManager();
+		
+		//get the JavaScript engine
+		jsEngine = factory.getEngineByName("js");
+		
+		//setuoDefaultParams script
+		//executeScript("scripts/defaultParams.js");
+		paramFile = new File("scripts/defaultParams.js");
+		//System.out.println("getName: " + paramFile.getName());
+		executeScript("scripts/" + paramFile.getName());
+	}
+	
+	private void executeScript(String scriptFileName) {
+		executeScript(jsEngine, scriptFileName);
+	}
+	
+	private void executeScript(ScriptEngine engine, String scriptFileName) {
+		try {
+			FileReader fileReader = new FileReader(scriptFileName);
+			engine.eval(fileReader); //execute the script statements in the file
+			fileReader.close();
+		}
+		catch(FileNotFoundException e1) {
+			System.out.println(scriptFileName + " not found " + e1);
+		}
+		catch(IOException e2) {
+			System.out.println("IO problem with " + scriptFileName + e2);
+		}
+		catch(ScriptException e3) {
+			System.out.println("ScriptException in " + scriptFileName + e3);
+		}
+		catch(NullPointerException e4) {
+			System.out.println("Null ptr exception in " + scriptFileName + e4);
+		}
 	}
 	
 	float offset = 2;
@@ -70,6 +134,15 @@ public class ShipController {
 		
 		ship.setLocalPosition(position.x(),smoothDestination,position.z());
 		*/
+		
+		long modTime = paramFile.lastModified();
+		if (modTime > fileLastModifiedTime)
+		{ 
+			long fileLastModifiedTime = modTime;
+			this.executeScript("scripts/" + paramFile.getName());
+			setupParams();
+		}
+		
 		
 		pitch();
 		roll();

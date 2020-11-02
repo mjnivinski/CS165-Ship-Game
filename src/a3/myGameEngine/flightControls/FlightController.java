@@ -50,7 +50,7 @@ public class FlightController {
 	ThrottleDown throttleDown;
 	
 	//Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0.4f, -0.5f);
-	Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0.4f, -0.5f);
+	Vector3f offset = (Vector3f) Vector3f.createFrom(0, 2.7f, -2f);
 	
 	float deltaTime;
 	
@@ -292,7 +292,6 @@ public class FlightController {
 			camera.setFd((Vector3f) camera.getFd().normalize());
 			camera.setFd((Vector3f) camera.getFd().mult(value));
 			
-			
 			//We have to have it approach the value over time
 			//Maybe the stick determines an accelerated value
 		}
@@ -311,7 +310,6 @@ public class FlightController {
 	private class RightBumper extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
-			print("right bumper: " + e.getValue());
 			shipController.setRightBumper(e.getValue());
 		}
 	}
@@ -319,7 +317,6 @@ public class FlightController {
 	private class LeftBumper extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
-			print("left bumper: " + e.getValue());
 			shipController.setLeftBumper(e.getValue());
 		}
 	}
@@ -362,7 +359,6 @@ public class FlightController {
 	private class YawRight extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
-			print("yawRight: " + e.getValue());
 			shipController.setYawRight(e.getValue());
 		}
 	}
@@ -370,7 +366,6 @@ public class FlightController {
 	private class YawLeft extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
-			print("yawLeft: " + e.getValue());
 			shipController.setYawLeft(e.getValue());
 		}
 	}
