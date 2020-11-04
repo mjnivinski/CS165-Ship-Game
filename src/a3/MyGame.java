@@ -7,8 +7,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Random;
 
-import a1.myGameEngine.*;
-import a1.myGameEngine.dolphinControls.DolphinController;
 import a3.myGameEngine.flightControls.FlightController;
 import ray.input.GenericInputManager;
 import ray.input.InputManager;
@@ -49,7 +47,6 @@ public class MyGame extends VariableFrameRateGame {
 	private InputManager im;
 	private TextureManager tm;
 	
-	private DolphinController playerOneDolphin;
 	private FlightController playerController;
 	
 	private float planetHeight = 1f;
@@ -59,6 +56,7 @@ public class MyGame extends VariableFrameRateGame {
 
 	public MyGame() {
 		super();
+		
 	}
 
 	//faster than typing System.out.println();
