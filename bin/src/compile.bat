@@ -1,1 +1,0 @@
-javac a1\*.java
