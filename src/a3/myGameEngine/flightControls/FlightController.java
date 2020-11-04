@@ -56,6 +56,7 @@ public class FlightController {
 	
 	
 	public FlightController(MyGame g, Camera c, SceneNode cN, SceneNode t, InputManager im) {
+		print("ch-ch-ch-changes");
 		game = g;
 		camera = c;
 		cameraN = cN;

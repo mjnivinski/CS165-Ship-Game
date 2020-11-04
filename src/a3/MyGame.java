@@ -56,6 +56,7 @@ public class MyGame extends VariableFrameRateGame {
 
 	public MyGame() {
 		super();
+		print("start");
 	}
 
 	//faster than typing System.out.println();
