@@ -19,6 +19,7 @@ import ray.rage.rendersystem.*;
 import ray.rage.rendersystem.Renderable.*;
 import ray.rage.scene.*;
 import ray.rage.scene.Camera.Frustum.*;
+import ray.rage.scene.controllers.RotationController;
 import ray.rage.util.BufferUtil;
 import ray.rml.*;
 import ray.rage.rendersystem.gl4.GL4RenderSystem;
@@ -40,7 +41,7 @@ public class MyGame extends VariableFrameRateGame {
 
 	//private CameraController cameraController;
 	private Camera camera;
-	private SceneNode dolphinN;
+	private SceneNode dolphinN, stationN;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 
@@ -170,6 +171,19 @@ public class MyGame extends VariableFrameRateGame {
 	    	tessN.scale(10, 144, 35);
 	    	tessE.setHeightMap(this.getEngine(), "scribble.jpg");
 	    	tessE.setTexture(this.getEngine(), "carpet.png");
+	    	
+	    	Entity stationE = sm.createEntity("spacestation", "SpaceStationAlpha-b.obj");
+	    	stationE.setPrimitive(Primitive.TRIANGLES);
+			stationN = sm.getRootSceneNode().createChildSceneNode(stationE.getName() + "Node");
+			stationN.moveForward(7.0f);
+			stationN.moveUp(.1f);
+			stationN.moveLeft(4f);
+			stationN.attachObject(stationE);
+			
+			RotationController rc2 =
+			    	new RotationController(Vector3f.createUnitVectorY(), .02f);
+			    	rc2.addNode(stationN);
+			    	sm.addController(rc2);
 		
 		
 		//setupFloor();
