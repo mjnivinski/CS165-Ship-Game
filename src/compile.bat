@@ -1,1 +1,1 @@
-javac a1\*.java
+javac a3\*.java

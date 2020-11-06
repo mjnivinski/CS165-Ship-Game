@@ -3,10 +3,15 @@ package a3;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.io.*;
+import java.net.InetAddress;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.rmi.UnknownHostException;
+import java.util.Iterator;
 import java.util.Random;
 
+import a3.Networking.GhostAvatar;
+import a3.Networking.ProtocolClient;
 import a3.myGameEngine.flightControls.FlightController;
 import ray.input.GenericInputManager;
 import ray.input.InputManager;
@@ -27,11 +32,24 @@ import ray.rage.rendersystem.shader.GpuShaderProgram;
 import ray.rage.rendersystem.states.FrontFaceState;
 import ray.rage.rendersystem.states.RenderState;
 import ray.rage.rendersystem.states.TextureState;
-//my comment
+import ray.networking.IGameConnection.ProtocolType;
+import java.util.UUID;
+import java.util.Vector;
+
 public class MyGame extends VariableFrameRateGame {
 
+	private String serverAddress;
+	private int serverPort;
+	private ProtocolType serverProtocol;
+	private ProtocolClient protClient;
+	private boolean isConnected;
+	private Vector<UUID> gameObjectsToRemove;
+	
+	
 	//Declaration area
 	Random random = new Random();
+	
+	Engine eng;
 
 	GL4RenderSystem rs;
 	float elapsTime = 0.0f;
@@ -41,7 +59,8 @@ public class MyGame extends VariableFrameRateGame {
 
 	//private CameraController cameraController;
 	private Camera camera;
-	private SceneNode dolphinN, stationN;
+	//private SceneNode dolphinN, stationN;
+	private SceneNode shipN, stationN;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 
@@ -55,9 +74,11 @@ public class MyGame extends VariableFrameRateGame {
 	private float yawDegrees = 80;
 	private float pitchDegrees = 80;
 
-	public MyGame() {
+	public MyGame(String serverAddr, int sPort) {
 		super();
-		print("start");
+		this.serverAddress = serverAddr;
+		this.serverPort = sPort;
+		this.serverProtocol = ProtocolType.UDP;
 	}
 
 	//faster than typing System.out.println();
@@ -66,7 +87,9 @@ public class MyGame extends VariableFrameRateGame {
 	}
 
 	public static void main(String[] args) {
-		Game game = new MyGame();
+		System.out.println("args: " + args[0] + " " + args[1]);
+		Game game = new MyGame(args[0], Integer.parseInt(args[1]));
+		//Game game = new MyGame("yes", 5);
 		try {
 			game.startup();
 			game.run();
@@ -75,6 +98,31 @@ public class MyGame extends VariableFrameRateGame {
 		} finally {
 			game.shutdown();
 			game.exit();
+		}
+	}
+	
+	private void setupNetworking() {
+		print("setupNetworking");
+		gameObjectsToRemove = new Vector<UUID>();
+		isConnected = false;
+		try {
+			protClient = new ProtocolClient(InetAddress.getByName(serverAddress), serverPort, serverProtocol, this);
+		}
+		catch(UnknownHostException e) {e.printStackTrace();}
+		catch(IOException e) {e.printStackTrace(); }
+		
+		
+		
+		if(protClient == null) {
+			print("missing protocol host");
+		}
+		else {
+			//ask client protocol to send initial join message
+			//to server, with a unique modifier for this client
+			
+			print("sendJoinMessage()");
+			
+			protClient.sendJoinMessage();
 		}
 	}
 
@@ -119,10 +167,10 @@ public class MyGame extends VariableFrameRateGame {
 	
 	@Override
 	protected void setupScene(Engine eng, SceneManager sm) throws IOException {
-		
+		this.eng = eng;
 		print("Setup Scene");
 		setupPlanets(eng, sm);
-		setupDolphin(eng, sm);
+		setupShip(eng, sm);
 		
 	   	if (tm == null)
 				tm = eng.getTextureManager();
@@ -188,14 +236,13 @@ public class MyGame extends VariableFrameRateGame {
 		
 		//setupFloor();
 		
-		//camera.getParentNode().lookAt(dolphinN);
 		camera.getParentNode().yaw(Degreef.createFrom(180));
 		camera.getParentNode().moveUp(2);
 		
-		dolphinN.setLocalPosition(0,2,-4);
-		dolphinN.attachChild(camera.getParentNode());
+		shipN.setLocalPosition(0,2,-4);
+		shipN.attachChild(camera.getParentNode());
 		camera.getParentNode().setLocalPosition(0,0,0);
-		print("dolphin position: " + dolphinN.getWorldPosition());
+		print("ship position: " + shipN.getWorldPosition());
 		
 		//print("" + camera.getParentNode().getWorldPosition());
 
@@ -212,7 +259,7 @@ public class MyGame extends VariableFrameRateGame {
 		SceneNode plightNode = sm.getRootSceneNode().createChildSceneNode("plightNode");
 		plightNode.attachObject(plight);
 
-		//headlight goes in dolphin
+		//headlight goes in ship
 		Light headlight = sm.createLight("headlight", Light.Type.SPOT);
 		headlight.setConeCutoffAngle(Degreef.createFrom(10));
 		headlight.setSpecular(Color.white);
@@ -220,28 +267,29 @@ public class MyGame extends VariableFrameRateGame {
 		SceneNode headlightNode = sm.getRootSceneNode().createChildSceneNode("headlightNode");
 		headlightNode.attachObject(headlight);
 
-		this.getEngine().getSceneManager().getSceneNode("myDolphinNode").attachChild(headlightNode);
+		this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
 
 		setupInputs();
+		setupNetworking();
 	}
 	
-	//dolphin is setup with code provided
-	private void setupDolphin(Engine eng, SceneManager sm) throws IOException {
-		print("setupDolpin");
-		Entity dolphinE = sm.createEntity("myDolphin", "cockpitMk2b.obj");
-		dolphinE.setPrimitive(Primitive.TRIANGLES);
+	//ship is setup with code provided
+	private void setupShip(Engine eng, SceneManager sm) throws IOException {
+		print("setupShip");
+		Entity shipE = sm.createEntity("myShip", "cockpitMk2b.obj");
+		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
-		dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
+		shipN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
 
-		dolphinN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
-		dolphinN.attachObject(dolphinE);
-		dolphinN.yaw(Degreef.createFrom(180));
+		shipN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
+		shipN.attachObject(shipE);
+		shipN.yaw(Degreef.createFrom(180));
 
 		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
 	}
 
-	//same initialization as dolphin, with a few rotation controllers.
+	//same initialization as ship, with a few rotation controllers.
 	private void setupPlanets(Engine eng, SceneManager sm) throws IOException {
 		
 		for(int i=0; i<earthPlanets.length; i++) {
@@ -351,7 +399,28 @@ public class MyGame extends VariableFrameRateGame {
 	//seperate methods for keyboards/gamepads
 	protected void setupInputs() {
 		im = new GenericInputManager();
-		playerController = new FlightController(this, camera, camera.getParentSceneNode(), dolphinN, im);
+		playerController = new FlightController(this, camera, camera.getParentSceneNode(), shipN, im);
+	}
+	
+	public void setupGhostAvatar(GhostAvatar ghost) throws IOException {
+		
+		SceneManager sm = eng.getSceneManager();
+		
+		SceneNode ghostN = ghost.getNode();
+		
+		print("setupGhostShip");
+		
+		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "cockpitMk2b.obj");
+		shipE.setPrimitive(Primitive.TRIANGLES);
+
+		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
+		ghostN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
+
+		ghostN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
+		ghostN.attachObject(shipE);
+		ghostN.yaw(Degreef.createFrom(180));
+		
+		ghost.setNode(ghostN);
 	}
 	
 	@Override
@@ -359,9 +428,34 @@ public class MyGame extends VariableFrameRateGame {
 		
 		updateDefaults(engine);
 		
+		processNetworking(engine.getElapsedTimeMillis());
+		
 		
 		playerController.update();
 		
+	}
+	
+	
+	float networkTimer = 0;
+	protected void processNetworking(float deltaTime) {
+		
+		networkTimer += deltaTime/1000;
+		
+		if(networkTimer > 0.3f) {
+			networkTimer = 0;
+			protClient.sendMoveMessage(getPlayerPosition());
+		}
+		
+		if(protClient!=null) {
+			protClient.processPackets();
+			
+			//remove ghost avatars for players who have left the game
+			/*Iterator<UUID> it = gameObjectsToRemove.iterator();
+			
+			while(it.hasNext()) {
+				
+			}*/
+		}
 	}
 
 	float testLerp = 0f;
@@ -386,4 +480,11 @@ public class MyGame extends VariableFrameRateGame {
 	public float getPitchDegrees() {
 		return pitchDegrees;
 	}
+	
+	public void setIsConnected(boolean b) { isConnected = b; }
+	
+	public Vector3 getPlayerPosition() {
+		return shipN.getWorldPosition();
+	}
+	
 }
