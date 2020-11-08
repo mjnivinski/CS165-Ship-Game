@@ -168,28 +168,28 @@ public class FlightController {
 		for (int i = 0; i < keyboards.size(); i++) {
 			
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.A, rollLeft,
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.Q, rollLeft,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.D, rollRight,
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.E, rollRight,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.W, pitchForward,
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.S, pitchForward,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.S, pitchBackward,
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.W, pitchBackward,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.R, throttleUp,
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.LSHIFT, throttleUp,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.F, throttleDown,
+			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.LCONTROL, throttleDown,
+			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.A, yawLeft,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.Q, yawLeft,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
-			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.E, yawRight,
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.D, yawRight,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 		}
 	}
