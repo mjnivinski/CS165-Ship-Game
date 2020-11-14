@@ -51,7 +51,7 @@ public class FlightController {
 	ThrottleDown throttleDown;
 	
 	//Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0.4f, -0.5f);
-	Vector3f offset = (Vector3f) Vector3f.createFrom(0, 2.7f, -2f);
+	Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0f, -1.7f);
 	
 	float deltaTime;
 	

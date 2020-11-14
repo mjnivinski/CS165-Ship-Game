@@ -276,7 +276,7 @@ public class MyGame extends VariableFrameRateGame {
 	//ship is setup with code provided
 	private void setupShip(Engine eng, SceneManager sm) throws IOException {
 		print("setupShip");
-		Entity shipE = sm.createEntity("myShip", "cockpitMk2b.obj");
+		Entity shipE = sm.createEntity("myShip", "cockpitMk3c.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
