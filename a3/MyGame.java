@@ -60,7 +60,7 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN;
+	private SceneNode shipN, stationN, terrainContN;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 
@@ -209,16 +209,28 @@ public class MyGame extends VariableFrameRateGame {
 	    	tessE.setSubdivisions(8f);
 	    	SceneNode tessN =
 	    	sm.getRootSceneNode().
-	    	
-	    	
-	    	createChildSceneNode("TessN");
+		    	createChildSceneNode("TessN");
 	    	tessN.attachObject(tessE);
 	    	// to move it, note that X and Z must BOTH be positive OR negative
-	    	tessN.translate(Vector3f.createFrom(-6.2f, -2.2f, 2.7f));
+	    	tessN.translate(Vector3f.createFrom(-6.2f, -2.2f, 3.2f));
 	    	// tessN.yaw(Degreef.createFrom(37.2f));
 	    	tessN.scale(10, 144, 35);
 	    	tessE.setHeightMap(this.getEngine(), "scribble.jpg");
 	    	tessE.setTexture(this.getEngine(), "carpet.png");
+	    	
+	    	tessN.setLocalPosition(-15.0f, 0.0f, -45.0f);
+
+			Entity terrainCont = sm.createEntity("terrainCont", "TerrainContainer.obj");
+	    	terrainCont.setPrimitive(Primitive.TRIANGLES);
+	    	terrainContN = sm.getRootSceneNode().createChildSceneNode(terrainCont.getName() + "Node");
+	    	terrainContN.setLocalPosition(-15.0f, 0.0f, -40.0f);
+	    	terrainContN.setLocalScale(.062f, .1f, .155f);
+	    	terrainContN.moveBackward(7.0f);
+	    	terrainContN.moveUp(.1f);
+	    	terrainContN.attachObject(terrainCont);
+	    	
+	    	//terrainContN.attachChild(tessN);
+	    	
 	    	
 	    	Entity stationE = sm.createEntity("spacestation", "SpaceStationAlpha-b.obj");
 	    	stationE.setPrimitive(Primitive.TRIANGLES);
@@ -410,7 +422,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 		print("setupGhostShip");
 		
-		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "cockpitMk2b.obj");
+		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
