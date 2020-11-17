@@ -60,7 +60,7 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN;
+	private SceneNode shipN, stationN, terrainContN, enemyCraftN;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 
@@ -220,7 +220,7 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 	    	tessN.setLocalPosition(-15.0f, 0.0f, -45.0f);
 
-			Entity terrainCont = sm.createEntity("terrainCont", "TerrainContainer.obj");
+			Entity terrainCont = sm.createEntity("terrainCont", "TerrainContainerb.obj");
 	    	terrainCont.setPrimitive(Primitive.TRIANGLES);
 	    	terrainContN = sm.getRootSceneNode().createChildSceneNode(terrainCont.getName() + "Node");
 	    	terrainContN.setLocalPosition(-15.0f, 0.0f, -40.0f);
@@ -245,7 +245,16 @@ public class MyGame extends VariableFrameRateGame {
 			    	rc2.addNode(stationN);
 			    	sm.addController(rc2);
 		
-		
+			    	Entity enemyCraftE = sm.createEntity("enemyCraft", "EnemyCraftVer2-b.obj");
+			    	enemyCraftE.setPrimitive(Primitive.TRIANGLES);
+					stationN = sm.getRootSceneNode().createChildSceneNode(enemyCraftE.getName() + "Node");
+					stationN.moveBackward(7.0f);
+					stationN.moveDown(.1f);
+					stationN.moveRight(4f);
+					stationN.attachObject(enemyCraftE);
+			    	
+			  //enemyCraftN  	
+			    	
 		//setupFloor();
 		
 		camera.getParentNode().yaw(Degreef.createFrom(180));
