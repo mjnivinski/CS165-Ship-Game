@@ -12,6 +12,7 @@ import ray.input.action.AbstractInputAction;
 import ray.rage.Engine;
 import ray.rage.scene.Camera;
 import ray.rage.scene.SceneNode;
+import ray.rml.Vector3;
 import ray.rml.Vector3f;
 
 public class FlightController {
@@ -251,9 +252,6 @@ public class FlightController {
 			value = parabolicSmooth(value);
 			
 			shipController.setControllerThrottle(value);
-			
-			
-			//print("" + (-1 * e.getValue()));
 		}
 	}
 	
@@ -283,15 +281,6 @@ public class FlightController {
 		}
 	}
 	
-	/*
-	private class RightHorizontal extends AbstractInputAction {
-		@Override
-		public void performAction(float arg0, Event e) {
-			//if(Math.abs(e.getValue()) > 0.5f) System.out.println("Right Horizontal: " + e.getValue());
-			shipController.setRightHorizontal(e.getValue());
-		}
-	}*/
-	
 	private class ControllerPitch extends AbstractInputAction {
 		//float pValue;
 		//float value;
@@ -303,64 +292,10 @@ public class FlightController {
 		public void performAction(float arg0, Event e) {
 			if(Math.abs(e.getValue()) > 0.25f) eValue = -1 * e.getValue();
 			else eValue = 0;
-				
-			/*
-			else eValue = 0;
 			
-			value = SimpleMath.lerp(pValue, eValue, smoothSpeed * deltaTime);
-			
-			pValue = value;
-			
-			if(value < 0) {
-				value *= value;
-				value *= -1;
-			}
-			else value *= value;
-			
-			shipController.setLeftVertical(pValue);
-			*/
-			
-			//shipController.setLeftVertical(eValue);
 			shipController.setControllerPitch(eValue);
 		}
 	}
-	
-	/*
-	private class RightVertical extends AbstractInputAction {
-		@Override
-		public void performAction(float arg0, Event e) {
-			//if(Math.abs(e.getValue()) > 0.5f) System.out.println("Right Vertical: " + e.getValue());
-			shipController.setRightVertical(e.getValue());
-			
-			
-			//range 0.5 to 20 for example
-			
-			float value = -1 * e.getValue();
-			
-			if(value < 0) {
-				value = 1 + value * 0.5f;
-			}else {
-				value = 1 + value * 20; 
-			}
-			
-			camera.setFd((Vector3f) camera.getFd().normalize());
-			camera.setFd((Vector3f) camera.getFd().mult(value));
-			
-			//We have to have it approach the value over time
-			//Maybe the stick determines an accelerated value
-		}
-	}*/
-	
-	/*
-	private class GamepadThrottle extends AbstractInputAction {
-		@Override
-		public void performAction(float arg0, Event e) {
-			
-			if(Math.abs(e.getValue()) < 0.05) shipController.setThrottle(0);
-			else shipController.setThrottle(-1 * e.getValue());
-			//print("" + (-1 * e.getValue()));
-		}
-	}*/
 	
 	private class RightBumper extends AbstractInputAction {
 		@Override
@@ -454,6 +389,56 @@ public class FlightController {
 		camera.setPo((Vector3f) cameraN.getWorldPosition());
 		
 		//camera.setPo((Vector3f) target.getWorldPosition());
+		
+		cameraThrottleShift();
+		cameraTurnShift();
+		
+	}
+	
+	private void cameraThrottleShift() {
+		float throttleDampen = 0.05f;
+		
+		Vector3 forward = camera.getFd();
+		
+		forward = forward.mult(1 + (shipController.getThrottle() * throttleDampen));
+		
+		camera.setFd((Vector3f) forward);
+	}
+	
+	private void cameraTurnShift() {
+		
+		float rollRatio = 0.1f;
+		float pitchRatio = 0.1f;
+		float yawRatio = 0.1f;
+		
+		Vector3 position = cameraN.getLocalPosition();
+		
+		//the ship rolls the camera shifts slightly in the opposite direction
+		//negative left. positive right
+		Vector3 rollVector = cameraN.getLocalRightAxis().mult(shipController.getRoll()).mult(rollRatio);
+		
+		//when the ship rolls, the perspective leans into that direction and slightly downward.
+		// -(x^2)/20
+		float parabolaY = shipController.getRoll();
+		parabolaY *= -1 * parabolaY/20;
+		rollVector = rollVector.add(0,parabolaY,0);
+		
+		//the ship pitches the camera shifts slightly in the opposite direction
+		//pitch up negative. pitch down positive
+		Vector3 pitchVector = cameraN.getLocalUpAxis().mult(shipController.getPitch()).mult(pitchRatio);
+		
+		//the ship yaws the camera shifts slightly in the opposite direction
+		//positive left, negative right
+		Vector3 yawVector = cameraN.getLocalRightAxis().mult(shipController.getYaw()).mult(yawRatio);
+		
+		//Add all the vectors together
+		cameraN.setLocalPosition(position.add(rollVector).add(pitchVector).add(yawVector));
+		camera.setPo((Vector3f) cameraN.getWorldPosition());
+		
+		//reset cameraN position after each update
+		cameraN.setLocalPosition(position);
+		
+		//camera.setPo((Vector3f) position);
 	}
 	
 	private void print(String s) {

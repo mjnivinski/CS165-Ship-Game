@@ -4,6 +4,7 @@ import a3.myGameEngine.SimpleMath;
 import ray.rage.Engine;
 import ray.rage.scene.SceneNode;
 import ray.rml.Degreef;
+import ray.rml.Vector3;
 import ray.rml.Vector3f;
 
 import javax.script.ScriptEngine;
@@ -30,8 +31,17 @@ public class ShipController {
 	private float yawRate = 15f;
 	private float yawAccel = 5f;
 	private float shipSpeed = 10f;
+	private float shipAccel = 5f;
 	private float throttleAccel = 1f;
 	private float throttleRate;
+	
+	
+	private float vectorUpdateAccel = 1f;
+	private float dampenRatio = 0.9f;
+	private float moveX, moveY, moveZ;
+	private Vector3 moveVector = Vector3f.createZeroVector();
+	private Vector3 thrustVector;
+	private float currentSpeed;
 	
 	
 	//private float pitch, leftVertical, pitchForward, pitchBackward;
@@ -102,41 +112,10 @@ public class ShipController {
 		}
 	}
 	
-	float offset = 2;
-	float smoothSpeed = 10f;
-	
 	float deltaTime;
 	public void update() {
+		
 		deltaTime = eng.getElapsedTimeMillis()/1000;
-		//this section is basically logic for a ship simulator.
-		
-		//TEMPORARY
-		//it displays the current usage of the controller
-		
-		/*
-		System.out.println("leftHorizontal: " + leftHorizontal + " leftVertical: " + leftVertical
-				+ "\nrightHorizontal: " + rightHorizontal + " rightVertical: " + rightVertical
-				+ "\nrollLeft: " + rollLeft + " rollRight: " + rollRight
-				+ "\npitchForward: " + pitchForward + " pitchBackward: " + pitchBackward
-				);
-		*/
-		
-		//System.out.println("leftVertical: " + leftVertical);
-		//System.out.println("keyValue: " + (pitchForward - pitchBackward));
-		
-		//smoth movement
-		/*
-		Vector3f position = (Vector3f)ship.getLocalPosition();
-		
-		float currentY = position.y();
-		//offset + (width * e.getValue());
-		
-		float destinationY = offset + leftVertical;
-		
-		float smoothDestination = SimpleMath.lerp(currentY, destinationY, smoothSpeed * deltaTime);
-		
-		ship.setLocalPosition(position.x(),smoothDestination,position.z());
-		*/
 		
 		long modTime = paramFile.lastModified();
 		if (modTime > fileLastModifiedTime)
@@ -146,56 +125,48 @@ public class ShipController {
 			setupParams();
 		}
 		
-		
 		pitch();
 		roll();
 		yaw();
 		throttle();
+		
+		updatePosition();
+	}
+	
+	private void updatePosition() {
+		
+		//thrust vector is made based on throttle value and ships forward axis
+		Vector3 forward = ship.getWorldForwardAxis();
+		thrustVector = Vector3f.createFrom(forward.x(),forward.y(),forward.z()).mult(throttle * shipSpeed);
+		
+		//move vector has thrust vector added to it.
+		moveVector = moveVector.add(thrustVector.mult(vectorUpdateAccel * deltaTime));
+		
+		//move vector is dampened slightly
+		moveVector = moveVector.mult(dampenRatio);
+		
+		//ships position is updated
+		Vector3 position = ship.getLocalPosition();
+		position = position.add(moveVector);
+		ship.setLocalPosition(position);
 	}
 	
 	private void pitch() {
-		//System.out.println("leftVertical: " + leftVertical);
-		//float value;
-		//float keyValue = pitchForward - pitchBackward;
 		
 		float value = keyVsGamepad(pitchForward, pitchBackward, controllerPitch);
 		
-		/*
-		if(keyValue > 0) {
-			if(controllerPitch > 0) value = 1;
-			else value = keyValue + controllerPitch;
-		}
-		else if(keyValue < 0) {
-			if(controllerPitch <= 0) value = -1;
-			else value = keyValue + controllerPitch;
-		}
-		else {
-			value = controllerPitch;
-		}*/
-		
-		if(value < 0) {
-			value *= value;
-			value *= -1;
-		}
-		else value *= value;
-		
+		value = SimpleMath.parabolicSmooth(value);
 		
 		pitch = SimpleMath.lerp(pitch, value, pitchAccel * deltaTime);
 		
 		ship.pitch(Degreef.createFrom(pitchRate * pitch * deltaTime));
-		
 	}
 	
 	private void roll() {
 		
 		float value = keyVsGamepad(rollLeft, rollRight, controllerRoll);
 		
-		if(value < 0) {
-			value *= value;
-			value *= -1;
-		}
-		else value *= value;
-		
+		value = SimpleMath.parabolicSmooth(value);
 		
 		roll = SimpleMath.lerp(roll, value, rollAccel * deltaTime);
 		
@@ -206,15 +177,11 @@ public class ShipController {
 		
 		float value = keyVsGamepad(yawLeft, yawRight, controllerYaw);
 		
-		if(value < 0) {
-			value *= value;
-			value *= -1;
-		}
-		else value *= value;
+		value = SimpleMath.parabolicSmooth(value);
 		
 		yaw = SimpleMath.lerp(yaw, value, yawAccel * deltaTime);
 		
-		ship.yaw(Degreef.createFrom(yawRate * value * deltaTime));
+		ship.yaw(Degreef.createFrom(yawRate * yaw * deltaTime));
 	}
 	
 	private void throttle() {
@@ -225,10 +192,6 @@ public class ShipController {
 		
 		if(throttle > 1) throttle = 1;
 		if(throttle < 0) throttle = 0;
-		
-		System.out.println(throttle);
-		
-		ship.moveForward(shipSpeed * throttle * deltaTime);
 	}
 	
 	private float keyVsGamepad(float keyPos, float keyNeg, float controllerValue) {
@@ -262,4 +225,14 @@ public class ShipController {
 	public void setYawRight(float v) { yawRight = v; }
 	public void setThrottleUp(float v) { throttleUp = v; }
 	public void setThrottleDown(float v) { throttleDown = v; }
+	
+	public float getThrottle() { return throttle; }
+	public float getRoll() { return roll; }	
+	public float getPitch() { return pitch; }	
+	public float getYaw() { return yaw; }	
+	
+	
+	private void print(String s) {
+		System.out.println(s);
+	}
 }
