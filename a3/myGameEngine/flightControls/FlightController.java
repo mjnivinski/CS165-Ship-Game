@@ -31,13 +31,18 @@ public class FlightController {
 	
 	//Gamepad Abstract Action Classes
 	
-	LeftHorizontal LH;
-	LeftVertical LV;
-	RightHorizontal RH;
-	RightVertical RV;
-	LeftBumper LB;
-	RightBumper RB;
-	GamepadThrottle GT;
+	ControllerThrottle CT;
+	ControllerRoll CR;
+	ControllerYaw CY;
+	ControllerPitch CP;
+	
+	//LeftHorizontal LH;
+	//LeftVertical LV;
+	//RightHorizontal RH;
+	//RightVertical RV;
+	//LeftBumper LB;
+	//RightBumper RB;
+	//GamepadThrottle GT;
 	
 	//Keyboard Abastract Action Classes
 	
@@ -109,34 +114,40 @@ public class FlightController {
 	
 	private void setupGamepad(InputManager im, String controllerName) {
 		
-		LH = new LeftHorizontal();
-		LV = new LeftVertical();
-		RH = new RightHorizontal();
-		RV = new RightVertical();
-		LB = new LeftBumper();
-		RB = new RightBumper();
-		GT = new GamepadThrottle();
+		CT  = new ControllerThrottle();
+		CR = new ControllerRoll();
+		CY = new ControllerYaw();
+		CP = new ControllerPitch();
+		
+		//LH = new LeftHorizontal();
+		//LV = new LeftVertical();
+		//RH = new RightHorizontal();
+		//RV = new RightVertical();
+		//LB = new LeftBumper();
+		//RB = new RightBumper();
+		//GT = new GamepadThrottle();
 
-		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.X, LH,
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.X, CR,
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
-		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.Y, LV,
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.Y, CT,
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
-		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RX, RH,
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RX, CY,
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
-		//im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RY, RV,
-		//		InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RY, CP,
+				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
+		/*
 		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Button._4, LB,
 				InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 		
 		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Button._5, RB,
-				InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+				InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);*/
 		
-		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.Z, GT,
-				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		/*im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.Z, GT,
+				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);*/
 		
 	
 		/*
@@ -184,8 +195,8 @@ public class FlightController {
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.LSHIFT, throttleUp,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
-			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.LCONTROL, throttleDown,
-			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.LCONTROL, throttleDown,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.A, yawLeft,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
@@ -218,8 +229,36 @@ public class FlightController {
 	 *****************************************************************
 	 */
 	
+	public float parabolicSmooth(float v) {
+		if(v < 0) {
+			v*=v;
+			v*=-1;
+		}
+		else v*=v;
+		
+		return v;
+	}
 	
-	private class LeftHorizontal extends AbstractInputAction {
+	private class ControllerThrottle extends AbstractInputAction {
+		float value;
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			
+			if(Math.abs(e.getValue()) < 0.2) value = 0;
+			else value = -1 * e.getValue();
+			
+			value = parabolicSmooth(value);
+			
+			shipController.setControllerThrottle(value);
+			
+			
+			//print("" + (-1 * e.getValue()));
+		}
+	}
+	
+	
+	private class ControllerRoll extends AbstractInputAction {
 		float value;
 		
 		@Override
@@ -227,25 +266,44 @@ public class FlightController {
 			if(Math.abs(e.getValue()) > 0.25f) value = e.getValue();
 			else value = 0;
 			
-			//print("leftHorizontal" + value);
-			
-			shipController.setLeftHorizontal(value);
+			shipController.setControllerRoll(value);
 		}
 	}
 	
-	private class LeftVertical extends AbstractInputAction {
+	private class ControllerYaw extends AbstractInputAction {
 		
+		float value;
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			if(Math.abs(e.getValue()) > 0.2f) value = -1 * e.getValue();
+			else value = 0;
+			
+			shipController.setControllerYaw(value);
+		}
+	}
+	
+	/*
+	private class RightHorizontal extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			//if(Math.abs(e.getValue()) > 0.5f) System.out.println("Right Horizontal: " + e.getValue());
+			shipController.setRightHorizontal(e.getValue());
+		}
+	}*/
+	
+	private class ControllerPitch extends AbstractInputAction {
 		//float pValue;
 		//float value;
 		float eValue;
 		//float smoothSpeed = 15f;
 		//float offset = 2;
-		
+				
 		@Override
 		public void performAction(float arg0, Event e) {
 			if(Math.abs(e.getValue()) > 0.25f) eValue = -1 * e.getValue();
 			else eValue = 0;
-			
+				
 			/*
 			else eValue = 0;
 			
@@ -262,18 +320,12 @@ public class FlightController {
 			shipController.setLeftVertical(pValue);
 			*/
 			
-			shipController.setLeftVertical(eValue);
+			//shipController.setLeftVertical(eValue);
+			shipController.setControllerPitch(eValue);
 		}
 	}
 	
-	private class RightHorizontal extends AbstractInputAction {
-		@Override
-		public void performAction(float arg0, Event e) {
-			//if(Math.abs(e.getValue()) > 0.5f) System.out.println("Right Horizontal: " + e.getValue());
-			shipController.setRightHorizontal(e.getValue());
-		}
-	}
-	
+	/*
 	private class RightVertical extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
@@ -297,8 +349,9 @@ public class FlightController {
 			//We have to have it approach the value over time
 			//Maybe the stick determines an accelerated value
 		}
-	}
+	}*/
 	
+	/*
 	private class GamepadThrottle extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
@@ -307,19 +360,19 @@ public class FlightController {
 			else shipController.setThrottle(-1 * e.getValue());
 			//print("" + (-1 * e.getValue()));
 		}
-	}
+	}*/
 	
 	private class RightBumper extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
-			shipController.setRightBumper(e.getValue());
+			//shipController.setRightBumper(e.getValue());
 		}
 	}
 	
 	private class LeftBumper extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
-			shipController.setLeftBumper(e.getValue());
+			//shipController.setLeftBumper(e.getValue());
 		}
 	}
 	
