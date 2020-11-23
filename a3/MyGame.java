@@ -60,7 +60,7 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN, enemyCraftN;
+	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 
@@ -247,11 +247,19 @@ public class MyGame extends VariableFrameRateGame {
 		
 			    	Entity enemyCraftE = sm.createEntity("enemyCraft", "EnemyCraftVer2-b.obj");
 			    	enemyCraftE.setPrimitive(Primitive.TRIANGLES);
-					stationN = sm.getRootSceneNode().createChildSceneNode(enemyCraftE.getName() + "Node");
-					stationN.moveBackward(7.0f);
-					stationN.moveDown(.1f);
-					stationN.moveRight(4f);
-					stationN.attachObject(enemyCraftE);
+			    	enemyCraftN = sm.getRootSceneNode().createChildSceneNode(enemyCraftE.getName() + "Node");
+			    	enemyCraftN.moveBackward(7.0f);
+			    	enemyCraftN.moveDown(.1f);
+			    	enemyCraftN.moveRight(4f);
+			    	enemyCraftN.attachObject(enemyCraftE);
+					
+			    	Entity dropShipE = sm.createEntity("dropShip", "DropShipVer4.obj");
+			    	dropShipE.setPrimitive(Primitive.TRIANGLES);
+			    	dropShipN = sm.getRootSceneNode().createChildSceneNode(dropShipE.getName() + "Node");
+			    	dropShipN.moveBackward(7.0f);
+			    	dropShipN.moveDown(8f);
+			    	dropShipN.moveRight(4f);
+			    	dropShipN.attachObject(dropShipE);
 			    	
 			  //enemyCraftN  	
 			    	
