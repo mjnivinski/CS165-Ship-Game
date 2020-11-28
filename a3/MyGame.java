@@ -656,7 +656,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 	public void initAudio(SceneManager sm)
 	{ 
-		
+		if(1!=0) return;
 		Configuration configuration = sm.getConfiguration();
 		String sfxPath = configuration.valueOf("assets.sounds.path");
 		String musicPath = configuration.valueOf("assets.music.path");
