@@ -7,14 +7,24 @@ import java.net.InetAddress;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.rmi.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
 import a3.Networking.GhostAvatar;
 import a3.Networking.ProtocolClient;
 import a3.myGameEngine.flightControls.FlightController;
+import net.java.games.input.Controller;
+import net.java.games.input.Event;
+import ray.audio.AudioManagerFactory;
+import ray.audio.AudioResource;
+import ray.audio.AudioResourceType;
+import ray.audio.IAudioManager;
+import ray.audio.Sound;
+import ray.audio.SoundType;
 import ray.input.GenericInputManager;
 import ray.input.InputManager;
+import ray.input.action.AbstractInputAction;
 import ray.rage.*;
 import ray.rage.asset.material.Material;
 import ray.rage.asset.texture.Texture;
@@ -26,6 +36,7 @@ import ray.rage.scene.*;
 import ray.rage.scene.Camera.Frustum.*;
 import ray.rage.scene.controllers.RotationController;
 import ray.rage.util.BufferUtil;
+import ray.rage.util.Configuration;
 import ray.rml.*;
 import ray.rage.rendersystem.gl4.GL4RenderSystem;
 import ray.rage.rendersystem.shader.GpuShaderProgram;
@@ -35,6 +46,9 @@ import ray.rage.rendersystem.states.TextureState;
 import ray.networking.IGameConnection.ProtocolType;
 import java.util.UUID;
 import java.util.Vector;
+import static ray.rage.scene.SkeletalEntity.EndType.*;
+import static ray.rage.scene.SkeletalEntity.*;
+
 
 public class MyGame extends VariableFrameRateGame {
 
@@ -44,6 +58,10 @@ public class MyGame extends VariableFrameRateGame {
 	private ProtocolClient protClient;
 	private boolean isConnected;
 	private Vector<UUID> gameObjectsToRemove;
+	
+	public IAudioManager audioMgr;
+	Sound backgroundMusic, flagUp;
+	
 	
 	
 	//Declaration area
@@ -60,9 +78,14 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN;
+	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN;
+	//private SkeletalEntity rightHand;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
+	
+	ControlTest controlTest;
+	
+	
 
 	private InputManager im;
 	private TextureManager tm;
@@ -172,6 +195,8 @@ public class MyGame extends VariableFrameRateGame {
 		setupPlanets(eng, sm);
 		setupShip(eng, sm);
 		
+	
+		
 	   	if (tm == null)
 				tm = eng.getTextureManager();
 	    	
@@ -260,6 +285,48 @@ public class MyGame extends VariableFrameRateGame {
 			    	dropShipN.moveDown(8f);
 			    	dropShipN.moveRight(4f);
 			    	dropShipN.attachObject(dropShipE);
+			   /* 	
+			    	
+			    	SkeletalEntity manSE =
+			    			sm.createSkeletalEntity("manAv", "myRobot.rkm", "myRobot.rks");
+			    	
+			    	Texture tex = sm.getTextureManager().getAssetByPath("blue.jpeg");
+			    	TextureState tstate = (TextureState) sm.getRenderSystem()
+			    	.createRenderState(RenderState.Type.TEXTURE);
+			    	tstate.setTexture(tex);
+			    	manSE.setRenderState(tstate);
+			    	
+			    	SceneNode manN =
+			    			sm.getRootSceneNode().createChildSceneNode("manNode");
+			    			manN.attachObject(manSE);
+			    			manN.scale(0.1f, 0.1f, 0.1f);
+			    			manN.translate(0, 0.5f, 0);
+			    	*/
+			  //  	manSE.loadAnimation("walkAnimation", "clap2.rka");
+			   // 	manSE.loadAnimation("waveAnimation", "wave.rka");
+			    	
+			    	
+			    	
+			    	SkeletalEntity rightHand =
+							sm.createSkeletalEntity("rightHandAv", "FlagIndicatorVer2.rkm", "FlagIndicatorVer2.rks");
+			    	
+			    	Texture tex6 = sm.getTextureManager().getAssetByPath("FlagshipIndicatorVer2.png");
+			    	TextureState tstate6 = (TextureState) sm.getRenderSystem()
+			    	.createRenderState(RenderState.Type.TEXTURE);
+			    	tstate6.setTexture(tex6);
+			   	rightHand.setRenderState(tstate6);
+			    	
+			    	SceneNode rightHandN =
+			    			sm.getRootSceneNode().createChildSceneNode("rightHandNode");
+			    			rightHandN.attachObject(rightHand);
+			    			rightHandN.scale(0.1f, 0.1f, 0.1f);
+			    			rightHandN.translate(0, 0.5f, 0);
+			    			
+			    			rightHand.loadAnimation("throttleUpAnimation", "FlagLit.rka");
+			    			rightHand.loadAnimation("throttleUpReturnAnimation", "FlagUnlit.rka");
+			    	
+			    	
+			    //	manSE.loadAnimation("walkAnimation", "walk.rka");
 			    	
 			  //enemyCraftN  	
 			    	
@@ -300,6 +367,7 @@ public class MyGame extends VariableFrameRateGame {
 
 		setupInputs();
 		setupNetworking();
+		initAudio(sm);
 	}
 	
 	//ship is setup with code provided
@@ -429,7 +497,41 @@ public class MyGame extends VariableFrameRateGame {
 	protected void setupInputs() {
 		im = new GenericInputManager();
 		playerController = new FlightController(this, camera, camera.getParentSceneNode(), shipN, im);
+		
+	//	setupAdditionalTestControls(im);
+		
+		//animationThrottleUp()
 	}
+	
+	private void setupAdditionalTestControls(InputManager im) {
+		ArrayList<Controller> controllers = im.getControllers();
+		ArrayList<String> keyboards = new ArrayList<String>();
+		
+		for (int i = 0; i < controllers.size(); i++) {
+			if (controllers.get(i).getType() == Controller.Type.KEYBOARD)
+				keyboards.add(controllers.get(i).getName());
+		}
+		
+		controlTest = new ControlTest();
+		
+
+		
+		for (int i = 0; i < keyboards.size(); i++) {
+			
+			
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.F, controlTest,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
+		}
+	}
+	
+	private class ControlTest extends AbstractInputAction {
+		@Override
+		public void performAction(float arg0, Event e) {
+			animationThrottleUp();
+		}
+	}
+	
 	
 	public void setupGhostAvatar(GhostAvatar ghost) throws IOException {
 		
@@ -462,6 +564,18 @@ public class MyGame extends VariableFrameRateGame {
 		
 		playerController.update();
 		
+	//	SkeletalEntity rightHand =
+	//(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+		
+		//rightHand.update();
+		
+	//	SkeletalEntity manSE =
+	//			(SkeletalEntity) engine.getSceneManager().getEntity("manAv");
+	//	manSE.update();
+		
+	//	hereSound.setLocation(robotN.getWorldPosition());
+	//	oceanSound.setLocation(earthN.getWorldPosition());
+	//	setEarParameters(sm);
 	}
 	
 	
@@ -515,5 +629,65 @@ public class MyGame extends VariableFrameRateGame {
 	public Vector3 getPlayerPosition() {
 		return shipN.getWorldPosition();
 	}
+	
+	private void animationThrottleUp()
+	{ 
+	//EndType NONE = null;
+	//	SkeletalEntity rightHand =
+//	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	//rightHand.stopAnimation();
+//	rightHand.playAnimation("throttleUpAnimation", 0.5f, NONE, 0);
+//	rightHand.playAnimation("throttleUpReturnAnimation", 0.5f, NONE, 0);
+//		SkeletalEntity manSE =
+//				(SkeletalEntity) eng.getSceneManager().getEntity("manAv");
+//		manSE.playAnimation("waveAnimation", 0.5f, LOOP, 0);
+		
+//		flagUp.play();
+	}
+	
+	public void setEarParameters(SceneManager sm)
+	{ SceneNode dolphinNode = sm.getSceneNode("dolphinNode");
+	Vector3 avDir = dolphinNode.getWorldForwardAxis();
+	// note - should get the camera's forward direction
+	// - avatar direction plus azimuth
+	audioMgr.getEar().setLocation(dolphinNode.getWorldPosition());
+	audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
+	}
+	
+	public void initAudio(SceneManager sm)
+	{ 
+		
+		Configuration configuration = sm.getConfiguration();
+		String sfxPath = configuration.valueOf("assets.sounds.path");
+		String musicPath = configuration.valueOf("assets.music.path");
+		AudioResource theMusic, theFlag;
+		audioMgr = AudioManagerFactory.createAudioManager("ray.audio.joal.JOALAudioManager");
+		
+		if (!audioMgr.initialize()) {
+			System.out.println("The Audio Manager failed to initialize :(");
+			return;
+		}
+		
+		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
+	//	theFlag = audioMgr.createAudioResource(sfxPath + "energy_station.mp3", AudioResourceType.AUDIO_SAMPLE);
+
+	
+
+		
+		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 100, true);
+	//	flagUp = new Sound(theFlag, SoundType.SOUND_EFFECT, 25, false);
+
+		
+	
+			backgroundMusic.initialize(audioMgr);
+			backgroundMusic.play(4, true);
+			
+			flagUp.initialize(audioMgr);
+
+
+	}
+	
+	
+	
 	
 }
