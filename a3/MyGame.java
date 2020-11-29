@@ -308,9 +308,9 @@ public class MyGame extends VariableFrameRateGame {
 			    	
 			    	
 			    	SkeletalEntity rightHand =
-							sm.createSkeletalEntity("rightHandAv", "FlagIndicatorVer2.rkm", "FlagIndicatorVer2.rks");
+							sm.createSkeletalEntity("rightHandAv", "MyFettHandVer5.rkm", "MyFettHandVer5.rks");
 			    	
-			    	Texture tex6 = sm.getTextureManager().getAssetByPath("FlagshipIndicatorVer2.png");
+			    	Texture tex6 = sm.getTextureManager().getAssetByPath("FettArmVer5.png");
 			    	TextureState tstate6 = (TextureState) sm.getRenderSystem()
 			    	.createRenderState(RenderState.Type.TEXTURE);
 			    	tstate6.setTexture(tex6);
@@ -322,8 +322,8 @@ public class MyGame extends VariableFrameRateGame {
 			    			rightHandN.scale(0.1f, 0.1f, 0.1f);
 			    			rightHandN.translate(0, 0.5f, 0);
 			    			
-			    			rightHand.loadAnimation("throttleUpAnimation", "FlagLit.rka");
-			    			rightHand.loadAnimation("throttleUpReturnAnimation", "FlagUnlit.rka");
+			    		//	rightHand.loadAnimation("throttleUpAnimation", "FlagLit.rka");
+			    		//	rightHand.loadAnimation("throttleUpReturnAnimation", "FlagUnlit.rka");
 			    	
 			    	
 			    //	manSE.loadAnimation("walkAnimation", "walk.rka");
@@ -367,7 +367,7 @@ public class MyGame extends VariableFrameRateGame {
 
 		setupInputs();
 		setupNetworking();
-		initAudio(sm);
+	//	initAudio(sm);
 	}
 	
 	//ship is setup with code provided
