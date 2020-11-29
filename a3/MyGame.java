@@ -84,13 +84,17 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN;
+	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, flagPlatformdN;
 	private PhysicsObject shipPhysObj;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 	
 	throttleUp controlTest;
 	throttleDown controlTest2;
+	throttleUpReturn controlTest3;
+	throttleDownReturn controlTest4;
+	flagOut controlTest5;
+	flagIn controlTest6;
 	
 	
 
@@ -292,27 +296,9 @@ public class MyGame extends VariableFrameRateGame {
 			    	dropShipN.moveDown(8f);
 			    	dropShipN.moveRight(4f);
 			    	dropShipN.attachObject(dropShipE);
-			   /* 	
-			    	
-			    	SkeletalEntity manSE =
-			    			sm.createSkeletalEntity("manAv", "myRobot.rkm", "myRobot.rks");
-			    	
-			    	Texture tex = sm.getTextureManager().getAssetByPath("blue.jpeg");
-			    	TextureState tstate = (TextureState) sm.getRenderSystem()
-			    	.createRenderState(RenderState.Type.TEXTURE);
-			    	tstate.setTexture(tex);
-			    	manSE.setRenderState(tstate);
-			    	
-			    	SceneNode manN =
-			    			sm.getRootSceneNode().createChildSceneNode("manNode");
-			    			manN.attachObject(manSE);
-			    			manN.scale(0.1f, 0.1f, 0.1f);
-			    			manN.translate(0, 0.5f, 0);
-			    	*/
-			  //  	manSE.loadAnimation("walkAnimation", "clap2.rka");
-			   // 	manSE.loadAnimation("waveAnimation", "wave.rka");
 			    	
 			    	
+			    //Right Hand	
 			    	
 			    	SkeletalEntity rightHand =
 							sm.createSkeletalEntity("rightHandAv", "MyFettHandVer5.rkm", "MyFettHandVer5.rks");
@@ -322,17 +308,41 @@ public class MyGame extends VariableFrameRateGame {
 			    	.createRenderState(RenderState.Type.TEXTURE);
 			    	tstate6.setTexture(tex6);
 			   	rightHand.setRenderState(tstate6);
-			    	
+			   	
 			    	SceneNode rightHandN =
 			    			sm.getRootSceneNode().createChildSceneNode("rightHandNode");
 			    			rightHandN.attachObject(rightHand);
 			    			rightHandN.scale(0.1f, 0.1f, 0.1f);
 			    			rightHandN.translate(0, 0.5f, 0);
 			    			
+			    		
+			    			
 			    			rightHand.loadAnimation("throttleUpAnimation", "MyFettHandVer5_Thrust_Up.rka");
 			    			rightHand.loadAnimation("throttleUpReturnAnimation", "MyFettHandVer5_Thrust_Up_Return.rka");
 			    			rightHand.loadAnimation("throttleDownAnimation", "MyFettHandVer5_Thrust_Down.rka");
 			    			rightHand.loadAnimation("throttleDownReturnAnimation", "MyFettHandVer5_Thrust_Down_Return.rka");
+			    			
+			    			
+			    //FlagPlatform
+			    			
+					    	SkeletalEntity flagPlatform =
+									sm.createSkeletalEntity("flagAv", "FlagIndicatorVer2.rkm", "FlagIndicatorVer2.rks");
+					    	
+					    	Texture tex7 = sm.getTextureManager().getAssetByPath("FlagshipIndicatorVer2.png");
+					    	TextureState tstate7 = (TextureState) sm.getRenderSystem()
+					    	.createRenderState(RenderState.Type.TEXTURE);
+					    	tstate6.setTexture(tex7);
+					    	flagPlatform.setRenderState(tstate7);
+					    	
+					    	SceneNode flagPlatformN =
+					    			sm.getRootSceneNode().createChildSceneNode("FlagNode");	
+					    	flagPlatformN.attachObject(flagPlatform);
+					    	flagPlatformN.scale(0.1f, 0.1f, 0.1f);
+					    	flagPlatformN.translate(0, 0.5f, 0);
+					    	
+					    			
+					    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
+					    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
 			    	
 			    //	manSE.loadAnimation("walkAnimation", "walk.rka");
 			    	
@@ -542,6 +552,10 @@ public class MyGame extends VariableFrameRateGame {
 		
 		controlTest = new throttleUp();
 		controlTest2 = new throttleDown();
+		controlTest3 = new throttleUpReturn();
+		controlTest4 = new throttleDownReturn();
+		controlTest5 = new flagOut();
+		controlTest6 = new flagIn();
 		
 //animationThrottleUp()
 		
@@ -551,6 +565,14 @@ public class MyGame extends VariableFrameRateGame {
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.O, controlTest,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.P, controlTest2,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.K, controlTest3,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.L, controlTest4,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.I, controlTest5,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.J, controlTest6,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
 		}
@@ -600,9 +622,10 @@ public class MyGame extends VariableFrameRateGame {
 		
 		rightHand.update();
 		
-		SkeletalEntity manSE =
-				(SkeletalEntity) engine.getSceneManager().getEntity("manAv");
-		manSE.update();
+    	SkeletalEntity flagPlatform =
+    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
+
+    	flagPlatform.update();
 		
 	//	hereSound.setLocation(robotN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
@@ -668,6 +691,15 @@ public class MyGame extends VariableFrameRateGame {
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 	rightHand.stopAnimation();
 	rightHand.playAnimation("throttleUpAnimation", 0.5f, NONE, 0);
+
+	}
+	
+	private void animationThrottleUpReturn()
+	{ 
+
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	rightHand.stopAnimation();
 	rightHand.playAnimation("throttleUpReturnAnimation", 0.5f, NONE, 0);
 
 	}
@@ -679,9 +711,40 @@ public class MyGame extends VariableFrameRateGame {
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 	rightHand.stopAnimation();
 	rightHand.playAnimation("throttleDownAnimation", 0.5f, NONE, 0);
+
+	}
+	
+	private void animationThrottleDownReturn()
+	{ 
+
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	rightHand.stopAnimation();
 	rightHand.playAnimation("throttleDownReturnAnimation", 0.5f, NONE, 0);
 
 	}
+	
+	private void animationFlagUp()
+	{ 
+
+	 	SkeletalEntity flagPlatform =
+    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
+	 	flagPlatform.stopAnimation();
+	 	flagPlatform.playAnimation("flagLitAnimation", 0.5f, NONE, 0);
+
+	}
+	
+	private void animationFlagDown()
+	{ 
+
+	 	SkeletalEntity flagPlatform =
+    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
+	 	flagPlatform.stopAnimation();
+	 	flagPlatform.playAnimation("flagUnlitAnimation", 0.5f, NONE, 0);
+
+	}
+	
+
 	
 	private class throttleUp extends AbstractInputAction {
 				
@@ -691,11 +754,43 @@ public class MyGame extends VariableFrameRateGame {
 		}
 	}
 	
+	private class throttleUpReturn extends AbstractInputAction {
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			 animationThrottleUpReturn();
+		}
+	}
+	
 	private class throttleDown extends AbstractInputAction {
 		
 		@Override
 		public void performAction(float arg0, Event e) {
+			 animationThrottleDownReturn();
+		}
+	}
+	
+	private class throttleDownReturn extends AbstractInputAction {
+		
+		@Override
+		public void performAction(float arg0, Event e) {
 			 animationThrottleDown();
+		}
+	}
+	
+	private class flagOut extends AbstractInputAction {
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			animationFlagUp();
+		}
+	}
+	
+	private class flagIn extends AbstractInputAction {
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			animationFlagDown();
 		}
 	}
 	
