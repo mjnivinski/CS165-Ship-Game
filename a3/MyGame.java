@@ -44,6 +44,10 @@ import ray.rage.rendersystem.states.FrontFaceState;
 import ray.rage.rendersystem.states.RenderState;
 import ray.rage.rendersystem.states.TextureState;
 import ray.networking.IGameConnection.ProtocolType;
+import ray.physics.PhysicsEngine;
+import ray.physics.PhysicsEngineFactory;
+import ray.physics.PhysicsObject;
+
 import java.util.UUID;
 import java.util.Vector;
 import static ray.rage.scene.SkeletalEntity.EndType.*;
@@ -68,6 +72,8 @@ public class MyGame extends VariableFrameRateGame {
 	Random random = new Random();
 	
 	Engine eng;
+	
+	private PhysicsEngine physicsEng;
 
 	GL4RenderSystem rs;
 	float elapsTime = 0.0f;
@@ -79,7 +85,7 @@ public class MyGame extends VariableFrameRateGame {
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
 	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN;
-	//private SkeletalEntity rightHand;
+	private PhysicsObject shipPhysObj;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 	
@@ -368,6 +374,7 @@ public class MyGame extends VariableFrameRateGame {
 		setupInputs();
 		setupNetworking();
 		initAudio(sm);
+		setupPhysics();
 	}
 	
 	//ship is setup with code provided
@@ -491,6 +498,24 @@ public class MyGame extends VariableFrameRateGame {
 		floor.setRenderState(faceState);
 		
 		return floor;
+	}
+	
+	private void setupPhysics() {
+		String engine = "ray.physics.JBullet.JBulletPhysicsEngine";
+		
+		physicsEng = PhysicsEngineFactory.createPhysicsEngine(engine);
+		physicsEng.initSystem();
+		
+		
+		float mass = 1.0f;
+		float up[] = {0,1,0};
+		double[] temptf;
+		
+		temptf = toDoubleArray(shipN.getLocalTransform().toFloatArray());
+		shipPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass,temptf,1.0f);
+		shipN.setPhysicsObject(shipPhysObj);
+		
+		
 	}
 
 	//seperate methods for keyboards/gamepads
@@ -689,5 +714,29 @@ public class MyGame extends VariableFrameRateGame {
 	
 	
 	
+	
+	private float[] toFloatArray(double[] arr)
+	{ 
+		if (arr == null) return null;
+		int n = arr.length;
+		float[] ret = new float[n];
+		for (int i = 0; i < n; i++)
+		{
+			ret[i] = (float)arr[i];
+		}
+	return ret;
+	}
+	
+	public double[] toDoubleArray(float[] arr) 
+	{
+		if (arr == null) return null;
+		int n = arr.length;
+		double[] ret = new double[n];
+		for (int i = 0; i < n; i++)
+		{ 
+			ret[i] = (double)arr[i];
+		}
+		return ret;
+	}
 	
 }
