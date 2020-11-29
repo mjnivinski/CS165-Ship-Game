@@ -340,6 +340,8 @@ public class MyGame extends VariableFrameRateGame {
 					    	flagPlatformN.scale(0.1f, 0.1f, 0.1f);
 					    	flagPlatformN.translate(0, 0.5f, 0);
 					    	
+					    	flagPlatformN.moveBackward(1f);
+					    	
 					    			
 					    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
 					    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
