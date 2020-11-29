@@ -83,7 +83,8 @@ public class MyGame extends VariableFrameRateGame {
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 	
-	ControlTest controlTest;
+	throttleUp controlTest;
+	throttleDown controlTest2;
 	
 	
 
@@ -322,9 +323,10 @@ public class MyGame extends VariableFrameRateGame {
 			    			rightHandN.scale(0.1f, 0.1f, 0.1f);
 			    			rightHandN.translate(0, 0.5f, 0);
 			    			
-			    		//	rightHand.loadAnimation("throttleUpAnimation", "FlagLit.rka");
-			    		//	rightHand.loadAnimation("throttleUpReturnAnimation", "FlagUnlit.rka");
-			    	
+			    			rightHand.loadAnimation("throttleUpAnimation", "MyFettHandVer5_Thrust_Up.rka");
+			    			rightHand.loadAnimation("throttleUpReturnAnimation", "MyFettHandVer5_Thrust_Up_Return.rka");
+			    			rightHand.loadAnimation("throttleDownAnimation", "MyFettHandVer5_Thrust_Down.rka");
+			    			rightHand.loadAnimation("throttleDownReturnAnimation", "MyFettHandVer5_Thrust_Down_Return.rka");
 			    	
 			    //	manSE.loadAnimation("walkAnimation", "walk.rka");
 			    	
@@ -498,7 +500,7 @@ public class MyGame extends VariableFrameRateGame {
 		im = new GenericInputManager();
 		playerController = new FlightController(this, camera, camera.getParentSceneNode(), shipN, im);
 		
-	//	setupAdditionalTestControls(im);
+		setupAdditionalTestControls(im);
 		
 		//animationThrottleUp()
 	}
@@ -512,14 +514,17 @@ public class MyGame extends VariableFrameRateGame {
 				keyboards.add(controllers.get(i).getName());
 		}
 		
-		controlTest = new ControlTest();
+		controlTest = new throttleUp();
+		controlTest2 = new throttleDown();
 		
-
+//animationThrottleUp()
 		
 		for (int i = 0; i < keyboards.size(); i++) {
 			
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.F, controlTest,
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.O, controlTest,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.P, controlTest2,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
 		}
@@ -564,14 +569,14 @@ public class MyGame extends VariableFrameRateGame {
 		
 		playerController.update();
 		
-	//	SkeletalEntity rightHand =
-	//(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
-		//rightHand.update();
+		rightHand.update();
 		
-	//	SkeletalEntity manSE =
-	//			(SkeletalEntity) engine.getSceneManager().getEntity("manAv");
-	//	manSE.update();
+		SkeletalEntity manSE =
+				(SkeletalEntity) engine.getSceneManager().getEntity("manAv");
+		manSE.update();
 		
 	//	hereSound.setLocation(robotN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
@@ -632,17 +637,40 @@ public class MyGame extends VariableFrameRateGame {
 	
 	private void animationThrottleUp()
 	{ 
-	//EndType NONE = null;
-	//	SkeletalEntity rightHand =
-//	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-	//rightHand.stopAnimation();
-//	rightHand.playAnimation("throttleUpAnimation", 0.5f, NONE, 0);
-//	rightHand.playAnimation("throttleUpReturnAnimation", 0.5f, NONE, 0);
-//		SkeletalEntity manSE =
-//				(SkeletalEntity) eng.getSceneManager().getEntity("manAv");
-//		manSE.playAnimation("waveAnimation", 0.5f, LOOP, 0);
+
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	rightHand.stopAnimation();
+	rightHand.playAnimation("throttleUpAnimation", 0.5f, NONE, 0);
+	rightHand.playAnimation("throttleUpReturnAnimation", 0.5f, NONE, 0);
+
+	}
+	
+	private void animationThrottleDown()
+	{ 
+
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	rightHand.stopAnimation();
+	rightHand.playAnimation("throttleDownAnimation", 0.5f, NONE, 0);
+	rightHand.playAnimation("throttleDownReturnAnimation", 0.5f, NONE, 0);
+
+	}
+	
+	private class throttleUp extends AbstractInputAction {
+				
+		@Override
+		public void performAction(float arg0, Event e) {
+			 animationThrottleUp();
+		}
+	}
+	
+	private class throttleDown extends AbstractInputAction {
 		
-//		flagUp.play();
+		@Override
+		public void performAction(float arg0, Event e) {
+			 animationThrottleDown();
+		}
 	}
 	
 	public void setEarParameters(SceneManager sm)
