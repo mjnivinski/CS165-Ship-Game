@@ -95,6 +95,7 @@ public class MyGame extends VariableFrameRateGame {
 	throttleDownReturn controlTest4;
 	flagOut controlTest5;
 	flagIn controlTest6;
+	flagOutExtended controlTest7;
 	
 	
 
@@ -345,6 +346,7 @@ public class MyGame extends VariableFrameRateGame {
 					    			
 					    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
 					    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
+					    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
 			    	
 			    //	manSE.loadAnimation("walkAnimation", "walk.rka");
 			    	
@@ -733,7 +735,7 @@ public class MyGame extends VariableFrameRateGame {
     			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
 	 	flagPlatform.stopAnimation();
 	 	flagPlatform.playAnimation("flagLitAnimation", 0.5f, NONE, 0);
-
+	 	flagPlatform.playAnimation("flagLitExtendAnimation", 0.5f, LOOP, 0);
 	}
 	
 	private void animationFlagDown()
@@ -743,6 +745,18 @@ public class MyGame extends VariableFrameRateGame {
     			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
 	 	flagPlatform.stopAnimation();
 	 	flagPlatform.playAnimation("flagUnlitAnimation", 0.5f, NONE, 0);
+
+	}
+	
+	
+	
+	private void animationFlagUpExtended()
+	{ 
+
+	 	SkeletalEntity flagPlatform =
+    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
+	 	flagPlatform.stopAnimation();
+	 	flagPlatform.playAnimation("flagLitExtendAnimation", 0.5f, LOOP, 0);
 
 	}
 	
@@ -793,6 +807,14 @@ public class MyGame extends VariableFrameRateGame {
 		@Override
 		public void performAction(float arg0, Event e) {
 			animationFlagDown();
+		}
+	}
+	
+	private class flagOutExtended extends AbstractInputAction {
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			animationFlagUpExtended();
 		}
 	}
 	
