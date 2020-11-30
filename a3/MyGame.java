@@ -51,7 +51,9 @@ import ray.physics.PhysicsObject;
 import java.util.UUID;
 import java.util.Vector;
 import static ray.rage.scene.SkeletalEntity.EndType.*;
-import static ray.rage.scene.SkeletalEntity.*;
+import ray.audio.*;
+import com.jogamp.openal.ALFactory;
+
 
 
 public class MyGame extends VariableFrameRateGame {
@@ -64,7 +66,7 @@ public class MyGame extends VariableFrameRateGame {
 	private Vector<UUID> gameObjectsToRemove;
 	
 	public IAudioManager audioMgr;
-	Sound backgroundMusic, flagUp;
+	Sound backgroundMusic, flagUp, stationSound;
 	
 	
 	
@@ -269,13 +271,14 @@ public class MyGame extends VariableFrameRateGame {
 	    	//terrainContN.attachChild(tessN);
 	    	
 	    	
-	    	Entity stationE = sm.createEntity("spacestation", "SpaceStationAlpha-b.obj");
+	    	Entity stationE = sm.createEntity("station", "SpaceStationAlpha-b.obj");
 	    	stationE.setPrimitive(Primitive.TRIANGLES);
-			stationN = sm.getRootSceneNode().createChildSceneNode(stationE.getName() + "Node");
+			stationN = sm.getRootSceneNode().createChildSceneNode("stationNode");
 			stationN.moveForward(7.0f);
 			stationN.moveUp(.1f);
 			stationN.moveLeft(4f);
 			stationN.attachObject(stationE);
+			
 			
 			RotationController rc2 =
 			    	new RotationController(Vector3f.createUnitVectorY(), .02f);
@@ -298,6 +301,7 @@ public class MyGame extends VariableFrameRateGame {
 			    	dropShipN.moveRight(4f);
 			    	dropShipN.attachObject(dropShipE);
 			    	
+			    	/*
 			    	
 			    //Right Hand	
 			    	
@@ -347,12 +351,7 @@ public class MyGame extends VariableFrameRateGame {
 					    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
 					    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
 					    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
-			    	
-			    //	manSE.loadAnimation("walkAnimation", "walk.rka");
-			    	
-			  //enemyCraftN  	
-			    	
-		//setupFloor();
+			    	*/
 		
 		camera.getParentNode().yaw(Degreef.createFrom(180));
 		camera.getParentNode().moveUp(2);
@@ -618,9 +617,11 @@ public class MyGame extends VariableFrameRateGame {
 		
 		processNetworking(engine.getElapsedTimeMillis());
 		
+		SceneManager sm = engine.getSceneManager();
+		SceneNode stationN = sm.getSceneNode("stationNode");
 		
 		playerController.update();
-		
+	/*	
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
@@ -630,10 +631,13 @@ public class MyGame extends VariableFrameRateGame {
     			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
 
     	flagPlatform.update();
+		*/
 		
-	//	hereSound.setLocation(robotN.getWorldPosition());
+		System.out.println("station world position is " + stationN.getWorldPosition());
+		
+		stationSound.setLocation(stationN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
-	//	setEarParameters(sm);
+		setEarParameters(sm);
 	}
 	
 	
@@ -819,11 +823,13 @@ public class MyGame extends VariableFrameRateGame {
 	}
 	
 	public void setEarParameters(SceneManager sm)
-	{ SceneNode dolphinNode = sm.getSceneNode("dolphinNode");
-	Vector3 avDir = dolphinNode.getWorldForwardAxis();
+	{ 
+		
+		SceneNode stationN = sm.getSceneNode("stationNode");
+	Vector3 avDir = stationN.getWorldForwardAxis();
 	// note - should get the camera's forward direction
 	// - avatar direction plus azimuth
-	audioMgr.getEar().setLocation(dolphinNode.getWorldPosition());
+	audioMgr.getEar().setLocation(stationN.getWorldPosition());
 	audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
 	}
 	
@@ -833,7 +839,7 @@ public class MyGame extends VariableFrameRateGame {
 		Configuration configuration = sm.getConfiguration();
 		String sfxPath = configuration.valueOf("assets.sounds.path");
 		String musicPath = configuration.valueOf("assets.music.path");
-		AudioResource theMusic, theFlag;
+		AudioResource theMusic, theFlag, theStation;
 		audioMgr = AudioManagerFactory.createAudioManager("ray.audio.joal.JOALAudioManager");
 		
 		if (!audioMgr.initialize()) {
@@ -843,20 +849,51 @@ public class MyGame extends VariableFrameRateGame {
 		
 		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
 	//	theFlag = audioMgr.createAudioResource(sfxPath + "energy_station.mp3", AudioResourceType.AUDIO_SAMPLE);
+		theStation = audioMgr.createAudioResource(sfxPath + "Strange Noise-SoundBible.com-229408508.wav", AudioResourceType.AUDIO_SAMPLE);
 
 	
 
 		
 		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 100, true);
 	//	flagUp = new Sound(theFlag, SoundType.SOUND_EFFECT, 25, false);
-
+		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 100, true);
 		
 	
 			backgroundMusic.initialize(audioMgr);
 			backgroundMusic.play(4, true);
 			
-			flagUp.initialize(audioMgr);
+		//	flagUp.initialize(audioMgr);
+			
+			stationSound.initialize(audioMgr);
+			stationSound.setMaxDistance(10.0f);
+			stationSound.setMinDistance(0.5f);
+			stationSound.setRollOff(5.0f);
+			
+			SceneNode stationN = sm.getSceneNode("stationNode");
+			stationSound.setLocation(stationN.getWorldPosition());
+			
+			setEarParameters(sm);
+			
+			stationSound.play();
+			/*
 
+
+oceanSound.initialize(audioMgr);
+stationSound.setMaxDistance(10.0f);
+stationSound.setMinDistance(0.5f);
+stationSound.setRollOff(5.0f);
+oceanSound.setMaxDistance(10.0f);
+oceanSound.setMinDistance(0.5f);
+oceanSound.setRollOff(5.0f);
+SceneNode robotN = sm.getSceneNode("robotNode");
+SceneNode earthN = sm.getSceneNode("earthNode");
+
+oceanSound.setLocation(earthN.getWorldPosition());
+setEarParameters(sm);
+
+oceanSound.play();
+
+*/
 
 	}
 	
