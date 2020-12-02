@@ -390,7 +390,6 @@ public class MyGame extends VariableFrameRateGame {
 		setupNetworking();
 		initAudio(sm);
 		setupPhysics();
-	//	initAudio(sm);
 	}
 	
 	//ship is setup with code provided
@@ -633,7 +632,6 @@ public class MyGame extends VariableFrameRateGame {
     	flagPlatform.update();
 		*/
 		
-		System.out.println("station world position is " + stationN.getWorldPosition());
 		
 		stationSound.setLocation(stationN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
@@ -825,17 +823,17 @@ public class MyGame extends VariableFrameRateGame {
 	public void setEarParameters(SceneManager sm)
 	{ 
 		
-		SceneNode stationN = sm.getSceneNode("stationNode");
-	Vector3 avDir = stationN.getWorldForwardAxis();
+		SceneNode shipN = sm.getSceneNode("myShipNode");
+	Vector3 avDir = shipN.getWorldForwardAxis();
 	// note - should get the camera's forward direction
 	// - avatar direction plus azimuth
-	audioMgr.getEar().setLocation(stationN.getWorldPosition());
-	audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
+	audioMgr.getEar().setLocation(shipN.getWorldPosition());
+	audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,0,0));
 	}
 	
 	public void initAudio(SceneManager sm)
 	{ 
-		if(1!=0) return;
+		
 		Configuration configuration = sm.getConfiguration();
 		String sfxPath = configuration.valueOf("assets.sounds.path");
 		String musicPath = configuration.valueOf("assets.music.path");
@@ -849,51 +847,32 @@ public class MyGame extends VariableFrameRateGame {
 		
 		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
 	//	theFlag = audioMgr.createAudioResource(sfxPath + "energy_station.mp3", AudioResourceType.AUDIO_SAMPLE);
-		theStation = audioMgr.createAudioResource(sfxPath + "Strange Noise-SoundBible.com-229408508.wav", AudioResourceType.AUDIO_SAMPLE);
+		theStation = audioMgr.createAudioResource(sfxPath + "Cartoon-warp-02.wav", AudioResourceType.AUDIO_SAMPLE);
 
 	
 
 		
-		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 100, true);
+		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 10, true);
 	//	flagUp = new Sound(theFlag, SoundType.SOUND_EFFECT, 25, false);
-		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 100, true);
+		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 400, true);
 		
 	
 			backgroundMusic.initialize(audioMgr);
-			backgroundMusic.play(4, true);
+			backgroundMusic.play();
 			
 		//	flagUp.initialize(audioMgr);
 			
 			stationSound.initialize(audioMgr);
 			stationSound.setMaxDistance(10.0f);
 			stationSound.setMinDistance(0.5f);
-			stationSound.setRollOff(5.0f);
-			
+			stationSound.setRollOff(5f);
+		
 			SceneNode stationN = sm.getSceneNode("stationNode");
 			stationSound.setLocation(stationN.getWorldPosition());
 			
 			setEarParameters(sm);
 			
 			stationSound.play();
-			/*
-
-
-oceanSound.initialize(audioMgr);
-stationSound.setMaxDistance(10.0f);
-stationSound.setMinDistance(0.5f);
-stationSound.setRollOff(5.0f);
-oceanSound.setMaxDistance(10.0f);
-oceanSound.setMinDistance(0.5f);
-oceanSound.setRollOff(5.0f);
-SceneNode robotN = sm.getSceneNode("robotNode");
-SceneNode earthN = sm.getSceneNode("earthNode");
-
-oceanSound.setLocation(earthN.getWorldPosition());
-setEarParameters(sm);
-
-oceanSound.play();
-
-*/
 
 	}
 	
