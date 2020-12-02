@@ -10,19 +10,22 @@ public class PatrolStrategyContext {
 	private PatrolReturnStrategy PRS;
 	private PatrolPatrolStrategy PPS;
 	
-	SceneNode npc;
-	SceneNode target;
-	SceneNode chaseTarget;
+	private SceneNode npc;
+	private SceneNode target;
+	private SceneNode chaseTarget;
 	
 	float defenseTether;
 	float enemyTether;
 	
 	public PatrolStrategyContext(SceneNode n, SceneNode t, float radius, float dT, float eT) {
+		System.out.println("Patrol Context Constructor");
 		npc = n;
 		target = t;
 		
 		defenseTether = dT;
 		enemyTether = eT;
+		
+		System.out.println("### " + npc.getPhysicsObject() + " ###");
 		
 		PRS = new PatrolReturnStrategy(n, t, radius);
 		PPS = new PatrolPatrolStrategy(n,t,enemyTether);
@@ -51,6 +54,7 @@ public class PatrolStrategyContext {
 		if(VectorMath.distance(npc.getWorldPosition(), target.getWorldPosition()) < 1) {
 			System.out.println("stillReturningFalse, back at home");
 			npc.setLocalPosition(target.getWorldPosition());
+			
 			return false;
 		}
 		
@@ -66,6 +70,7 @@ public class PatrolStrategyContext {
 	}
 	
 	public void execute(float time) {
+		//System.out.println("context.execute");
 		strategy.move(time);
 	}
 }

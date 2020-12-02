@@ -429,13 +429,10 @@ public class MyGame extends VariableFrameRateGame {
 		
 		patrolNPC = sm.getRootSceneNode().createChildSceneNode("PatrolEnemyNode");
 		
-		npc1 = new PatrolEnemy(patrolNPC,stationN,5,20,10);
-		print("stationN: " + stationN);
+		
 		patrolNPC.attachObject(eMaker.earth("the EARTH"));
 		
-		SceneNode[] targets = {shipN};
 		
-		npc1.setTargets(targets);
 		
 		String engine = "ray.physics.JBullet.JBulletPhysicsEngine";
 		float mass = 1.0f;
@@ -445,6 +442,12 @@ public class MyGame extends VariableFrameRateGame {
 		temptf = toDoubleArray(patrolNPC.getLocalTransform().toFloatArray());
 		PhysicsObject npcPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
 		patrolNPC.setPhysicsObject(npcPhysObj);
+		print("PATROL NPC PHYSICS: " + patrolNPC.getPhysicsObject() + " ##########################");
+		
+		npc1 = new PatrolEnemy(patrolNPC,stationN,5,20,10);
+		SceneNode[] targets = {shipN};
+		
+		npc1.setTargets(targets);
 		print("done setting up patrolNPC");
 	}
 
@@ -564,14 +567,14 @@ public class MyGame extends VariableFrameRateGame {
 		physicsEng = PhysicsEngineFactory.createPhysicsEngine(engine);
 		physicsEng.initSystem();
 		
-		
+		/*
 		float mass = 1.0f;
 		float up[] = {0,1,0};
 		double[] temptf;
 		
 		temptf = toDoubleArray(shipN.getLocalTransform().toFloatArray());
 		shipPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass,temptf,1.0f);
-		shipN.setPhysicsObject(shipPhysObj);
+		shipN.setPhysicsObject(shipPhysObj);*/
 		
 		
 	}
@@ -655,6 +658,8 @@ public class MyGame extends VariableFrameRateGame {
 	@Override
 	protected void update(Engine engine) {
 		
+		//System.out.println("update");
+		
 		updateDefaults(engine);
 		
 		processNetworking(engine.getElapsedTimeMillis());
@@ -685,6 +690,17 @@ public class MyGame extends VariableFrameRateGame {
 		//stationSound.setLocation(stationN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
 		setEarParameters(sm);
+		
+		Matrix4 mat;
+		physicsEng.update(eng.getElapsedTimeMillis());
+		for (SceneNode s : engine.getSceneManager().getSceneNodes())
+		{ 
+			if (s.getPhysicsObject() != null){
+				mat = Matrix4f.createFrom(toFloatArray(s.getPhysicsObject().getTransform()));
+				s.setLocalPosition(mat.value(0,3),mat.value(1,3),
+				mat.value(2,3));
+			}
+		}
 	}
 	
 	
@@ -878,7 +894,6 @@ public class MyGame extends VariableFrameRateGame {
 		// - avatar direction plus azimuth
 		//audioMgr.getEar().setLocation(stationN.getWorldPosition());
 		//audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
-		print("aduioMgr: " + audioMgr);
 		audioMgr.getEar().setLocation(shipN.getWorldPosition());
 		audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,0,0));
 	}

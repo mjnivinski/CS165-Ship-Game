@@ -36,20 +36,24 @@ public class PatrolEnemy {
 	PatrolStrategyContext context;
 		
 	public PatrolEnemy(SceneNode n, SceneNode t, float r, float dT, float eT) {
+		System.out.println("Patrol Enemy Constructor");///fdsafdsa
 		npc = n;
 		target = t;
 		radius = r;
 		defenseTether = dT;
 		enemyTether = eT;
 		
+		System.out.println("pec### " + n.getPhysicsObject() + " ###");
 		context = new PatrolStrategyContext(n, t, r, dT, eT);
 		setupBehaviorTree();
 	}
 	
 	public void update(float time) {
-		bt.update(time);
 		float deltaTime = time/1000;
 		context.execute(deltaTime);
+		bt.update(time);
+		//context.execute(deltaTime);
+		
 	}
 		
 	private void setupBehaviorTree() {
@@ -83,7 +87,7 @@ public class PatrolEnemy {
 		protected boolean check() {
 			//print("return Check");
 			
-			print("return check: " + returning);
+			//print("return check: " + returning);
 			//if the patroller is currently returning return true
 			if(returning) return true;
 			
@@ -96,11 +100,14 @@ public class PatrolEnemy {
 		@Override
 		protected BTStatus update(float arg0) {
 			// TODO Auto-generated method stub
-			System.out.println("return Action");
+			//System.out.println("return Action");
 			//check and see if we should change to PatrolPatrolStrategy
-			
-			
-			returning = context.stillReturning();
+			print("return action");
+			if(!context.stillReturning()) {
+				print("returning complete");
+				returning = false;
+				context.patrolHome();
+			}
 			return BTStatus.BH_SUCCESS;
 		}
 	}
@@ -125,12 +132,13 @@ public class PatrolEnemy {
 
 		@Override
 		protected BTStatus update(float arg0) {
-			print("chase Action");
+			//print("chase Action");
 			//Check and see if we should change to PatrolReturnStrategy
 			
 			if(!context.stillChasing()) {
 				chasing = false;
 				returning = true;
+				context.returnHome();
 			}
 			
 			return BTStatus.BH_SUCCESS;
@@ -165,10 +173,6 @@ public class PatrolEnemy {
 			
 			for(SceneNode target:possibleTargets) {
 				if(VectorMath.distance(target.getWorldPosition(), npc.getWorldPosition()) < enemyTether) {
-					print("distance: " + VectorMath.distance(target.getWorldPosition(), npc.getWorldPosition()));
-					print("npc: " + npc.getWorldPosition());
-					print("target: " + target.getWorldPosition());
-					print("target acquired");
 					context.chaseEnemy(target);
 					chasing = true;
 					return BTStatus.BH_SUCCESS;
