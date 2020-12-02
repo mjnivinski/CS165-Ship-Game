@@ -1,5 +1,6 @@
 package a3.myGameEngine;
 
+import ray.rml.Vector3;
 import ray.rml.Vector3f;
 
 //This class deals with certain vector math. Originally used to test how the camera worked, its primary function is the distance method.
@@ -34,6 +35,18 @@ public class VectorMath {
 		z *= z;
 		return (float)Math.sqrt(x+y+z);
 	}
+	
+	//Takes two vectors and returns the distance between.
+		public static float distance(Vector3 v1, Vector3 v2) {
+			
+			float x = v1.x() - v2.x();
+			float y = v1.y() - v2.y();
+			float z = v1.z() - v2.z();
+			x *= x;
+			y *= y;
+			z *= z;
+			return (float)Math.sqrt(x+y+z);
+		}
 	
 	public static Vector3f lerp(Vector3f v1, Vector3f v2, float t) {
 		float x,y,z;

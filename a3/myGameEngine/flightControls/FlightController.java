@@ -213,6 +213,8 @@ public class FlightController {
 	
 	public void update() {
 		
+		
+		
 		deltaTime = eng.getElapsedTimeMillis()/1000;
 		//print("start");
 		
@@ -439,6 +441,15 @@ public class FlightController {
 		cameraN.setLocalPosition(position);
 		
 		//camera.setPo((Vector3f) position);
+	}
+	
+	public int getThrottleSign() {
+		float throttle = shipController.getThrottle();
+		int sign = 0;
+		if(throttle > 0) sign = 1;
+		else if(throttle < 0) sign = -1;
+		
+		return sign;
 	}
 	
 	private void print(String s) {

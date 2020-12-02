@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import a3.NPCS.Patroller.PatrolEnemy;
+import a3.NPCS.Patroller.PatrolStrategyContext;
 import a3.Networking.GhostAvatar;
 import a3.Networking.ProtocolClient;
 import a3.myGameEngine.flightControls.FlightController;
@@ -52,7 +54,7 @@ import java.util.UUID;
 import java.util.Vector;
 import static ray.rage.scene.SkeletalEntity.EndType.*;
 import ray.audio.*;
-import com.jogamp.openal.ALFactory;
+//import com.jogamp.openal.ALFactory;
 
 
 
@@ -74,6 +76,7 @@ public class MyGame extends VariableFrameRateGame {
 	Random random = new Random();
 	
 	Engine eng;
+	EntityMaker eMaker;
 	
 	private PhysicsEngine physicsEng;
 
@@ -88,6 +91,9 @@ public class MyGame extends VariableFrameRateGame {
 	//private SceneNode dolphinN, stationN;
 	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, flagPlatformdN;
 	private PhysicsObject shipPhysObj;
+	
+	private PatrolEnemy npc1;
+	private SceneNode patrolNPC;
 	
 	private SceneNode[] earthPlanets = new SceneNode[13];
 	
@@ -205,9 +211,13 @@ public class MyGame extends VariableFrameRateGame {
 	@Override
 	protected void setupScene(Engine eng, SceneManager sm) throws IOException {
 		this.eng = eng;
+		eMaker = new EntityMaker(eng,sm);
+		
 		print("Setup Scene");
 		setupPlanets(eng, sm);
 		setupShip(eng, sm);
+		
+		
 		
 	
 		
@@ -388,9 +398,12 @@ public class MyGame extends VariableFrameRateGame {
 
 		setupInputs();
 		setupNetworking();
-		initAudio(sm);
+		
+		//initAudio(sm);
 		setupPhysics();
+		setupPatrolNPC(eng,sm);
 	//	initAudio(sm);
+		print("setup done");
 	}
 	
 	//ship is setup with code provided
@@ -407,6 +420,29 @@ public class MyGame extends VariableFrameRateGame {
 		shipN.yaw(Degreef.createFrom(180));
 
 		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
+	}
+	
+	private void setupPatrolNPC(Engine eng, SceneManager sm) throws IOException{
+		//npc1 PatrolEnemy
+		
+		patrolNPC = sm.getRootSceneNode().createChildSceneNode("PatrolEnemyNode");
+		
+		npc1 = new PatrolEnemy(patrolNPC,stationN,5,20,10);
+		print("stationN: " + stationN);
+		patrolNPC.attachObject(eMaker.earth("the EARTH"));
+		
+		SceneNode[] targets = {shipN};
+		
+		npc1.setTargets(targets);
+		
+		String engine = "ray.physics.JBullet.JBulletPhysicsEngine";
+		float mass = 1.0f;
+		float up[] = {0,1,0};
+		double[] temptf;
+		
+		temptf = toDoubleArray(patrolNPC.getLocalTransform().toFloatArray());
+		PhysicsObject npcPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
+		patrolNPC.setPhysicsObject(npcPhysObj);
 	}
 
 	//same initialization as ship, with a few rotation controllers.
@@ -433,6 +469,8 @@ public class MyGame extends VariableFrameRateGame {
 	}
 	
 	private SceneNode setupPlanet(Engine eng, SceneManager sm, String name, String texName) throws IOException {
+		
+		/*
 		Entity planetE = sm.createEntity(name, "sphere.obj");
 		planetE.setPrimitive(Primitive.TRIANGLES);
 		
@@ -444,9 +482,10 @@ public class MyGame extends VariableFrameRateGame {
 		texState.setTexture(tex);
 		planetE.setRenderState(texState);
 		planetE.setMaterial(mat);
-		
-		SceneNode planetN = sm.getRootSceneNode().createChildSceneNode(planetE.getName() + "Node");
-		planetN.attachObject(planetE);
+		*/
+		//SceneNode planetN = sm.getRootSceneNode().createChildSceneNode(planetE.getName() + "Node");
+		SceneNode planetN = sm.getRootSceneNode().createChildSceneNode(name + "Node");
+		planetN.attachObject(eMaker.earth(name));
 		
 		return planetN;
 	}
@@ -621,6 +660,9 @@ public class MyGame extends VariableFrameRateGame {
 		SceneNode stationN = sm.getSceneNode("stationNode");
 		
 		playerController.update();
+		
+		npc1.update(engine.getElapsedTimeMillis());
+		
 	/*	
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
@@ -633,9 +675,11 @@ public class MyGame extends VariableFrameRateGame {
     	flagPlatform.update();
 		*/
 		
-		System.out.println("station world position is " + stationN.getWorldPosition());
+		//System.out.println("station world position is " + stationN.getWorldPosition());
 		
-		stationSound.setLocation(stationN.getWorldPosition());
+		//print("" + stationN.getWorldPosition());
+		//print("" + stationSound);
+		//stationSound.setLocation(stationN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
 		setEarParameters(sm);
 	}
@@ -829,13 +873,12 @@ public class MyGame extends VariableFrameRateGame {
 	Vector3 avDir = stationN.getWorldForwardAxis();
 	// note - should get the camera's forward direction
 	// - avatar direction plus azimuth
-	audioMgr.getEar().setLocation(stationN.getWorldPosition());
-	audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
+	//audioMgr.getEar().setLocation(stationN.getWorldPosition());
+	//audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
 	}
 	
 	public void initAudio(SceneManager sm)
 	{ 
-		if(1!=0) return;
 		Configuration configuration = sm.getConfiguration();
 		String sfxPath = configuration.valueOf("assets.sounds.path");
 		String musicPath = configuration.valueOf("assets.music.path");
@@ -872,7 +915,7 @@ public class MyGame extends VariableFrameRateGame {
 			SceneNode stationN = sm.getSceneNode("stationNode");
 			stationSound.setLocation(stationN.getWorldPosition());
 			
-			setEarParameters(sm);
+			//setEarParameters(sm);
 			
 			stationSound.play();
 			/*
@@ -898,7 +941,9 @@ oceanSound.play();
 	}
 	
 	
-	
+	private int getThrottleSign() {
+		return playerController.getThrottleSign();
+	}
 	
 	private float[] toFloatArray(double[] arr)
 	{ 
