@@ -399,10 +399,12 @@ public class MyGame extends VariableFrameRateGame {
 		setupInputs();
 		setupNetworking();
 		
-		//initAudio(sm);
+		print("setup audio");
+		initAudio(sm);
+		print("setup physics");
 		setupPhysics();
 		setupPatrolNPC(eng,sm);
-	//	initAudio(sm);
+		//initAudio(sm);
 		print("setup done");
 	}
 	
@@ -423,7 +425,7 @@ public class MyGame extends VariableFrameRateGame {
 	}
 	
 	private void setupPatrolNPC(Engine eng, SceneManager sm) throws IOException{
-		//npc1 PatrolEnemy
+		print("setupPatrolNPC");
 		
 		patrolNPC = sm.getRootSceneNode().createChildSceneNode("PatrolEnemyNode");
 		
@@ -443,6 +445,7 @@ public class MyGame extends VariableFrameRateGame {
 		temptf = toDoubleArray(patrolNPC.getLocalTransform().toFloatArray());
 		PhysicsObject npcPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
 		patrolNPC.setPhysicsObject(npcPhysObj);
+		print("done setting up patrolNPC");
 	}
 
 	//same initialization as ship, with a few rotation controllers.
@@ -870,27 +873,31 @@ public class MyGame extends VariableFrameRateGame {
 	{ 
 		
 		SceneNode shipN = sm.getSceneNode("myShipNode");
-	Vector3 avDir = shipN.getWorldForwardAxis();
-	// note - should get the camera's forward direction
-	// - avatar direction plus azimuth
-	//audioMgr.getEar().setLocation(stationN.getWorldPosition());
-	//audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
-	audioMgr.getEar().setLocation(shipN.getWorldPosition());
-	audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,0,0));
+		Vector3 avDir = shipN.getWorldForwardAxis();
+		// note - should get the camera's forward direction
+		// - avatar direction plus azimuth
+		//audioMgr.getEar().setLocation(stationN.getWorldPosition());
+		//audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
+		print("aduioMgr: " + audioMgr);
+		audioMgr.getEar().setLocation(shipN.getWorldPosition());
+		audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,0,0));
 	}
 	
 	public void initAudio(SceneManager sm)
 	{ 
+		print("initAudio setup");
 		Configuration configuration = sm.getConfiguration();
 		String sfxPath = configuration.valueOf("assets.sounds.path");
 		String musicPath = configuration.valueOf("assets.music.path");
 		AudioResource theMusic, theFlag, theStation;
 		audioMgr = AudioManagerFactory.createAudioManager("ray.audio.joal.JOALAudioManager");
 		
+		print("audioMgr: " + audioMgr);
 		if (!audioMgr.initialize()) {
 			System.out.println("The Audio Manager failed to initialize :(");
 			return;
 		}
+		print("here though");
 		
 		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
 	//	theFlag = audioMgr.createAudioResource(sfxPath + "energy_station.mp3", AudioResourceType.AUDIO_SAMPLE);
