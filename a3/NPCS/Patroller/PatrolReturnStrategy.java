@@ -32,10 +32,17 @@ public class PatrolReturnStrategy implements PatrolStrategy {
 		Vector3 start = npc.getWorldPosition();
 		Vector3 end = target.getWorldPosition();
 		
+		float[] xyz = new float[3];
+		xyz[0] = end.x() - start.x();
+		xyz[1] = end.y() - start.y();
+		xyz[2] = end.z() - start.z();
+		npcPhys.setLinearVelocity(xyz);
+		
+		/*
 		float x,y,z;
 		x = power * (end.x() - start.x()) * deltaTime;
 		y = power * (end.y() - start.y()) * deltaTime;
 		z = power * (end.z() - start.z()) * deltaTime;
-		npcPhys.applyForce(x, y, z, 0, 0, 0);
+		npcPhys.applyForce(x, y, z, 0, 0, 0);*/
 	}
 }

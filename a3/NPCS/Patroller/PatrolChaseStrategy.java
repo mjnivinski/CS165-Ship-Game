@@ -3,6 +3,9 @@ package a3.NPCS.Patroller;
 import ray.physics.PhysicsObject;
 import ray.rage.scene.SceneNode;
 import ray.rml.Vector3;
+
+import java.util.Arrays;
+
 import a3.myGameEngine.VectorMath;
 
 public class PatrolChaseStrategy implements PatrolStrategy {
@@ -16,7 +19,6 @@ public class PatrolChaseStrategy implements PatrolStrategy {
 		npc = n;
 		target = t;
 		npcPhys = npc.getPhysicsObject();
-		System.out.println("PATROL CONSTRUCTOR CHASE ############## " + npc.getPhysicsObject());
 	}
 	
 	@Override
@@ -26,12 +28,20 @@ public class PatrolChaseStrategy implements PatrolStrategy {
 		Vector3 start = npc.getWorldPosition();
 		Vector3 end = target.getWorldPosition();
 		
-		System.out.println("distance: " + VectorMath.distance(start, end));
+		//System.out.println("distance: " + VectorMath.distance(start, end));
 		
-		float x,y,z;
+		
+		float[] xyz = new float[3];
+		xyz[0] = end.x() - start.x();
+		xyz[1] = end.y() - start.y();
+		xyz[2] = end.z() - start.z();
+		npcPhys.setLinearVelocity(xyz);
+		/*
 		x = power * (end.x() - start.x()) * deltaTime;
 		y = power * (end.y() - start.y()) * deltaTime;
 		z = power * (end.z() - start.z()) * deltaTime;
-		npcPhys.applyForce(x, y, z, 0, 0, 0);
+		npcPhys.applyForce(x, y, z, 0, 0, 0);*/
+		
+		//System.out.println("get linear velocity: " + Arrays.toString(npcPhys.getLinearVelocity()));
 	}
 }

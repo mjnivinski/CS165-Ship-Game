@@ -102,7 +102,7 @@ public class PatrolEnemy {
 			// TODO Auto-generated method stub
 			//System.out.println("return Action");
 			//check and see if we should change to PatrolPatrolStrategy
-			print("return action");
+			//print("return action");
 			if(!context.stillReturning()) {
 				print("returning complete");
 				returning = false;
@@ -154,7 +154,7 @@ public class PatrolEnemy {
 
 		@Override
 		protected boolean check() {
-			print("patrol Check");
+			//print("patrol Check");
 			// TODO Auto-generated method stub
 			
 			if(!chasing && !returning) return true;
@@ -169,7 +169,7 @@ public class PatrolEnemy {
 		protected BTStatus update(float arg0) {
 			// TODO Auto-generated method stub
 			//check if an enemy is within range to begin chasing
-			System.out.println("patrol Action");
+			//System.out.println("patrol Action");
 			
 			for(SceneNode target:possibleTargets) {
 				if(VectorMath.distance(target.getWorldPosition(), npc.getWorldPosition()) < enemyTether) {

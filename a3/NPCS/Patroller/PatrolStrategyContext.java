@@ -1,5 +1,7 @@
 package a3.NPCS.Patroller;
 
+import java.util.Arrays;
+
 import a3.myGameEngine.VectorMath;
 import ray.rage.scene.SceneNode;
 
@@ -35,16 +37,14 @@ public class PatrolStrategyContext {
 	
 	
 	public void chaseEnemy(SceneNode t) {
+		System.out.println("chase begins");
+		npc.getPhysicsObject().setLinearVelocity(new float[]{1,1,1});
 		strategy = new PatrolChaseStrategy(npc,t);
 		chaseTarget = t;
 	}
 	
 	public boolean stillChasing() {
 		if(VectorMath.distance(chaseTarget.getWorldPosition(), npc.getWorldPosition()) > enemyTether) {
-			System.out.println("distance: " + VectorMath.distance(chaseTarget.getWorldPosition(), npc.getWorldPosition()));
-			System.out.println("npc: " + npc.getWorldPosition());
-			System.out.println("chaseTarget: " + chaseTarget.getWorldPosition());
-			System.out.println("target it out of range");
 			return false;
 		}
 		return true;
@@ -66,6 +66,9 @@ public class PatrolStrategyContext {
 	}
 	
 	public void patrolHome() {
+		
+		//npc.getPhysicsObject().setLinearVelocity(new float[]{0,0,0});
+		//System.out.println("patrol home linear velocity: " +  Arrays.toString(npc.getPhysicsObject().getLinearVelocity()));
 		strategy = PPS;
 	}
 	

@@ -311,7 +311,7 @@ public class MyGame extends VariableFrameRateGame {
 			    	dropShipN.moveRight(4f);
 			    	dropShipN.attachObject(dropShipE);
 			    	
-			    	/*
+			    	
 			    	
 			    //Right Hand	
 			    	
@@ -361,7 +361,7 @@ public class MyGame extends VariableFrameRateGame {
 					    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
 					    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
 					    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
-			    	*/
+			    	
 		
 		camera.getParentNode().yaw(Degreef.createFrom(180));
 		camera.getParentNode().moveUp(2);
@@ -400,11 +400,10 @@ public class MyGame extends VariableFrameRateGame {
 		setupNetworking();
 		
 		print("setup audio");
-		initAudio(sm);
+		//initAudio(sm);
 		print("setup physics");
 		setupPhysics();
 		setupPatrolNPC(eng,sm);
-		//initAudio(sm);
 		print("setup done");
 	}
 	
@@ -671,7 +670,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 		npc1.update(engine.getElapsedTimeMillis());
 		
-	/*	
+	
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
@@ -681,7 +680,7 @@ public class MyGame extends VariableFrameRateGame {
     			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
 
     	flagPlatform.update();
-		*/
+		
 		
 		//System.out.println("station world position is " + stationN.getWorldPosition());
 		
@@ -689,7 +688,7 @@ public class MyGame extends VariableFrameRateGame {
 		//print("" + stationSound);
 		//stationSound.setLocation(stationN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
-		setEarParameters(sm);
+		//setEarParameters(sm);
 		
 		Matrix4 mat;
 		physicsEng.update(eng.getElapsedTimeMillis());
