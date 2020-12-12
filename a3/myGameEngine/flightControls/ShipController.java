@@ -151,6 +151,10 @@ public class ShipController {
 		position = position.add(moveVector);
 		ship.setLocalPosition(position);
 		
+		SceneNode tessN =
+				eng.getSceneManager().
+				getSceneNode("TessN");
+//		if (a3.MyGame.isTerrain == true)
 		updateVerticalPosition();
 	}
 	

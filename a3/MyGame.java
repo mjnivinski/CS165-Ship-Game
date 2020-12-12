@@ -67,6 +67,8 @@ public class MyGame extends VariableFrameRateGame {
 	private boolean isConnected;
 	private Vector<UUID> gameObjectsToRemove;
 	
+	public static boolean isTerrain;
+	
 	public IAudioManager audioMgr;
 	Sound backgroundMusic, flagUp, stationSound;
 	
@@ -104,6 +106,7 @@ public class MyGame extends VariableFrameRateGame {
 	flagOut controlTest5;
 	flagIn controlTest6;
 	flagOutExtended controlTest7;
+	destroyTerrain controlTest8;
 	
 	
 
@@ -213,6 +216,8 @@ public class MyGame extends VariableFrameRateGame {
 		this.eng = eng;
 		eMaker = new EntityMaker(eng,sm);
 		
+		
+		
 		print("Setup Scene");
 		setupPlanets(eng, sm);
 		setupShip(eng, sm);
@@ -269,6 +274,11 @@ public class MyGame extends VariableFrameRateGame {
 	    	tessE.setTextureTiling(55, 155);
 	    	tessE.setMultiplier(5);
 	    	
+	    	isTerrain = true;
+	    	
+	   // 	SceneNode tessN2 = sm.getRootSceneNode().
+			//    	createChildSceneNode("TessN");
+	    	
 	    	tessN.setLocalPosition(-15.0f, -25.0f, -45.0f);
 /*
 			Entity terrainCont = sm.createEntity("terrainCont", "TerrainContainerb.obj");
@@ -317,7 +327,7 @@ public class MyGame extends VariableFrameRateGame {
 			    	
 			    	
 			    //Right Hand	
-			    	
+			 /*   	
 			    	SkeletalEntity rightHand =
 							sm.createSkeletalEntity("rightHandAv", "MyFettHandVer5.rkm", "MyFettHandVer5.rks");
 			    	
@@ -364,7 +374,7 @@ public class MyGame extends VariableFrameRateGame {
 					    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
 					    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
 					    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
-			    	
+			    	*/
 		
 		camera.getParentNode().yaw(Degreef.createFrom(180));
 		camera.getParentNode().moveUp(2);
@@ -403,7 +413,7 @@ public class MyGame extends VariableFrameRateGame {
 		setupNetworking();
 		
 		print("setup audio");
-		//initAudio(sm);
+		initAudio(sm);
 		print("setup physics");
 		setupPhysics();
 		setupPatrolNPC(eng,sm);
@@ -606,6 +616,7 @@ public class MyGame extends VariableFrameRateGame {
 		controlTest4 = new throttleDownReturn();
 		controlTest5 = new flagOut();
 		controlTest6 = new flagIn();
+		controlTest8 = new destroyTerrain();
 		
 //animationThrottleUp()
 		
@@ -623,6 +634,8 @@ public class MyGame extends VariableFrameRateGame {
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.I, controlTest5,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.J, controlTest6,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.U, controlTest8,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
 		}
@@ -674,15 +687,15 @@ public class MyGame extends VariableFrameRateGame {
 		npc1.update(engine.getElapsedTimeMillis());
 		
 	
-		SkeletalEntity rightHand =
-	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	//	SkeletalEntity rightHand =
+	//(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
-		rightHand.update();
+	//	rightHand.update();
 		
-   	SkeletalEntity flagPlatform =
-    		(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
+  // 	SkeletalEntity flagPlatform =
+  //  		(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
 
-   	flagPlatform.update();
+  // 	flagPlatform.update();
 		
 		
 		//System.out.println("station world position is " + stationN.getWorldPosition());
@@ -829,6 +842,21 @@ public class MyGame extends VariableFrameRateGame {
 
 	}
 	
+	
+	
+	private class destroyTerrain extends AbstractInputAction {
+
+		@Override
+		public void performAction(float arg0, Event e) {
+			
+			SceneNode tessN = eng.getSceneManager().
+			getSceneNode("TessN");
+			
+			//tessN.setLocalPosition(8000.0f, 8000.0f, 8000.0f);
+			tessN.moveForward(8000);
+			
+		}
+	}
 
 	
 	private class throttleUp extends AbstractInputAction {
@@ -923,7 +951,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 
 		
-		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 10, true);
+		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 6, true);
 	//	flagUp = new Sound(theFlag, SoundType.SOUND_EFFECT, 25, false);
 		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 400, true);
 		
