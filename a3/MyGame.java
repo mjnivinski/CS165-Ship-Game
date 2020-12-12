@@ -396,7 +396,7 @@ public class MyGame extends VariableFrameRateGame {
 
 		this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
 
-		setupInputs();
+		
 		setupNetworking();
 		
 		print("setup audio");
@@ -404,6 +404,7 @@ public class MyGame extends VariableFrameRateGame {
 		print("setup physics");
 		setupPhysics();
 		setupPatrolNPC(eng,sm);
+		setupInputs(sm);
 		print("setup done");
 	}
 	
@@ -561,10 +562,19 @@ public class MyGame extends VariableFrameRateGame {
 	}
 	
 	private void setupPhysics() {
+		System.out.println("setupPhysics");
 		String engine = "ray.physics.JBullet.JBulletPhysicsEngine";
 		
 		physicsEng = PhysicsEngineFactory.createPhysicsEngine(engine);
 		physicsEng.initSystem();
+		
+		float mass = 1.0f;
+		float up[] = {0,1,0};
+		double[] temptf;
+		
+		temptf = toDoubleArray(shipN.getLocalTransform().toFloatArray());
+		PhysicsObject shipPhysicsObject = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
+		shipN.setPhysicsObject(shipPhysicsObject);
 		
 		/*
 		float mass = 1.0f;
@@ -579,9 +589,9 @@ public class MyGame extends VariableFrameRateGame {
 	}
 
 	//seperate methods for keyboards/gamepads
-	protected void setupInputs() {
+	protected void setupInputs(SceneManager sm) throws IOException {
 		im = new GenericInputManager();
-		playerController = new FlightController(this, camera, camera.getParentSceneNode(), shipN, im);
+		playerController = new FlightController(this, camera, camera.getParentSceneNode(), shipN, im, sm);
 		
 		setupAdditionalTestControls(im);
 		
@@ -668,7 +678,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 		playerController.update();
 		
-		npc1.update(engine.getElapsedTimeMillis());
+		//npc1.update(engine.getElapsedTimeMillis());
 		
 	
 		SkeletalEntity rightHand =

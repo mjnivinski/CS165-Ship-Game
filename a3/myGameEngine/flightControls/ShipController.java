@@ -1,7 +1,10 @@
 package a3.myGameEngine.flightControls;
 
+import a3.SceneCreation.NodeMaker;
 import a3.myGameEngine.SimpleMath;
+import ray.physics.PhysicsObject;
 import ray.rage.Engine;
+import ray.rage.scene.SceneManager;
 import ray.rage.scene.SceneNode;
 import ray.rml.Degreef;
 import ray.rml.Vector3;
@@ -23,6 +26,7 @@ public class ShipController {
 	private Engine eng;
 	private FlightController FC;
 	private SceneNode ship;
+	private PhysicsObject shipPhys;
 	
 	private float pitchRate = 150f;
 	private float pitchAccel = 5f;
@@ -43,6 +47,11 @@ public class ShipController {
 	private Vector3 thrustVector;
 	private float currentSpeed;
 	
+	boolean firing = false;
+	float fireRate = 1.0f;
+	
+	SceneNode[] lasers = new SceneNode[4];
+	
 	
 	//private float pitch, leftVertical, pitchForward, pitchBackward;
 	private float pitch, pitchForward, pitchBackward, controllerPitch;
@@ -53,13 +62,17 @@ public class ShipController {
 	
 	private float throttle, throttleUp, throttleDown, controllerThrottle;
 	
-	public ShipController(Engine e, FlightController f, SceneNode ship) {
+	public ShipController(Engine e, FlightController f, SceneNode ship, SceneManager sm) throws IOException {
 		
 		setupJavascript();
 		
 		eng = e;
 		FC = f;
 		this.ship = ship;
+		
+		lasers = new NodeMaker(e,sm).makeLasers();		
+		
+		this.shipPhys = this.ship.getPhysicsObject();
 		
 		setupParams();
 	}
@@ -131,10 +144,21 @@ public class ShipController {
 		throttle();
 		
 		updatePosition();
+		
+		shooting();
 	}
 	
 	private void updatePosition() {
 		
+		Vector3 direction = ship.getWorldForwardAxis();
+		direction = direction.mult(shipSpeed * throttle);
+		
+		float[] velocities = new float[] {direction.x(),direction.y(),direction.z()};
+		shipPhys.setLinearVelocity(velocities);
+		
+		//use physics i guess
+		
+		/*
 		//thrust vector is made based on throttle value and ships forward axis
 		Vector3 forward = ship.getWorldForwardAxis();
 		thrustVector = Vector3f.createFrom(forward.x(),forward.y(),forward.z()).mult(throttle * shipSpeed);
@@ -148,7 +172,7 @@ public class ShipController {
 		//ships position is updated
 		Vector3 position = ship.getLocalPosition();
 		position = position.add(moveVector);
-		ship.setLocalPosition(position);
+		ship.setLocalPosition(position);*/
 	}
 	
 	private void pitch() {
@@ -212,6 +236,31 @@ public class ShipController {
 		return value;
 	}
 	
+	int shootCycle = 0;
+	float timeSinceLastShot = 0;
+	private void shooting() {
+		timeSinceLastShot += deltaTime;
+		if(firing) {
+			if(timeSinceLastShot > fireRate) shoot();
+		}
+	}
+	
+	private void shoot() {
+		timeSinceLastShot = 0;
+		
+		if(shootCycle == 0) {
+			System.out.println("pew");
+			shootCycle=1;
+		}
+		else if(shootCycle == 1) {
+			System.out.println("pow");
+			shootCycle=0;
+		}
+		
+		//System.out.println("pew");
+		//Shoot the stuff
+	}
+	
 	public void setControllerThrottle(float v) { controllerThrottle = v;}
 	public void setControllerRoll(float v) { controllerRoll = v;}
 	public void setControllerPitch(float v) { controllerPitch = v;}
@@ -229,7 +278,9 @@ public class ShipController {
 	public float getThrottle() { return throttle; }
 	public float getRoll() { return roll; }	
 	public float getPitch() { return pitch; }	
-	public float getYaw() { return yaw; }	
+	public float getYaw() { return yaw; }
+	
+	public void setFiring(boolean f) { firing = f; }
 	
 	
 	private void print(String s) {
