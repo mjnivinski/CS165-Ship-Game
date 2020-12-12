@@ -263,23 +263,26 @@ public class MyGame extends VariableFrameRateGame {
 	    	// to move it, note that X and Z must BOTH be positive OR negative
 	    	tessN.translate(Vector3f.createFrom(-6.2f, -2.2f, 3.2f));
 	    	// tessN.yaw(Degreef.createFrom(37.2f));
-	    	tessN.scale(10, 144, 35);
+	    	tessN.scale(955, 956, 855);
 	    	tessE.setHeightMap(this.getEngine(), "scribble.jpg");
 	    	tessE.setTexture(this.getEngine(), "carpet.png");
+	    	tessE.setTextureTiling(55, 155);
+	    	tessE.setMultiplier(5);
 	    	
-	    	tessN.setLocalPosition(-15.0f, 0.0f, -45.0f);
-
+	    	tessN.setLocalPosition(-15.0f, -25.0f, -45.0f);
+/*
 			Entity terrainCont = sm.createEntity("terrainCont", "TerrainContainerb.obj");
 	    	terrainCont.setPrimitive(Primitive.TRIANGLES);
 	    	terrainContN = sm.getRootSceneNode().createChildSceneNode(terrainCont.getName() + "Node");
 	    	terrainContN.setLocalPosition(-15.0f, 0.0f, -40.0f);
-	    	terrainContN.setLocalScale(.062f, .1f, .155f);
+	    	terrainContN.setLocalScale(10.062f, 10.1f, 10.155f);
 	    	terrainContN.moveBackward(7.0f);
 	    	terrainContN.moveUp(.1f);
 	    	terrainContN.attachObject(terrainCont);
 	    	
-	    	//terrainContN.attachChild(tessN);
 	    	
+	    	terrainContN.attachChild(tessN);
+	    	*/
 	    	
 	    	Entity stationE = sm.createEntity("station", "SpaceStationAlpha-b.obj");
 	    	stationE.setPrimitive(Primitive.TRIANGLES);
@@ -453,7 +456,7 @@ public class MyGame extends VariableFrameRateGame {
 
 	//same initialization as ship, with a few rotation controllers.
 	private void setupPlanets(Engine eng, SceneManager sm) throws IOException {
-		
+		/*
 		for(int i=0; i<earthPlanets.length; i++) {
 			earthPlanets[i] = setupPlanet(eng,sm,"earthPlanet" + i, "earth-day.jpeg");
 			earthPlanets[i].setLocalPosition(Vector3f.createFrom(0,planetHeight,0));
@@ -471,7 +474,7 @@ public class MyGame extends VariableFrameRateGame {
 		earthPlanets[9].setLocalPosition(0,planetHeight,-40);
 		earthPlanets[10].setLocalPosition(-15,planetHeight,-40);
 		earthPlanets[11].setLocalPosition(15,planetHeight,-40);
-		earthPlanets[12].setLocalPosition(-10,planetHeight,-15);
+		earthPlanets[12].setLocalPosition(-10,planetHeight,-15);*/
 	}
 	
 	private SceneNode setupPlanet(Engine eng, SceneManager sm, String name, String texName) throws IOException {
@@ -686,10 +689,10 @@ public class MyGame extends VariableFrameRateGame {
 		
 		rightHand.update();
 		
-    	SkeletalEntity flagPlatform =
-    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
+   	SkeletalEntity flagPlatform =
+    		(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
 
-    	flagPlatform.update();
+   	flagPlatform.update();
 		
 		
 		//System.out.println("station world position is " + stationN.getWorldPosition());
@@ -953,6 +956,8 @@ public class MyGame extends VariableFrameRateGame {
 			stationSound.play();
 
 	}
+	
+
 	
 	
 	private int getThrottleSign() {

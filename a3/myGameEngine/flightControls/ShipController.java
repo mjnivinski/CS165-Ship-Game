@@ -6,6 +6,7 @@ import ray.physics.PhysicsObject;
 import ray.rage.Engine;
 import ray.rage.scene.SceneManager;
 import ray.rage.scene.SceneNode;
+import ray.rage.scene.Tessellation;
 import ray.rml.Degreef;
 import ray.rml.Vector3;
 import ray.rml.Vector3f;
@@ -172,7 +173,38 @@ public class ShipController {
 		//ships position is updated
 		Vector3 position = ship.getLocalPosition();
 		position = position.add(moveVector);
+
 		ship.setLocalPosition(position);*/
+
+		ship.setLocalPosition(position);
+		
+		updateVerticalPosition();
+	}
+	
+	public void updateVerticalPosition()
+	{ SceneNode shipN =
+	eng.getSceneManager().
+	getSceneNode("myShipNode");
+	SceneNode tessN =
+	eng.getSceneManager().
+	getSceneNode("TessN");
+	Tessellation tessE = ((Tessellation) tessN.getAttachedObject("tessE"));
+	// Figure out Avatar's position relative to plane
+	Vector3 worldAvatarPosition = shipN.getWorldPosition();
+	Vector3 localAvatarPosition = shipN.getLocalPosition();
+	// use avatar World coordinates to get coordinates for height
+	Vector3 newAvatarPosition = Vector3f.createFrom(
+	 // Keep the X coordinate
+	 localAvatarPosition.x(),
+	 // The Y coordinate is the varying height
+	 (tessE.getWorldHeight(
+	worldAvatarPosition.x(),
+	worldAvatarPosition.z())+12f),
+	 //Keep the Z coordinate
+	 localAvatarPosition.z()
+	);
+	// use avatar Local coordinates to set position, including height
+	shipN.setLocalPosition(newAvatarPosition);
 	}
 	
 	private void pitch() {
