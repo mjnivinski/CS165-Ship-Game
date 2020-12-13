@@ -144,7 +144,7 @@ public class MyGame extends VariableFrameRateGame {
 		Game game = new MyGame(args[0], Integer.parseInt(args[1]));
 		//Game game = new MyGame("yes", 5);
 		
-		FSEM();
+		//FSEM();
 		
 		try {
 			game.startup();
@@ -196,7 +196,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 	}
 	
-	static int fullScreen;
+	static int fullScreen = 1;
 	private static void FSEM() {
 		
 		fullScreen = JOptionPane.showConfirmDialog(null,  "Full Screen?", "choose one", JOptionPane.YES_NO_OPTION);
@@ -437,7 +437,8 @@ public class MyGame extends VariableFrameRateGame {
 		setupNetworking();
 		
 		print("setup audio");
-		initAudio(sm);
+		//TODO
+		//initAudio(sm);
 		print("setup physics");
 		setupPhysics();
 		setupPatrolNPC(eng,sm);
@@ -533,6 +534,7 @@ public class MyGame extends VariableFrameRateGame {
 		return planetN;
 	}
 	
+	/*
 	private void setupFloor() throws IOException {
 		Engine eng = getEngine();
 		SceneManager sm = eng.getSceneManager();
@@ -543,7 +545,9 @@ public class MyGame extends VariableFrameRateGame {
 		floorN.setLocalPosition(0,-1,0);
 		floorN.setLocalScale(Vector3f.createFrom(100,100,100));
 	}
+	*/
 	
+	/*
 	private ManualObject floor(Engine eng, SceneManager sm) throws IOException {
 		ManualObject floor = sm.createManualObject("floor");
 		ManualObjectSection floorSec = floor.createManualSection("floorSec");
@@ -596,7 +600,7 @@ public class MyGame extends VariableFrameRateGame {
 		floor.setRenderState(faceState);
 		
 		return floor;
-	}
+	}*/
 	
 	private void setupPhysics() {
 		System.out.println("setupPhysics");

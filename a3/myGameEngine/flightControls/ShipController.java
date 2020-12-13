@@ -313,12 +313,16 @@ public class ShipController {
 		}
 	}
 	
-	private float laserSpeed = 400;
+	private float laserSpeed = 50;
 	private void shoot() {
 		timeSinceLastShot = 0;
 		
 		PhysicsObject p1 = lasers[shootCycle].getPhysicsObject();
+		lasers[shootCycle].lookAt(ship);
+		lasers[shootCycle].yaw(Degreef.createFrom(180));
 		PhysicsObject p2 = lasers[shootCycle+1].getPhysicsObject();
+		lasers[shootCycle+1].lookAt(ship);
+		//lasers[shootCycle+1].yaw(Degreef.createFrom(180));
 		
 		Vector3 up = ship.getWorldUpAxis();
 		Vector3 right = ship.getWorldRightAxis().mult(2);
@@ -337,10 +341,10 @@ public class ShipController {
 		d2[14] = position.z() - right.z();
 		
 		p1.setTransform(d1);
-		p2.setTransform(d2);
+		//p2.setTransform(d2);
 		
 		p1.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
-		p2.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
+		//p2.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
 		
 		shootCycle += 2;
 		shootCycle%=(lasers.length);

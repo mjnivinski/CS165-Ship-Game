@@ -48,21 +48,12 @@ public class NodeMaker {
 		
 		SceneNode ln = sm.getRootSceneNode().createChildSceneNode(name);
 		
-		Entity le = sm.createEntity(name + "laser", "sphere.obj");
+		Entity le = sm.createEntity(name + "laser", "LaserBolt.obj");
 		le.setPrimitive(Primitive.TRIANGLES);
-		
-		Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
-		
-		Texture tex = eng.getTextureManager().getAssetByPath("earth-day.jpeg");
-		
-		TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
-		texState.setTexture(tex);
-		le.setRenderState(texState);
-		le.setMaterial(mat);
 		
 		ln.attachObject(le);
 		
-		float scale = 0.5f;
+		float scale = 1f;
 		
 		ln.setLocalScale(Vector3f.createFrom(scale,scale,scale));
 		
