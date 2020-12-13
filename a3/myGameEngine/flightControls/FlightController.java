@@ -1,5 +1,6 @@
 package a3.myGameEngine.flightControls;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import a3.MyGame;
@@ -11,7 +12,9 @@ import ray.input.InputManager;
 import ray.input.action.AbstractInputAction;
 import ray.rage.Engine;
 import ray.rage.scene.Camera;
+import ray.rage.scene.SceneManager;
 import ray.rage.scene.SceneNode;
+import ray.rml.Degreef;
 import ray.rml.Vector3;
 import ray.rml.Vector3f;
 
@@ -19,6 +22,7 @@ public class FlightController {
 	
 	//comment
 	private MyGame game;
+	private SceneManager sm;
 	private Engine eng;
 	//private DolphinStateMachine machine;
 	private Camera camera;
@@ -36,6 +40,8 @@ public class FlightController {
 	ControllerRoll CR;
 	ControllerYaw CY;
 	ControllerPitch CP;
+	
+	FireWeapon FW;
 	
 	//LeftHorizontal LH;
 	//LeftVertical LV;
@@ -56,34 +62,31 @@ public class FlightController {
 	ThrottleUp throttleUp;
 	ThrottleDown throttleDown;
 	
+	KeyboardFireWeapon KFW;
+	
 	//Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0.4f, -0.5f);
 	Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0f, -1.7f);
 	
 	float deltaTime;
 	
+	Vector3 basePosition;
 	
-	public FlightController(MyGame g, Camera c, SceneNode cN, SceneNode t, InputManager im) {
+	
+	public FlightController(MyGame g, Camera c, SceneNode cN, SceneNode t, InputManager im, SceneManager sm) throws IOException {
 		print("ch-ch-ch-changes");
 		game = g;
 		camera = c;
 		cameraN = cN;
 		eng = game.getEngine();
-		
-		target = t;
+		this.sm = sm;
+		target = t;//
 		setupInput(im);
 		
-		shipController = new ShipController(eng, this, target);
+		shipController = new ShipController(eng, this, target, sm);
 		
 		cameraN.setLocalPosition(offset);
-		//cameraN.setLocalPosition(0,0,0);
-		
-		
-		camera.setMode('c');
-		
-		//Vector3f v = (Vector3f) camera.getParentNode().getWorldPosition();
 		
 		camera.setPo((Vector3f) cameraN.getWorldPosition());
-		
 		
 		camera.setFd((Vector3f) cameraN.getWorldForwardAxis().normalize());
 		camera.setUp((Vector3f) cameraN.getWorldUpAxis().normalize());
@@ -91,6 +94,7 @@ public class FlightController {
 		rV = (Vector3f) Vector3f.createFrom(-1 * rV.x(), rV.y(), rV.z());
 		camera.setRt((Vector3f) rV.normalize());
 		
+		basePosition = cameraN.getLocalPosition();
 	}
 	
 	private void setupInput(InputManager im) {
@@ -119,6 +123,7 @@ public class FlightController {
 		CR = new ControllerRoll();
 		CY = new ControllerYaw();
 		CP = new ControllerPitch();
+		FW = new FireWeapon();
 		
 		//LH = new LeftHorizontal();
 		//LV = new LeftVertical();
@@ -138,6 +143,9 @@ public class FlightController {
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
 		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.RY, CP,
+				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
+		
+		im.associateAction(controllerName, net.java.games.input.Component.Identifier.Axis.Z, FW,
 				InputManager.INPUT_ACTION_TYPE.REPEAT_WHILE_DOWN);
 		
 		/*
@@ -177,6 +185,7 @@ public class FlightController {
 		throttleDown = new ThrottleDown();
 		yawLeft = new YawLeft();
 		yawRight = new YawRight();
+		KFW = new KeyboardFireWeapon();
 		
 		for (int i = 0; i < keyboards.size(); i++) {
 			
@@ -203,6 +212,9 @@ public class FlightController {
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.D, yawRight,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.SPACE, KFW,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 		}
 	}
@@ -299,6 +311,7 @@ public class FlightController {
 		}
 	}
 	
+	/*
 	private class RightBumper extends AbstractInputAction {
 		@Override
 		public void performAction(float arg0, Event e) {
@@ -311,7 +324,7 @@ public class FlightController {
 		public void performAction(float arg0, Event e) {
 			//shipController.setLeftBumper(e.getValue());
 		}
-	}
+	}*/
 	
 	/*****************************************************************
 	 * KEYBOARD SECTION												 *
@@ -376,6 +389,28 @@ public class FlightController {
 		}
 	}
 	
+	private class FireWeapon extends AbstractInputAction {
+		
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			if( e.getValue() < -0.1f) shipController.setFiring(true);
+			else shipController.setFiring(false);
+		}
+	}
+	
+	private class KeyboardFireWeapon extends AbstractInputAction {
+		
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			//if(e.getValue())
+			//print("Keyboard: " + e.getValue());
+			if(e.getValue() == 1) shipController.setFiring(true);
+			else shipController.setFiring(false);
+		}
+	}
+	
 	
 	float timer = 0;
 	
@@ -390,15 +425,16 @@ public class FlightController {
 		cameraN.setLocalPosition(cameraN.getLocalPosition());
 		camera.setPo((Vector3f) cameraN.getWorldPosition());
 		
-		//camera.setPo((Vector3f) target.getWorldPosition());
+		//do not uncomment camera.setPo((Vector3f) target.getWorldPosition());
 		
 		cameraThrottleShift();
 		cameraTurnShift();
-		
 	}
 	
+	
 	private void cameraThrottleShift() {
-		float throttleDampen = 0.05f;
+		
+		float throttleDampen = 0.025f;
 		
 		Vector3 forward = camera.getFd();
 		
@@ -413,7 +449,9 @@ public class FlightController {
 		float pitchRatio = 0.1f;
 		float yawRatio = 0.1f;
 		
-		Vector3 position = cameraN.getLocalPosition();
+		
+		
+		
 		
 		//the ship rolls the camera shifts slightly in the opposite direction
 		//negative left. positive right
@@ -434,13 +472,7 @@ public class FlightController {
 		Vector3 yawVector = cameraN.getLocalRightAxis().mult(shipController.getYaw()).mult(yawRatio);
 		
 		//Add all the vectors together
-		cameraN.setLocalPosition(position.add(rollVector).add(pitchVector).add(yawVector));
-		camera.setPo((Vector3f) cameraN.getWorldPosition());
-		
-		//reset cameraN position after each update
-		cameraN.setLocalPosition(position);
-		
-		//camera.setPo((Vector3f) position);
+		cameraN.setLocalPosition(basePosition.add(rollVector).add(pitchVector).add(yawVector));
 	}
 	
 	public int getThrottleSign() {

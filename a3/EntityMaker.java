@@ -26,7 +26,7 @@ public class EntityMaker {
 		
 		Entity planet = sm.createEntity(name, "sphere.obj");
 		planet.setPrimitive(Primitive.TRIANGLES);
-		planet.setPrimitive(Primitive.TRIANGLES);
+		//planet.setPrimitive(Primitive.TRIANGLES);
 		
 		Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
 			
@@ -39,6 +39,22 @@ public class EntityMaker {
 			
 			
 		return planet;
+	}
+	
+	public Entity throttleIndicator(String name) throws IOException {
+		Entity ti = sm.createEntity(name, "");
+		ti.setPrimitive(Primitive.TRIANGLES);
+		
+		Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
+		
+		Texture tex = eng.getTextureManager().getAssetByPath("throttletexture");
+		
+		TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
+		texState.setTexture(tex);
+		ti.setRenderState(texState);
+		ti.setMaterial(mat);
+		
+		return ti;
 	}
 	
 	
