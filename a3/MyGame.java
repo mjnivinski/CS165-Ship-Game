@@ -271,175 +271,13 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 	    	sm.setActiveSkyBox(sky);
 	    	
-	    	Tessellation tessE = sm.createTessellation("tessE", 7);
-	    	// subdivisions per patch: min=0, try up to 32
-	    	tessE.setSubdivisions(8f);
-	    	SceneNode tessN =
-	    	sm.getRootSceneNode().
-		    	createChildSceneNode("TessN");
-	    	tessN.attachObject(tessE);
-	    	// to move it, note that X and Z must BOTH be positive OR negative
-	    	tessN.translate(Vector3f.createFrom(-6.2f, -2.2f, 3.2f));
-	    	// tessN.yaw(Degreef.createFrom(37.2f));
-	    	tessN.scale(955, 956, 855);
-	    	tessE.setHeightMap(this.getEngine(), "scribble.jpg");
-	    	tessE.setTexture(this.getEngine(), "carpet.png");
-	    	tessE.setTextureTiling(55, 155);
-	    	tessE.setMultiplier(5);
-	    	
-	    	isTerrain = true;
-	    	
-	   // 	SceneNode tessN2 = sm.getRootSceneNode().
-			//    	createChildSceneNode("TessN");
-	    	
-	    	tessN.setLocalPosition(-15.0f, -25.0f, -45.0f);
-/*
-			Entity terrainCont = sm.createEntity("terrainCont", "TerrainContainerb.obj");
-	    	terrainCont.setPrimitive(Primitive.TRIANGLES);
-	    	terrainContN = sm.getRootSceneNode().createChildSceneNode(terrainCont.getName() + "Node");
-	    	terrainContN.setLocalPosition(-15.0f, 0.0f, -40.0f);
-	    	terrainContN.setLocalScale(10.062f, 10.1f, 10.155f);
-	    	terrainContN.moveBackward(7.0f);
-	    	terrainContN.moveUp(.1f);
-	    	terrainContN.attachObject(terrainCont);
-	    	
-	    	
-	    	terrainContN.attachChild(tessN);
-	    	*/
-	    	
-	    	Entity stationE = sm.createEntity("station", "SpaceStationAlpha-b.obj");
-	    	stationE.setPrimitive(Primitive.TRIANGLES);
-			stationN = sm.getRootSceneNode().createChildSceneNode("stationNode");
-			stationN.moveForward(7.0f);
-			stationN.moveUp(.1f);
-			stationN.moveLeft(4f);
-			stationN.attachObject(stationE);
-			
-			
-			RotationController rc2 =
-			    	new RotationController(Vector3f.createUnitVectorY(), .02f);
-			    	rc2.addNode(stationN);
-			    	sm.addController(rc2);
-		
-			    	Entity enemyCraftE = sm.createEntity("enemyCraft", "EnemyCraftVer2-b.obj");
-			    	enemyCraftE.setPrimitive(Primitive.TRIANGLES);
-			    	enemyCraftN = sm.getRootSceneNode().createChildSceneNode(enemyCraftE.getName() + "Node");
-			    	enemyCraftN.moveBackward(7.0f);
-			    	enemyCraftN.moveDown(.1f);
-			    	enemyCraftN.moveRight(4f);
-			    	enemyCraftN.attachObject(enemyCraftE);
-					
-			    	Entity dropShipE = sm.createEntity("dropShip", "DropShipVer4.obj");
-			    	dropShipE.setPrimitive(Primitive.TRIANGLES);
-			    	dropShipN = sm.getRootSceneNode().createChildSceneNode(dropShipE.getName() + "Node");
-			    	dropShipN.moveBackward(7.0f);
-			    	dropShipN.moveDown(8f);
-			    	dropShipN.moveRight(4f);
-			    	dropShipN.attachObject(dropShipE);
+			    	createAllNodes(sm);
+			    	
+			   // 	createAnimations(sm);
 			    	
 			    	
-			    	Entity laserBoltE = sm.createEntity("laserBolt", "LaserBolt.obj");
-			    	laserBoltE.setPrimitive(Primitive.TRIANGLES);
-			    	laserBoltN = sm.getRootSceneNode().createChildSceneNode(laserBoltE.getName() + "Node");
-			    	laserBoltN.moveForward(7.0f);
-			    	laserBoltN.moveDown(8f);
-			    	laserBoltN.moveRight(4f);
-			    	laserBoltN.attachObject(laserBoltE);
-			    	
-			       	Entity SecondShipCockputE = sm.createEntity("SecondShip", "EnemyCraftCockpitVer1.obj");
-			       	SecondShipCockputE.setPrimitive(Primitive.TRIANGLES);
-			       	SecondShipN = sm.getRootSceneNode().createChildSceneNode(SecondShipCockputE.getName() + "Node");
-			       	SecondShipN.moveForward(7.0f);
-			       	SecondShipN.moveDown(8f);
-			       	SecondShipN.moveRight(4f);
-			       	SecondShipN.attachObject(SecondShipCockputE);
-			    	
-			    	//
-			    	
-			    	
-			    	
-			    //Right Hand	
-			 /*   	
-			    	SkeletalEntity rightHand =
-							sm.createSkeletalEntity("rightHandAv", "MyFettHandVer5.rkm", "MyFettHandVer5.rks");
-			    	
-			    	Texture tex6 = sm.getTextureManager().getAssetByPath("FettArmVer5.png");
-			    	TextureState tstate6 = (TextureState) sm.getRenderSystem()
-			    	.createRenderState(RenderState.Type.TEXTURE);
-			    	tstate6.setTexture(tex6);
-			   	rightHand.setRenderState(tstate6);
-			   	
-			    	SceneNode rightHandN =
-			    			sm.getRootSceneNode().createChildSceneNode("rightHandNode");
-			    			rightHandN.attachObject(rightHand);
-			    			rightHandN.scale(0.1f, 0.1f, 0.1f);
-			    			rightHandN.translate(0, 0.5f, 0);
-			    			
-			    		
-			    			
-			    			rightHand.loadAnimation("throttleUpAnimation", "MyFettHandVer5_Thrust_Up.rka");
-			    			rightHand.loadAnimation("throttleUpReturnAnimation", "MyFettHandVer5_Thrust_Up_Return.rka");
-			    			rightHand.loadAnimation("throttleDownAnimation", "MyFettHandVer5_Thrust_Down.rka");
-			    			rightHand.loadAnimation("throttleDownReturnAnimation", "MyFettHandVer5_Thrust_Down_Return.rka");
-			    			
-			    			
-			    //FlagPlatform
-			    			
-					    	SkeletalEntity flagPlatform =
-									sm.createSkeletalEntity("flagAv", "FlagIndicatorVer2.rkm", "FlagIndicatorVer2.rks");
-					    	
-					    	Texture tex7 = sm.getTextureManager().getAssetByPath("FlagshipIndicatorVer2.png");
-					    	TextureState tstate7 = (TextureState) sm.getRenderSystem()
-					    	.createRenderState(RenderState.Type.TEXTURE);
-					    	tstate6.setTexture(tex7);
-					    	flagPlatform.setRenderState(tstate7);
-					    	
-					    	SceneNode flagPlatformN =
-					    			sm.getRootSceneNode().createChildSceneNode("FlagNode");	
-					    	flagPlatformN.attachObject(flagPlatform);
-					    	flagPlatformN.scale(0.1f, 0.1f, 0.1f);
-					    	flagPlatformN.translate(0, 0.5f, 0);
-					    	
-					    	flagPlatformN.moveBackward(1f);
-					    	
-					    			
-					    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
-					    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
-					    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
-			    	*/
-		
-		camera.getParentNode().moveUp(2);
-		
-		shipN.setLocalPosition(0,2,-4);
-		shipN.attachChild(camera.getParentNode());
-		camera.getParentNode().setLocalPosition(0,0,0);
-		print("ship position: " + shipN.getWorldPosition());
-		
-		//print("" + camera.getParentNode().getWorldPosition());
 
-		//setupPyramid(eng, sm);
 
-		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
-
-		Light plight = sm.createLight("testLamp1", Light.Type.POINT);
-		plight.setAmbient(new Color(.3f, .3f, .3f));
-		plight.setDiffuse(new Color(.7f, .7f, .7f));
-		plight.setSpecular(new Color(1.0f, 1.0f, 1.0f));
-		plight.setRange(5f);
-
-		SceneNode plightNode = sm.getRootSceneNode().createChildSceneNode("plightNode");
-		plightNode.attachObject(plight);
-
-		//headlight goes in ship
-		Light headlight = sm.createLight("headlight", Light.Type.SPOT);
-		headlight.setConeCutoffAngle(Degreef.createFrom(10));
-		headlight.setSpecular(Color.white);
-
-		SceneNode headlightNode = sm.getRootSceneNode().createChildSceneNode("headlightNode");
-		headlightNode.attachObject(headlight);
-
-		//this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
-		shipN.attachChild(headlightNode);
 
 		
 		setupNetworking();
@@ -454,6 +292,153 @@ public class MyGame extends VariableFrameRateGame {
 		print("setup done");
 	}
 	
+	private void createAnimations(SceneManager sm) throws IOException {
+ 
+
+    //Right Hand	
+  	
+    	SkeletalEntity rightHand =
+				sm.createSkeletalEntity("rightHandAv", "MyFettHandVer5.rkm", "MyFettHandVer5.rks");
+    	
+    	Texture tex6 = sm.getTextureManager().getAssetByPath("FettArmVer5.png");
+    	TextureState tstate6 = (TextureState) sm.getRenderSystem()
+    	.createRenderState(RenderState.Type.TEXTURE);
+    	tstate6.setTexture(tex6);
+   	rightHand.setRenderState(tstate6);
+   	
+    	SceneNode rightHandN =
+    			sm.getRootSceneNode().createChildSceneNode("rightHandNode");
+    			rightHandN.attachObject(rightHand);
+    			rightHandN.scale(0.1f, 0.1f, 0.1f);
+    			rightHandN.translate(0, 0.5f, 0);
+    			
+    		
+    			
+    			rightHand.loadAnimation("throttleUpAnimation", "MyFettHandVer5_Thrust_Up.rka");
+    			rightHand.loadAnimation("throttleUpReturnAnimation", "MyFettHandVer5_Thrust_Up_Return.rka");
+    			rightHand.loadAnimation("throttleDownAnimation", "MyFettHandVer5_Thrust_Down.rka");
+    			rightHand.loadAnimation("throttleDownReturnAnimation", "MyFettHandVer5_Thrust_Down_Return.rka");
+    			
+    			
+    //FlagPlatform
+    			
+		    	SkeletalEntity flagPlatform =
+						sm.createSkeletalEntity("flagAv", "FlagIndicatorVer2.rkm", "FlagIndicatorVer2.rks");
+		    	
+		    	Texture tex7 = sm.getTextureManager().getAssetByPath("FlagshipIndicatorVer2.png");
+		    	TextureState tstate7 = (TextureState) sm.getRenderSystem()
+		    	.createRenderState(RenderState.Type.TEXTURE);
+		    	tstate6.setTexture(tex7);
+		    	flagPlatform.setRenderState(tstate7);
+		    	
+		    	SceneNode flagPlatformN =
+		    			sm.getRootSceneNode().createChildSceneNode("FlagNode");	
+		    	flagPlatformN.attachObject(flagPlatform);
+		    	flagPlatformN.scale(0.1f, 0.1f, 0.1f);
+		    	flagPlatformN.translate(0, 0.5f, 0);
+		    	
+		    	flagPlatformN.moveBackward(1f);
+		    	
+		    			
+		    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
+		    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
+		    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
+    	
+
+		
+	}
+
+	private void createAllNodes(SceneManager sm) throws IOException {
+	  	Tessellation tessE = sm.createTessellation("tessE", 7);
+    	tessE.setSubdivisions(8f);
+    	SceneNode tessN =
+    	sm.getRootSceneNode().
+	    	createChildSceneNode("TessN");
+    	tessN.attachObject(tessE);
+    	tessN.translate(Vector3f.createFrom(-6.2f, -2.2f, 3.2f));
+    	// tessN.yaw(Degreef.createFrom(37.2f));
+    	tessN.scale(955, 956, 855);
+    	tessE.setHeightMap(this.getEngine(), "scribble.jpg");
+    	tessE.setTexture(this.getEngine(), "carpet.png");
+    	tessE.setTextureTiling(55, 155);
+    	tessE.setMultiplier(5);
+    	
+    	isTerrain = true;
+    	
+    	tessN.setLocalPosition(-15.0f, -25.0f, -45.0f);
+
+    	
+    	Entity stationE = sm.createEntity("station", "SpaceStationAlpha-b.obj");
+    	stationE.setPrimitive(Primitive.TRIANGLES);
+		stationN = sm.getRootSceneNode().createChildSceneNode("stationNode");
+		stationN.moveForward(7.0f);
+		stationN.moveUp(.1f);
+		stationN.moveLeft(4f);
+		stationN.attachObject(stationE);
+		
+		
+		RotationController rc2 =
+		    	new RotationController(Vector3f.createUnitVectorY(), .02f);
+		    	rc2.addNode(stationN);
+		    	sm.addController(rc2);
+	
+		    	Entity enemyCraftE = sm.createEntity("enemyCraft", "EnemyCraftVer2-b.obj");
+		    	enemyCraftE.setPrimitive(Primitive.TRIANGLES);
+		    	enemyCraftN = sm.getRootSceneNode().createChildSceneNode(enemyCraftE.getName() + "Node");
+		    	enemyCraftN.moveBackward(7.0f);
+		    	enemyCraftN.moveDown(.1f);
+		    	enemyCraftN.moveRight(4f);
+		    	enemyCraftN.attachObject(enemyCraftE);
+				
+		    	Entity dropShipE = sm.createEntity("dropShip", "DropShipVer4.obj");
+		    	dropShipE.setPrimitive(Primitive.TRIANGLES);
+		    	dropShipN = sm.getRootSceneNode().createChildSceneNode(dropShipE.getName() + "Node");
+		    	dropShipN.moveBackward(7.0f);
+		    	dropShipN.moveDown(8f);
+		    	dropShipN.moveRight(4f);
+		    	dropShipN.attachObject(dropShipE);
+		    	
+		    	
+		    	Entity laserBoltE = sm.createEntity("laserBolt", "LaserBolt.obj");
+		    	laserBoltE.setPrimitive(Primitive.TRIANGLES);
+		    	laserBoltN = sm.getRootSceneNode().createChildSceneNode(laserBoltE.getName() + "Node");
+		    	laserBoltN.moveForward(7.0f);
+		    	laserBoltN.moveDown(8f);
+		    	laserBoltN.moveRight(4f);
+		    	laserBoltN.attachObject(laserBoltE);
+		    	
+				camera.getParentNode().moveUp(2);
+				
+				shipN.setLocalPosition(0,2,-4);
+				shipN.attachChild(camera.getParentNode());
+				camera.getParentNode().setLocalPosition(0,0,0);
+				print("ship position: " + shipN.getWorldPosition());
+				
+
+				sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
+
+				Light plight = sm.createLight("testLamp1", Light.Type.POINT);
+				plight.setAmbient(new Color(.3f, .3f, .3f));
+				plight.setDiffuse(new Color(.7f, .7f, .7f));
+				plight.setSpecular(new Color(1.0f, 1.0f, 1.0f));
+				plight.setRange(5f);
+
+				SceneNode plightNode = sm.getRootSceneNode().createChildSceneNode("plightNode");
+				plightNode.attachObject(plight);
+
+				//headlight goes in ship
+				Light headlight = sm.createLight("headlight", Light.Type.SPOT);
+				headlight.setConeCutoffAngle(Degreef.createFrom(10));
+				headlight.setSpecular(Color.white);
+
+				SceneNode headlightNode = sm.getRootSceneNode().createChildSceneNode("headlightNode");
+				headlightNode.attachObject(headlight);
+
+				//this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
+				shipN.attachChild(headlightNode);
+		
+	}
+
 	//ship is setup with code provided
 	private void setupShip(Engine eng, SceneManager sm) throws IOException {
 		print("setupShip");
@@ -988,7 +973,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 
 		
-		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 6, true);
+		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 4, true);
 	//	flagUp = new Sound(theFlag, SoundType.SOUND_EFFECT, 25, false);
 		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 400, true);
 		

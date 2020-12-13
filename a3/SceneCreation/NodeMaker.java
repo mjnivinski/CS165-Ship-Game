@@ -51,7 +51,10 @@ public class NodeMaker {
 		Vector3 position = Vector3f.createFrom(10000,10000,10000);
 		ln.setLocalPosition(position);
 		
-		Entity le = sm.createEntity(name + "laser", "LaserBolt.obj");
+		//Entity le = sm.createEntity(name + "laser", "LaserBolt.obj");
+
+		Entity le = sm.createEntity(name + "laser", "otherLaser.obj");
+
 		le.setPrimitive(Primitive.TRIANGLES);
 		
 		ln.attachObject(le);
