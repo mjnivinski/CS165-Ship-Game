@@ -207,6 +207,10 @@ public class ShipController {
 		float[] velocities = new float[] {direction.x(),direction.y(),direction.z()};
 		shipPhys.setLinearVelocity(velocities);
 		
+		SceneNode tessN =
+				eng.getSceneManager().
+				getSceneNode("TessN");
+//		if (a3.MyGame.isTerrain == true)
 		updateVerticalPosition();
 	}
 	
