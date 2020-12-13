@@ -14,6 +14,7 @@ import ray.rage.Engine;
 import ray.rage.scene.Camera;
 import ray.rage.scene.SceneManager;
 import ray.rage.scene.SceneNode;
+import ray.rml.Degreef;
 import ray.rml.Vector3;
 import ray.rml.Vector3f;
 
@@ -68,6 +69,8 @@ public class FlightController {
 	
 	float deltaTime;
 	
+	Vector3 basePosition;
+	
 	
 	public FlightController(MyGame g, Camera c, SceneNode cN, SceneNode t, InputManager im, SceneManager sm) throws IOException {
 		print("ch-ch-ch-changes");
@@ -76,17 +79,12 @@ public class FlightController {
 		cameraN = cN;
 		eng = game.getEngine();
 		this.sm = sm;
-		target = t;
+		target = t;//
 		setupInput(im);
 		
 		shipController = new ShipController(eng, this, target, sm);
 		
 		cameraN.setLocalPosition(offset);
-		//cameraN.setLocalPosition(0,0,0);
-		
-		camera.setMode('c');
-		
-		//Vector3f v = (Vector3f) camera.getParentNode().getWorldPosition();
 		
 		camera.setPo((Vector3f) cameraN.getWorldPosition());
 		
@@ -95,6 +93,8 @@ public class FlightController {
 		Vector3f rV = (Vector3f) cameraN.getWorldRightAxis();
 		rV = (Vector3f) Vector3f.createFrom(-1 * rV.x(), rV.y(), rV.z());
 		camera.setRt((Vector3f) rV.normalize());
+		
+		basePosition = cameraN.getLocalPosition();
 	}
 	
 	private void setupInput(InputManager im) {
@@ -431,6 +431,7 @@ public class FlightController {
 		cameraTurnShift();
 	}
 	
+	
 	private void cameraThrottleShift() {
 		
 		float throttleDampen = 0.025f;
@@ -448,7 +449,9 @@ public class FlightController {
 		float pitchRatio = 0.1f;
 		float yawRatio = 0.1f;
 		
-		Vector3 position = cameraN.getLocalPosition();
+		
+		
+		
 		
 		//the ship rolls the camera shifts slightly in the opposite direction
 		//negative left. positive right
@@ -469,13 +472,7 @@ public class FlightController {
 		Vector3 yawVector = cameraN.getLocalRightAxis().mult(shipController.getYaw()).mult(yawRatio);
 		
 		//Add all the vectors together
-		cameraN.setLocalPosition(position.add(rollVector).add(pitchVector).add(yawVector));
-		camera.setPo((Vector3f) cameraN.getWorldPosition());
-		
-		//reset cameraN position after each update
-		cameraN.setLocalPosition(position);
-		
-		//camera.setPo((Vector3f) position);
+		cameraN.setLocalPosition(basePosition.add(rollVector).add(pitchVector).add(yawVector));
 	}
 	
 	public int getThrottleSign() {

@@ -366,7 +366,6 @@ public class MyGame extends VariableFrameRateGame {
 					    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
 			    	
 		
-		camera.getParentNode().yaw(Degreef.createFrom(180));
 		camera.getParentNode().moveUp(2);
 		
 		shipN.setLocalPosition(0,2,-4);
@@ -397,7 +396,8 @@ public class MyGame extends VariableFrameRateGame {
 		SceneNode headlightNode = sm.getRootSceneNode().createChildSceneNode("headlightNode");
 		headlightNode.attachObject(headlight);
 
-		this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
+		//this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
+		shipN.attachChild(headlightNode);
 
 		
 		setupNetworking();
@@ -414,7 +414,7 @@ public class MyGame extends VariableFrameRateGame {
 	//ship is setup with code provided
 	private void setupShip(Engine eng, SceneManager sm) throws IOException {
 		print("setupShip");
-		Entity shipE = sm.createEntity("myShip", "cockpitMk3j.obj");
+		Entity shipE = sm.createEntity("ship", "cockpitMk3j.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
@@ -587,7 +587,7 @@ public class MyGame extends VariableFrameRateGame {
 		temptf = toDoubleArray(shipN.getLocalTransform().toFloatArray());
 		shipPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass,temptf,1.0f);
 		shipN.setPhysicsObject(shipPhysObj);*/
-		
+		//
 		
 	}
 

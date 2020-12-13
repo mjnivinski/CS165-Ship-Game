@@ -23,7 +23,7 @@ public class ShipController {
 	ScriptEngine jsEngine;
 	File paramFile;
 	long fileLastModifiedTime;
-			
+	
 	private Engine eng;
 	private FlightController FC;
 	private SceneNode ship;
@@ -52,7 +52,7 @@ public class ShipController {
 	float fireRate = 1.0f;
 	
 	SceneNode[] lasers = new SceneNode[4];
-	
+	SceneNode[] throttleIndicator;
 	
 	//private float pitch, leftVertical, pitchForward, pitchBackward;
 	private float pitch, pitchForward, pitchBackward, controllerPitch;
@@ -63,6 +63,8 @@ public class ShipController {
 	
 	private float throttle, throttleUp, throttleDown, controllerThrottle;
 	
+	NodeMaker nm;
+	
 	public ShipController(Engine e, FlightController f, SceneNode ship, SceneManager sm) throws IOException {
 		
 		setupJavascript();
@@ -71,11 +73,30 @@ public class ShipController {
 		FC = f;
 		this.ship = ship;
 		
-		lasers = new NodeMaker(e,sm).makeLasers();		
+		nm = new NodeMaker(e,sm);
+		
+		lasers = nm.makeLasers();		
 		
 		this.shipPhys = this.ship.getPhysicsObject();
 		
+		setupThrottleIndicator();
 		setupParams();
+	}
+	
+	
+	private Vector3[] throttlePositions;
+	private void setupThrottleIndicator() throws IOException {
+		
+		throttleIndicator = nm.makeThrottleIndicators();
+		
+		throttlePositions = new Vector3[throttleIndicator.length];
+		
+		for(int i=0; i<throttleIndicator.length;i++) {
+			System.out.println("here");
+			System.out.println("throttlePositions: " + throttlePositions);
+			System.out.println("throttleIndicator: " + throttleIndicator);
+			throttlePositions[i] = throttleIndicator[i].getLocalPosition();
+		}
 	}
 	
 	private void setupParams() {
@@ -133,11 +154,13 @@ public class ShipController {
 		
 		long modTime = paramFile.lastModified();
 		if (modTime > fileLastModifiedTime)
-		{ 
+		{
 			long fileLastModifiedTime = modTime;
 			this.executeScript("scripts/" + paramFile.getName());
 			setupParams();
 		}
+		
+		throttleUpdate();
 		
 		pitch();
 		roll();
@@ -149,60 +172,61 @@ public class ShipController {
 		shooting();
 	}
 	
+	//updates the throttle hud
+	float throttleGuage;
+	private void throttleUpdate() {
+		throttleGuage = throttle*throttleIndicator.length;
+		
+		for(int i=0;i<throttleIndicator.length;i++) {
+			throttleIndicator[i].setLocalPosition(10000,10000,10000);
+		}
+		
+		if(throttleGuage < 0.1) return;
+		
+		for(int i=0;i<throttleGuage;i++) {
+			throttleIndicator[i].setLocalPosition(throttlePositions[i]);
+		}
+		
+		if(throttleGuage < throttleIndicator.length) {
+			throttleIndicator[throttleIndicator.length-1].setLocalPosition(10000,10000,10000);
+		}
+	}
+	
 	private void updatePosition() {
 		
 		Vector3 direction = ship.getWorldForwardAxis();
 		direction = direction.mult(shipSpeed * throttle);
 		
+		
 		float[] velocities = new float[] {direction.x(),direction.y(),direction.z()};
 		shipPhys.setLinearVelocity(velocities);
-		
-		//use physics i guess
-		
-		
-		//thrust vector is made based on throttle value and ships forward axis
-		Vector3 forward = ship.getWorldForwardAxis();
-		thrustVector = Vector3f.createFrom(forward.x(),forward.y(),forward.z()).mult(throttle * shipSpeed);
-		
-		//move vector has thrust vector added to it.
-		moveVector = moveVector.add(thrustVector.mult(vectorUpdateAccel * deltaTime));
-		
-		//move vector is dampened slightly
-		moveVector = moveVector.mult(dampenRatio);
-		
-		//ships position is updated
-		Vector3 position = ship.getLocalPosition();
-		position = position.add(moveVector);
-
-		//ship.setLocalPosition(position);
-
-		//ship.setLocalPosition(position);
 		
 		updateVerticalPosition();
 	}
 	
+	float terrainHeight;
+	float shipHeight;
+	//float heightDifference;
+	
 	public void updateVerticalPosition()
 	{ 
-		SceneNode shipN = eng.getSceneManager().getSceneNode("myShipNode");
-	
+		//get Tesselation and the vertical height at the ships X,Z position
 		SceneNode tessN = eng.getSceneManager().getSceneNode("TessN");
 		Tessellation tessE = ((Tessellation) tessN.getAttachedObject("tessE"));
-		// Figure out Avatar's position relative to plane
-		Vector3 worldAvatarPosition = shipN.getWorldPosition();
-		Vector3 localAvatarPosition = shipN.getLocalPosition();
-		// use avatar World coordinates to get coordinates for height
-		Vector3 newAvatarPosition = Vector3f.createFrom(
-				// Keep the X coordinate
-				localAvatarPosition.x(),
-				// The Y coordinate is the varying height
-				(tessE.getWorldHeight(
-						worldAvatarPosition.x(),
-						worldAvatarPosition.z())+12f),
-				//Keep the Z coordinate
-				localAvatarPosition.z()
-				);
-		// use avatar Local coordinates to set position, including height
-		shipN.setLocalPosition(newAvatarPosition);
+		terrainHeight = tessE.getWorldHeight(ship.getWorldPosition().x(), ship.getWorldPosition().z()) + 10f;
+		
+		//ship height to compare
+		shipHeight = ship.getWorldPosition().y();
+		
+		//if the ship is below shift it up
+		if(terrainHeight > shipHeight) {
+			
+			double[] transform = shipPhys.getTransform();
+			
+			transform[13] = (double)terrainHeight;
+			
+			shipPhys.setTransform(transform);
+		}
 	}
 	
 	private void pitch() {
@@ -245,7 +269,8 @@ public class ShipController {
 		throttle+= throttleAccel * value * deltaTime;
 		
 		if(throttle > 1) throttle = 1;
-		if(throttle < 0) throttle = 0;
+		//if(throttle < 0) throttle = 0;
+		if(throttle < 0.01f) throttle = 0.01f;
 	}
 	
 	private float keyVsGamepad(float keyPos, float keyNeg, float controllerValue) {
