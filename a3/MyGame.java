@@ -340,7 +340,7 @@ public class MyGame extends VariableFrameRateGame {
 			    	
 			    	Entity laserBoltE = sm.createEntity("laserBolt", "LaserBolt.obj");
 			    	laserBoltE.setPrimitive(Primitive.TRIANGLES);
-			    	laserBoltN = sm.getRootSceneNode().createChildSceneNode(dropShipE.getName() + "Node");
+			    	laserBoltN = sm.getRootSceneNode().createChildSceneNode(laserBoltE.getName() + "Node");
 			    	laserBoltN.moveForward(7.0f);
 			    	laserBoltN.moveDown(8f);
 			    	laserBoltN.moveRight(4f);
