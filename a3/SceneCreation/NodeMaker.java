@@ -2,6 +2,10 @@ package a3.SceneCreation;
 
 import java.io.IOException;
 
+import a3.MyGame;
+import ray.physics.PhysicsEngine;
+import ray.physics.PhysicsEngineFactory;
+import ray.physics.PhysicsObject;
 import ray.rage.Engine;
 import ray.rage.asset.material.Material;
 import ray.rage.asset.texture.Texture;
@@ -18,18 +22,21 @@ public class NodeMaker {
 
 	private SceneManager sm;
 	private Engine eng;
+	private PhysicsEngine physics;
 	private SceneNode ship;
 	
-	public NodeMaker(Engine e, SceneManager s) {
+	public NodeMaker(Engine e, SceneManager s, PhysicsEngine physics) {
 		sm = s;
 		eng = e;
+		this.physics = physics;
 		ship = sm.getSceneNode("shipNode");
 	}
 	
 	public SceneNode[] makeLasers() throws IOException {
-		SceneNode[] list = new SceneNode[4];
+		int laserCount = 16;
+		SceneNode[] list = new SceneNode[laserCount];
 		
-		for(int i=0; i<4; i++) {
+		for(int i=0; i<list.length; i++) {
 			String s = "playerLasers" + Integer.toString(i);
 			list[i] = makeLaser(s);
 		}
@@ -55,9 +62,18 @@ public class NodeMaker {
 		
 		ln.attachObject(le);
 		
-		float scale = 0.08f;
+		float scale = 0.5f;
 		
 		ln.setLocalScale(Vector3f.createFrom(scale,scale,scale));
+		
+		float mass = 1.0f;
+		float up[] = {0,1,0};
+		double[] temptf;
+		
+		temptf = MyGame.toDoubleArray(ln.getLocalTransform().toFloatArray());
+		PhysicsObject shipPhysicsObject = physics.addSphereObject(physics.nextUID(), mass, temptf, 1.0f);
+		shipPhysicsObject.setDamping(0, 0);
+		ln.setPhysicsObject(shipPhysicsObject);
 		
 		return ln;
 	}
@@ -70,8 +86,6 @@ public class NodeMaker {
 		for(int i=0; i<10; i++) {
 			theHud[i] = makeThrottleIndicator("throttleIndicator" + i);
 		}
-		
-		SceneNode ship = sm.getSceneNode("shipNode");
 		
 		for(int i=0;i<10;i++) {
 			theHud[i].setLocalPosition(-1 * i*throttleGap + (throttleGap*10/2),0,1);
@@ -112,24 +126,21 @@ public class NodeMaker {
 		SceneNode[] theHud = new SceneNode[10];
 		
 		for(int i=0; i<10; i++) {
-			theHud[i] = makeThrottleIndicator("throttleIndicator" + i);
+			theHud[i] = makeScoreIndicator("scoreIndicator" + i);
 		}
-		
-		SceneNode ship = sm.getSceneNode("shipNode");
 		
 		for(int i=0;i<3;i++) {
 			theHud[i].setLocalPosition(-1 * i*throttleGap + (throttleGap*10/2),0,1);
-			
 		}
 		return theHud;
 	}
 	
 	private SceneNode makeScoreIndicator(String name) throws IOException {
 		
-		SceneNode ti = sm.getRootSceneNode().createChildSceneNode(name);
+		SceneNode n = sm.getRootSceneNode().createChildSceneNode(name);
 		
-		Entity tie = sm.createEntity(name, "sphere.obj");
-		tie.setPrimitive(Primitive.TRIANGLES);
+		Entity ne = sm.createEntity(name, "sphere.obj");
+		ne.setPrimitive(Primitive.TRIANGLES);
 		
 		Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
 		
@@ -137,17 +148,17 @@ public class NodeMaker {
 		
 		TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
 		texState.setTexture(tex);
-		tie.setRenderState(texState);
-		tie.setMaterial(mat);
+		ne.setRenderState(texState);
+		ne.setMaterial(mat);
 		
-		ti.attachObject(tie);
+		n.attachObject(ne);
 		
 		float scale = 0.1f;
 		
-		ti.setLocalScale(Vector3f.createFrom(scale,scale,scale));
+		n.setLocalScale(Vector3f.createFrom(scale,scale,scale));
 		
-		ship.attachChild(ti);
+		ship.attachChild(n);
 		
-		return ti;
+		return n;
 	}
 }

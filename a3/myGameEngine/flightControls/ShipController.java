@@ -2,6 +2,7 @@ package a3.myGameEngine.flightControls;
 
 import a3.SceneCreation.NodeMaker;
 import a3.myGameEngine.SimpleMath;
+import ray.physics.PhysicsEngine;
 import ray.physics.PhysicsObject;
 import ray.rage.Engine;
 import ray.rage.scene.SceneManager;
@@ -25,6 +26,7 @@ public class ShipController {
 	long fileLastModifiedTime;
 	
 	private Engine eng;
+	private PhysicsEngine physics;
 	private FlightController FC;
 	private SceneNode ship;
 	private PhysicsObject shipPhys;
@@ -41,17 +43,24 @@ public class ShipController {
 	private float throttleRate;
 	
 	
-	private float vectorUpdateAccel = 1f;
-	private float dampenRatio = 0.9f;
-	private float moveX, moveY, moveZ;
-	private Vector3 moveVector = Vector3f.createZeroVector();
-	private Vector3 thrustVector;
-	private float currentSpeed;
+	
+	//these are the physics object transform indexes. in the physicsObject.getTransform();
+	//it returns a double[] with 16 elements
+	//12 = x
+	//13 = y
+	//14 = z
+	
+	//private float vectorUpdateAccel = 1f;
+	//private float dampenRatio = 0.9f;
+	//private float moveX, moveY, moveZ;
+	//private Vector3 moveVector = Vector3f.createZeroVector();
+	//private Vector3 thrustVector;
+	//private float currentSpeed;
 	
 	boolean firing = false;
-	float fireRate = 1.0f;
 	
-	SceneNode[] lasers = new SceneNode[4];
+	
+	SceneNode[] lasers;
 	SceneNode[] throttleIndicator;
 	
 	//private float pitch, leftVertical, pitchForward, pitchBackward;
@@ -65,15 +74,16 @@ public class ShipController {
 	
 	NodeMaker nm;
 	
-	public ShipController(Engine e, FlightController f, SceneNode ship, SceneManager sm) throws IOException {
+	public ShipController(Engine e, FlightController f, SceneNode ship, SceneManager sm, PhysicsEngine physics) throws IOException {
 		
 		setupJavascript();
 		
 		eng = e;
+		this.physics =physics;
 		FC = f;
 		this.ship = ship;
 		
-		nm = new NodeMaker(e,sm);
+		nm = new NodeMaker(e,sm, physics);
 		
 		lasers = nm.makeLasers();		
 		
@@ -92,9 +102,6 @@ public class ShipController {
 		throttlePositions = new Vector3[throttleIndicator.length];
 		
 		for(int i=0; i<throttleIndicator.length;i++) {
-			System.out.println("here");
-			System.out.println("throttlePositions: " + throttlePositions);
-			System.out.println("throttleIndicator: " + throttleIndicator);
 			throttlePositions[i] = throttleIndicator[i].getLocalPosition();
 		}
 	}
@@ -197,7 +204,6 @@ public class ShipController {
 		Vector3 direction = ship.getWorldForwardAxis();
 		direction = direction.mult(shipSpeed * throttle);
 		
-		
 		float[] velocities = new float[] {direction.x(),direction.y(),direction.z()};
 		shipPhys.setLinearVelocity(velocities);
 		
@@ -222,6 +228,8 @@ public class ShipController {
 		if(terrainHeight > shipHeight) {
 			
 			double[] transform = shipPhys.getTransform();
+			
+			
 			
 			transform[13] = (double)terrainHeight;
 			
@@ -291,29 +299,47 @@ public class ShipController {
 		return value;
 	}
 	
-	int shootCycle = 0;
+	private int shootCycle = 0;
 	float timeSinceLastShot = 0;
+	float fireRate = 4.0f;
 	private void shooting() {
 		timeSinceLastShot += deltaTime;
 		if(firing) {
-			if(timeSinceLastShot > fireRate) shoot();
+			if(timeSinceLastShot > 1/fireRate) shoot();
 		}
 	}
 	
+	private float laserSpeed = 400;
 	private void shoot() {
 		timeSinceLastShot = 0;
 		
-		if(shootCycle == 0) {
-			System.out.println("pew");
-			shootCycle=1;
-		}
-		else if(shootCycle == 1) {
-			System.out.println("pow");
-			shootCycle=0;
-		}
+		PhysicsObject p1 = lasers[shootCycle].getPhysicsObject();
+		PhysicsObject p2 = lasers[shootCycle+1].getPhysicsObject();
 		
-		//System.out.println("pew");
-		//Shoot the stuff
+		Vector3 up = ship.getWorldUpAxis();
+		Vector3 right = ship.getWorldRightAxis().mult(2);
+		Vector3 forward = ship.getWorldForwardAxis();
+		Vector3 position = ship.getWorldPosition().add(forward.mult(10)).sub(up.mult(2));
+		
+		double[] d1 = p1.getTransform();
+		double[] d2 = p2.getTransform();
+		
+		d1[12] = position.x() + right.x();
+		d1[13] = position.y() + right.y();
+		d1[14] = position.z() + right.z();
+		
+		d2[12] = position.x() - right.x();
+		d2[13] = position.y() - right.y();
+		d2[14] = position.z() - right.z();
+		
+		p1.setTransform(d1);
+		p2.setTransform(d2);
+		
+		p1.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
+		p2.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
+		
+		shootCycle += 2;
+		shootCycle%=(lasers.length);
 	}
 	
 	public void setControllerThrottle(float v) { controllerThrottle = v;}

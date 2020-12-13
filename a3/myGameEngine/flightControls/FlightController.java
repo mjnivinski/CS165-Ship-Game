@@ -10,6 +10,7 @@ import net.java.games.input.Controller;
 import net.java.games.input.Event;
 import ray.input.InputManager;
 import ray.input.action.AbstractInputAction;
+import ray.physics.PhysicsEngine;
 import ray.rage.Engine;
 import ray.rage.scene.Camera;
 import ray.rage.scene.SceneManager;
@@ -24,6 +25,7 @@ public class FlightController {
 	private MyGame game;
 	private SceneManager sm;
 	private Engine eng;
+	private PhysicsEngine physics;
 	//private DolphinStateMachine machine;
 	private Camera camera;
 	private SceneNode cameraN;
@@ -72,7 +74,7 @@ public class FlightController {
 	Vector3 basePosition;
 	
 	
-	public FlightController(MyGame g, Camera c, SceneNode cN, SceneNode t, InputManager im, SceneManager sm) throws IOException {
+	public FlightController(MyGame g, Camera c, SceneNode cN, SceneNode t, InputManager im, SceneManager sm, PhysicsEngine physics) throws IOException {
 		print("ch-ch-ch-changes");
 		game = g;
 		camera = c;
@@ -81,8 +83,9 @@ public class FlightController {
 		this.sm = sm;
 		target = t;//
 		setupInput(im);
+		this.physics = physics;
 		
-		shipController = new ShipController(eng, this, target, sm);
+		shipController = new ShipController(eng, this, target, sm, physics);
 		
 		cameraN.setLocalPosition(offset);
 		
@@ -219,9 +222,9 @@ public class FlightController {
 		}
 	}
 	
-	private void cameraLook() {
-		print("\nfd: " + cameraN.getWorldPosition());
-	}
+	//private void cameraLook() {
+	//	print("\nfd: " + cameraN.getWorldPosition());
+	//}
 	
 	public void update() {
 		
@@ -445,13 +448,9 @@ public class FlightController {
 	
 	private void cameraTurnShift() {
 		
-		float rollRatio = 0.1f;
-		float pitchRatio = 0.1f;
-		float yawRatio = 0.1f;
-		
-		
-		
-		
+		float rollRatio = 0.03f;
+		float pitchRatio = 0.04f;
+		float yawRatio = 0.025f;
 		
 		//the ship rolls the camera shifts slightly in the opposite direction
 		//negative left. positive right

@@ -52,6 +52,13 @@ import ray.physics.PhysicsObject;
 
 import java.util.UUID;
 import java.util.Vector;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+
 import static ray.rage.scene.SkeletalEntity.EndType.*;
 import ray.audio.*;
 //import com.jogamp.openal.ALFactory;
@@ -133,6 +140,9 @@ public class MyGame extends VariableFrameRateGame {
 		System.out.println("args: " + args[0] + " " + args[1]);
 		Game game = new MyGame(args[0], Integer.parseInt(args[1]));
 		//Game game = new MyGame("yes", 5);
+		
+		FSEM();
+		
 		try {
 			game.startup();
 			game.run();
@@ -172,8 +182,24 @@ public class MyGame extends VariableFrameRateGame {
 	@Override
 	protected void setupWindow(RenderSystem rs, GraphicsEnvironment ge) {
 		print("setupWindow");
-		//rs.createRenderWindow(true);
-		rs.createRenderWindow(new DisplayMode(1002, 700, 24, 60), false);
+		
+		if(fullScreen == 0) {
+			rs.createRenderWindow(true);
+		}
+		else if(fullScreen == 1) {
+			rs.createRenderWindow(new DisplayMode(1000, 700, 24, 60), false);
+		}
+		
+		
+	}
+	
+	static int fullScreen;
+	private static void FSEM() {
+		
+		fullScreen = JOptionPane.showConfirmDialog(null,  "Full Screen?", "choose one", JOptionPane.YES_NO_OPTION);
+	    //0 is yes
+		//1 is no
+		System.out.println("fullScreen: " + fullScreen);
 	}
 	
 	@Override
@@ -196,18 +222,6 @@ public class MyGame extends VariableFrameRateGame {
 		camera.setMode('r');
 	}
 
-	/*
-	private void setupViewports(RenderWindow rw) {
-		//Viewport topViewport = rw.getViewport(0);
-		topViewport = rw.getViewport(0);
-		topViewport.setDimensions(0.51f, 0.01f, 0.99f, 0.49f);
-		topViewport.setClearColor(new Color(0.1f,0.1f,0.1f));
-		
-		//Viewport botViewport = rw.createViewport(0.01f, 0.01f, 0.99f, 0.49f);
-		botViewport = rw.createViewport(0.01f, 0.01f, 0.99f, 0.49f);
-		botViewport.setClearColor(new Color(0.5f,0.5f,0.5f));
-	}*/
-	
 	@Override
 	protected void setupScene(Engine eng, SceneManager sm) throws IOException {
 		this.eng = eng;
@@ -219,7 +233,6 @@ public class MyGame extends VariableFrameRateGame {
 		
 		
 		
-	
 		
 	   	if (tm == null)
 				tm = eng.getTextureManager();
@@ -579,22 +592,13 @@ public class MyGame extends VariableFrameRateGame {
 		PhysicsObject shipPhysicsObject = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
 		shipN.setPhysicsObject(shipPhysicsObject);
 		
-		/*
-		float mass = 1.0f;
-		float up[] = {0,1,0};
-		double[] temptf;
-		
-		temptf = toDoubleArray(shipN.getLocalTransform().toFloatArray());
-		shipPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass,temptf,1.0f);
-		shipN.setPhysicsObject(shipPhysObj);*/
-		//
 		
 	}
 
 	//seperate methods for keyboards/gamepads
 	protected void setupInputs(SceneManager sm) throws IOException {
 		im = new GenericInputManager();
-		playerController = new FlightController(this, camera, camera.getParentSceneNode(), shipN, im, sm);
+		playerController = new FlightController(this, camera, camera.getParentSceneNode(), shipN, im, sm, physicsEng);
 		
 		setupAdditionalTestControls(im);
 		
@@ -976,7 +980,7 @@ public class MyGame extends VariableFrameRateGame {
 	return ret;
 	}
 	
-	public double[] toDoubleArray(float[] arr) 
+	public static double[] toDoubleArray(float[] arr) 
 	{
 		if (arr == null) return null;
 		int n = arr.length;
@@ -987,5 +991,4 @@ public class MyGame extends VariableFrameRateGame {
 		}
 		return ret;
 	}
-	
 }
