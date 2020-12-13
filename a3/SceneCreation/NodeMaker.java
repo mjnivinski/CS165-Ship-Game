@@ -33,7 +33,7 @@ public class NodeMaker {
 	}
 	
 	public SceneNode[] makeLasers() throws IOException {
-		int laserCount = 16;
+		int laserCount = 4;
 		SceneNode[] list = new SceneNode[laserCount];
 		
 		for(int i=0; i<list.length; i++) {
@@ -47,6 +47,9 @@ public class NodeMaker {
 	public SceneNode makeLaser(String name) throws IOException {
 		
 		SceneNode ln = sm.getRootSceneNode().createChildSceneNode(name);
+		
+		Vector3 position = Vector3f.createFrom(10000,10000,10000);
+		ln.setLocalPosition(position);
 		
 		Entity le = sm.createEntity(name + "laser", "LaserBolt.obj");
 		le.setPrimitive(Primitive.TRIANGLES);
@@ -66,9 +69,12 @@ public class NodeMaker {
 		shipPhysicsObject.setDamping(0, 0);
 		ln.setPhysicsObject(shipPhysicsObject);
 		
+		ln.lookAt(ship);
+		
+		System.out.println("location: " + ln.getWorldPosition());
+		
 		return ln;
 	}
-	
 	
 	float throttleGap = 0.2f;
 	public SceneNode[] makeThrottleIndicators() throws IOException {
