@@ -48,7 +48,7 @@ public class NodeMaker {
 		
 		SceneNode ln = sm.getRootSceneNode().createChildSceneNode(name);
 		
-		Entity le = sm.createEntity(name + "laser", "LaserBolt.obj");
+		Entity le = sm.createEntity(name + "laser", "otherLaser.obj");
 		le.setPrimitive(Primitive.TRIANGLES);
 		
 		ln.attachObject(le);
