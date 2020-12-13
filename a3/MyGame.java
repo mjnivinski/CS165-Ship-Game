@@ -346,13 +346,6 @@ public class MyGame extends VariableFrameRateGame {
 			    	laserBoltN.moveRight(4f);
 			    	laserBoltN.attachObject(laserBoltE);
 			    	
-			       	Entity SecondShipCockputE = sm.createEntity("SecondShip", "EnemyCraftCockpitVer1.obj");
-			       	SecondShipCockputE.setPrimitive(Primitive.TRIANGLES);
-			       	SecondShipN = sm.getRootSceneNode().createChildSceneNode(SecondShipCockputE.getName() + "Node");
-			       	SecondShipN.moveForward(7.0f);
-			       	SecondShipN.moveDown(8f);
-			       	SecondShipN.moveRight(4f);
-			       	SecondShipN.attachObject(SecondShipCockputE);
 			    	
 			    	//
 			    	
