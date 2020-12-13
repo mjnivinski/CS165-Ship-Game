@@ -98,7 +98,7 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, flagPlatformdN, laserBoltN;
+	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, flagPlatformdN, laserBoltN, SecondShipN;
 	private PhysicsObject shipPhysObj;
 	
 	private PatrolEnemy npc1;
@@ -345,6 +345,14 @@ public class MyGame extends VariableFrameRateGame {
 			    	laserBoltN.moveDown(8f);
 			    	laserBoltN.moveRight(4f);
 			    	laserBoltN.attachObject(laserBoltE);
+			    	
+			       	Entity SecondShipCockputE = sm.createEntity("SecondShip", "EnemyCraftCockpitVer1.obj");
+			       	SecondShipCockputE.setPrimitive(Primitive.TRIANGLES);
+			       	SecondShipN = sm.getRootSceneNode().createChildSceneNode(SecondShipCockputE.getName() + "Node");
+			       	SecondShipN.moveForward(7.0f);
+			       	SecondShipN.moveDown(8f);
+			       	SecondShipN.moveRight(4f);
+			       	SecondShipN.attachObject(SecondShipCockputE);
 			    	
 			    	//
 			    	
