@@ -318,11 +318,11 @@ public class ShipController {
 		timeSinceLastShot = 0;
 		
 		PhysicsObject p1 = lasers[shootCycle].getPhysicsObject();
-		lasers[shootCycle].lookAt(ship);
-		lasers[shootCycle].yaw(Degreef.createFrom(180));
+		
+		
+		
+		
 		PhysicsObject p2 = lasers[shootCycle+1].getPhysicsObject();
-		lasers[shootCycle+1].lookAt(ship);
-		//lasers[shootCycle+1].yaw(Degreef.createFrom(180));
 		
 		Vector3 up = ship.getWorldUpAxis();
 		Vector3 right = ship.getWorldRightAxis().mult(2);
@@ -340,14 +340,45 @@ public class ShipController {
 		d2[13] = position.y() - right.y();
 		d2[14] = position.z() - right.z();
 		
+		
 		p1.setTransform(d1);
-		//p2.setTransform(d2);
+		p2.setTransform(d2);
+		
+		
+		
+		//how to move a physics object
+		
+		/*
+		Vector3 newPosition = Vector3f.createFrom(x,y,z);
+		 
+		double[] d1 = p1.getTransform();
+		
+		d1[12] = newPosition.x();
+		d1[13] = newPosition.y();
+		d1[14] = newPosition.z();
+		
+		p1.setTransform(d1);
+		*/
+		
+		
+		//System.out.println("shootCycle:" + shootCycle);
+		
+		//System.out.println("before: " + lasers[shootCycle].getWorldForwardAxis());
+		
+		//lasers[shootCycle].lookAt(position.add(forward));
+		//lasers[shootCycle+1].lookAt(ship);
+		
+		//System.out.println("after: " + lasers[shootCycle].getWorldForwardAxis());
 		
 		p1.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
-		//p2.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
+		p2.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
+		
+		//System.out.println("later still: " + lasers[shootCycle].getWorldForwardAxis());
 		
 		shootCycle += 2;
 		shootCycle%=(lasers.length);
+		
+		
 	}
 	
 	public void setControllerThrottle(float v) { controllerThrottle = v;}
