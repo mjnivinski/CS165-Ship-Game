@@ -6,5 +6,5 @@ var yawRate = 70.0;
 
 //var shipSpeed = 10.0;
 
-var shipSpeed = 50.0;
+var shipSpeed = 120.0;
 

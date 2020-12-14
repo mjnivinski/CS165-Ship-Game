@@ -98,7 +98,7 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, flagPlatformdN, laserBoltN, SecondShipN;
+	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, flagPlatformdN, laserBoltN, SecondShipN, Object4N, Object3N, Object2N, Object1N, stationBlueN;
 	private PhysicsObject shipPhysObj;
 	
 	private PatrolEnemy npc1;
@@ -207,7 +207,6 @@ public class MyGame extends VariableFrameRateGame {
 	
 	@Override
 	protected void setupCameras(SceneManager sm, RenderWindow rw) {
-		//setupViewports(rw);
 		
 		print("setupCameras");
 		SceneNode rootNode = sm.getRootSceneNode();
@@ -365,47 +364,115 @@ public class MyGame extends VariableFrameRateGame {
     	
     	isTerrain = true;
     	
-    	tessN.setLocalPosition(-15.0f, -25.0f, -45.0f);
+    	tessN.setLocalPosition(-15.0f, -40.0f, -45.0f);
 
     	
     	Entity stationE = sm.createEntity("station", "SpaceStationAlpha-b.obj");
     	stationE.setPrimitive(Primitive.TRIANGLES);
 		stationN = sm.getRootSceneNode().createChildSceneNode("stationNode");
-		stationN.moveForward(7.0f);
-		stationN.moveUp(.1f);
+		stationN.moveBackward(60.0f);
+		stationN.moveUp(25f);
 		stationN.moveLeft(4f);
 		stationN.attachObject(stationE);
 		
 		
 		RotationController rc2 =
-		    	new RotationController(Vector3f.createUnitVectorY(), .02f);
+		    	new RotationController(Vector3f.createUnitVectorY(), .03f);
 		    	rc2.addNode(stationN);
 		    	sm.addController(rc2);
+		    	
+		    	
+		    	Entity stationBlueE = sm.createEntity("stationBlue", "SpaceStationAlpha-b.obj");
+		    	stationBlueE.setPrimitive(Primitive.TRIANGLES);
+		    	stationBlueN = sm.getRootSceneNode().createChildSceneNode(stationBlueE.getName() + "Node");
+		    	stationBlueN.moveForward(250.0f);
+		    	stationBlueN.moveUp(25f);
+		    	stationBlueN.moveLeft(4f);
+		    	stationBlueN.attachObject(stationBlueE);
+				
+				
+				RotationController rc4 =
+				    	new RotationController(Vector3f.createUnitVectorY(), .03f);
+				    	rc4.addNode(stationBlueN);
+				    	sm.addController(rc4);
+				    	
+					      TextureManager tm = eng.getTextureManager();
+					        Texture blueTexture = tm.getAssetByPath("stationBlue.png");
+					        RenderSystem rs = sm.getRenderSystem();
+					        TextureState state = (TextureState)rs.createRenderState(RenderState.Type.TEXTURE);
+					        state.setTexture(blueTexture);
+					        stationBlueE.setRenderState(state);
+		    	
+		    	
+		    	Entity Object3E = sm.createEntity("object3", "Object3.obj");
+		    	Object3E.setPrimitive(Primitive.TRIANGLES);
+		    	Object3N = sm.getRootSceneNode().createChildSceneNode(Object3E.getName() + "Node");
+		    	Object3N.moveForward(100.0f);
+		    	Object3N.moveUp(72f);
+		    	Object3N.moveRight(300f);
+		    	Object3N.setLocalScale(20, 20, 20);
+		    	Object3N.attachObject(Object3E);
+				
+				
+				RotationController rc3 =
+				    	new RotationController(Vector3f.createUnitVectorY(), .01f);
+				    	rc3.addNode(Object3N);
+				    	sm.addController(rc3);
+				    	
+				    	
+				    	Entity Object4E = sm.createEntity("object4", "Object4.obj");
+				    	Object4E.setPrimitive(Primitive.TRIANGLES);
+				    	Object4N = sm.getRootSceneNode().createChildSceneNode(Object4E.getName() + "Node");
+				    	Object4N.moveBackward(100.0f);
+				    	Object4N.moveUp(88f);
+				    	Object4N.moveLeft(300f);
+				    	Object4N.setLocalScale(64, 64, 64);
+				    	Object4N.attachObject(Object4E);
+						
+						
+						RotationController rc5 =
+						    	new RotationController(Vector3f.createUnitVectorY(), .06f);
+						    	rc5.addNode(Object4N);
+						    	sm.addController(rc5);
+				    	
+				    	
+				    	Entity Object1E = sm.createEntity("object1", "Object1.obj");
+				    	Object1E.setPrimitive(Primitive.TRIANGLES);
+				    	Object1N = sm.getRootSceneNode().createChildSceneNode(Object1E.getName() + "Node");
+				    	Object1N.moveBackward(400.0f);
+				    	Object1N.moveUp(88f);
+				    	Object1N.moveRight(100f);
+				    //	Object1N.setLocalScale(20, 20, 20);
+				    	Object1N.attachObject(Object1E);
+				    	
+				    	
+				    	Entity Object2E = sm.createEntity("object2", "Object2.obj");
+				    	Object2E.setPrimitive(Primitive.TRIANGLES);
+				    	Object2N = sm.getRootSceneNode().createChildSceneNode(Object2E.getName() + "Node");
+				    	Object2N.moveForward(225.0f);
+				    	Object2N.moveUp(63f);
+				    	Object2N.moveRight(100f);
+				    	//Object2N.setLocalScale(20, 20, 20);
+				    	Object2N.attachObject(Object2E);
+				    	
 	
 		    	Entity enemyCraftE = sm.createEntity("enemyCraft", "EnemyCraftVer2-b.obj");
 		    	enemyCraftE.setPrimitive(Primitive.TRIANGLES);
 		    	enemyCraftN = sm.getRootSceneNode().createChildSceneNode(enemyCraftE.getName() + "Node");
 		    	enemyCraftN.moveBackward(7.0f);
-		    	enemyCraftN.moveDown(.1f);
+		    	enemyCraftN.moveUp(100f);
 		    	enemyCraftN.moveRight(4f);
 		    	enemyCraftN.attachObject(enemyCraftE);
 				
 		    	Entity dropShipE = sm.createEntity("dropShip", "DropShipVer4.obj");
 		    	dropShipE.setPrimitive(Primitive.TRIANGLES);
 		    	dropShipN = sm.getRootSceneNode().createChildSceneNode(dropShipE.getName() + "Node");
-		    	dropShipN.moveBackward(7.0f);
-		    	dropShipN.moveDown(8f);
+		    	dropShipN.moveBackward(30.0f);
+		    	dropShipN.moveUp(55f);
 		    	dropShipN.moveRight(4f);
 		    	dropShipN.attachObject(dropShipE);
 		    	
-		    	
-		    	Entity laserBoltE = sm.createEntity("laserBolt", "LaserBolt.obj");
-		    	laserBoltE.setPrimitive(Primitive.TRIANGLES);
-		    	laserBoltN = sm.getRootSceneNode().createChildSceneNode(laserBoltE.getName() + "Node");
-		    	laserBoltN.moveForward(7.0f);
-		    	laserBoltN.moveDown(8f);
-		    	laserBoltN.moveRight(4f);
-		    	laserBoltN.attachObject(laserBoltE);
+		
 		    	
 				camera.getParentNode().moveUp(2);
 				
@@ -705,6 +772,10 @@ public class MyGame extends VariableFrameRateGame {
 		SceneNode stationN = sm.getSceneNode("stationNode");
 		
 		playerController.update();
+		
+		Object1N.moveLeft(.3f);
+		Object3N.moveRight(.1f);
+		Object4N.moveForward(.1f);
 		
 		//npc1.update(engine.getElapsedTimeMillis());
 		
