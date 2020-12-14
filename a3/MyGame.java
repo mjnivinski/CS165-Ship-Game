@@ -101,7 +101,9 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, flagPlatformdN, laserBoltN, SecondShipN, Object4N, Object3N, Object2N, Object1N, stationBlueN;
+	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, 
+	flagPlatformdN, laserBoltN, SecondShipN, Object4N, Object3N, Object2N, Object1N, stationBlueN, Object2bN, BlueCockpitN;
+	
 	private PhysicsObject shipPhysObj;
 	
 	private PatrolEnemy npc1;
@@ -360,7 +362,7 @@ public class MyGame extends VariableFrameRateGame {
     	tessN.attachObject(tessE);
     	tessN.translate(Vector3f.createFrom(-6.2f, -2.2f, 3.2f));
     	// tessN.yaw(Degreef.createFrom(37.2f));
-    	tessN.scale(955, 956, 855);
+    	tessN.scale(2000, 956, 2000);
     	tessE.setHeightMap(this.getEngine(), "scribble.jpg");
     	tessE.setTexture(this.getEngine(), "carpet.png");
     	tessE.setTextureTiling(55, 155);
@@ -368,7 +370,7 @@ public class MyGame extends VariableFrameRateGame {
     	
     	isTerrain = true;
     	
-    	tessN.setLocalPosition(-15.0f, -40.0f, -45.0f);
+    	tessN.setLocalPosition(-200.0f, -50.0f, -45.0f);
 
     	
     	Entity stationE = sm.createEntity("station", "SpaceStationAlpha-b.obj");
@@ -380,17 +382,24 @@ public class MyGame extends VariableFrameRateGame {
 		stationN.attachObject(stationE);
 		stationN.moveUp(10);
 		
-		
 		RotationController rc2 =
 		    	new RotationController(Vector3f.createUnitVectorY(), .03f);
 		    	rc2.addNode(stationN);
 		    	sm.addController(rc2);
 		    	
+		    	Entity Object2bE = sm.createEntity("object2b", "Object2.obj");
+		    	Object2bE.setPrimitive(Primitive.TRIANGLES);
+		    	Object2bN = sm.getRootSceneNode().createChildSceneNode(Object2bE.getName() + "Node");
+		    	Object2bN.moveBackward(80.0f);
+		    	Object2bN.moveUp(25f);
+		    	Object2bN.moveLeft(4f);
+		    	Object2bN.attachObject(Object2bE);
+		    	
 		    	
 		    	Entity stationBlueE = sm.createEntity("stationBlue", "SpaceStationAlpha-b.obj");
 		    	stationBlueE.setPrimitive(Primitive.TRIANGLES);
 		    	stationBlueN = sm.getRootSceneNode().createChildSceneNode(stationBlueE.getName() + "Node");
-		    	stationBlueN.moveForward(250.0f);
+		    	stationBlueN.moveForward(350.0f);
 		    	stationBlueN.moveUp(25f);
 		    	stationBlueN.moveLeft(4f);
 		    	stationBlueN.attachObject(stationBlueE);
@@ -400,6 +409,14 @@ public class MyGame extends VariableFrameRateGame {
 				    	new RotationController(Vector3f.createUnitVectorY(), .03f);
 				    	rc4.addNode(stationBlueN);
 				    	sm.addController(rc4);
+				    	
+				    	Entity Object2E = sm.createEntity("object2", "Object2.obj");
+				    	Object2E.setPrimitive(Primitive.TRIANGLES);
+				    	Object2N = sm.getRootSceneNode().createChildSceneNode(Object2E.getName() + "Node");
+				    	Object2N.moveForward(370.0f);
+				    	Object2N.moveUp(25f);
+				    	Object2N.moveRight(4f);
+				    	Object2N.attachObject(Object2E);
 				    	
 					      TextureManager tm = eng.getTextureManager();
 					        Texture blueTexture = tm.getAssetByPath("stationBlue.png");
@@ -429,19 +446,19 @@ public class MyGame extends VariableFrameRateGame {
 				    	Object4E.setPrimitive(Primitive.TRIANGLES);
 				    	Object4N = sm.getRootSceneNode().createChildSceneNode(Object4E.getName() + "Node");
 				    	Object4N.moveBackward(100.0f);
-				    	Object4N.moveUp(88f);
+				    	Object4N.moveUp(150f);
 				    	Object4N.moveLeft(300f);
 				    	Object4N.setLocalScale(64, 64, 64);
 				    	Object4N.attachObject(Object4E);
 						
 						
 						RotationController rc5 =
-						    	new RotationController(Vector3f.createUnitVectorY(), .06f);
+						    	new RotationController(Vector3f.createUnitVectorZ(), -.06f);
 						    	rc5.addNode(Object4N);
 						    	sm.addController(rc5);
 				    	
 				    	
-				    	Entity Object1E = sm.createEntity("object1", "Object1.obj");
+				    	Entity Object1E = sm.createEntity("object1", "Object1Ver2.obj");
 				    	Object1E.setPrimitive(Primitive.TRIANGLES);
 				    	Object1N = sm.getRootSceneNode().createChildSceneNode(Object1E.getName() + "Node");
 				    	Object1N.moveBackward(400.0f);
@@ -451,14 +468,26 @@ public class MyGame extends VariableFrameRateGame {
 				    	Object1N.attachObject(Object1E);
 				    	
 				    	
-				    	Entity Object2E = sm.createEntity("object2", "Object2.obj");
-				    	Object2E.setPrimitive(Primitive.TRIANGLES);
-				    	Object2N = sm.getRootSceneNode().createChildSceneNode(Object2E.getName() + "Node");
-				    	Object2N.moveForward(225.0f);
-				    	Object2N.moveUp(63f);
-				    	Object2N.moveRight(100f);
-				    	//Object2N.setLocalScale(20, 20, 20);
-				    	Object2N.attachObject(Object2E);
+
+				    	
+				    	Entity BlueCockpitE = sm.createEntity("BlueCockput", "cockpitMk3j.obj");
+				    	BlueCockpitE.setPrimitive(Primitive.TRIANGLES);
+				    	BlueCockpitN = sm.getRootSceneNode().createChildSceneNode(BlueCockpitE.getName() + "Node");
+				    	BlueCockpitN.moveForward(0.0f);
+				    	BlueCockpitN.moveUp(25f);
+				    	BlueCockpitN.moveRight(0f);
+				    	BlueCockpitN.attachObject(BlueCockpitE);
+				    	
+					      TextureManager tm1 = eng.getTextureManager();
+					        Texture blueTexture2 = tm1.getAssetByPath("cockpitMk3jB-Blue.png");
+					        RenderSystem rs2 = sm.getRenderSystem();
+					        TextureState state1 = (TextureState)rs.createRenderState(RenderState.Type.TEXTURE);
+					        state1.setTexture(blueTexture2);
+					        BlueCockpitE.setRenderState(state1);
+				    	
+
+				    	
+		/*	
 				    	
 	
 		    	Entity enemyCraftE = sm.createEntity("enemyCraft", "EnemyCraftVer2-b.obj");
@@ -468,7 +497,7 @@ public class MyGame extends VariableFrameRateGame {
 		    	enemyCraftN.moveUp(100f);
 		    	enemyCraftN.moveRight(4f);
 		    	enemyCraftN.attachObject(enemyCraftE);
-				
+				*/
 		    	Entity dropShipE = sm.createEntity("dropShip", "DropShipVer4.obj");
 		    	dropShipE.setPrimitive(Primitive.TRIANGLES);
 		    	dropShipN = sm.getRootSceneNode().createChildSceneNode(dropShipE.getName() + "Node");
@@ -787,7 +816,7 @@ public class MyGame extends VariableFrameRateGame {
 		//System.out.println("z:" + shipN.getLocalPosition().z());
 		Object1N.moveLeft(.3f);
 		Object3N.moveRight(.1f);
-		Object4N.moveForward(.1f);
+		Object4N.moveBackward(.1f);
 		
 		
 	
