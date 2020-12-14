@@ -15,6 +15,7 @@ import a3.NPCS.Patroller.PatrolEnemy;
 import a3.NPCS.Patroller.PatrolStrategyContext;
 import a3.Networking.GhostAvatar;
 import a3.Networking.ProtocolClient;
+import a3.SceneCreation.NodeMaker;
 import a3.myGameEngine.flightControls.FlightController;
 import net.java.games.input.Controller;
 import net.java.games.input.Event;
@@ -84,8 +85,10 @@ public class MyGame extends VariableFrameRateGame {
 	//Declaration area
 	Random random = new Random();
 	
+	SceneManager sm;
 	Engine eng;
 	EntityMaker eMaker;
+	NodeMaker nm;
 	
 	private PhysicsEngine physicsEng;
 
@@ -227,6 +230,7 @@ public class MyGame extends VariableFrameRateGame {
 
 	@Override
 	protected void setupScene(Engine eng, SceneManager sm) throws IOException {
+		this.sm = sm;
 		this.eng = eng;
 		eMaker = new EntityMaker(eng,sm);
 		
@@ -375,6 +379,7 @@ public class MyGame extends VariableFrameRateGame {
 		stationN.moveUp(.1f);
 		stationN.moveLeft(4f);
 		stationN.attachObject(stationE);
+		stationN.moveUp(10);
 		
 		
 		RotationController rc2 =
@@ -475,7 +480,7 @@ public class MyGame extends VariableFrameRateGame {
 		patrolNPC.setPhysicsObject(npcPhysObj);
 		print("PATROL NPC PHYSICS: " + patrolNPC.getPhysicsObject() + " ##########################");
 		
-		npc1 = new PatrolEnemy(patrolNPC,stationN,5,20,10);
+		npc1 = new PatrolEnemy(patrolNPC,stationN, this,5,100,100);
 		SceneNode[] targets = {shipN};
 		
 		npc1.setTargets(targets);
@@ -706,7 +711,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 		playerController.update();
 		
-		//npc1.update(engine.getElapsedTimeMillis());
+		npc1.update(engine.getElapsedTimeMillis());
 		
 	
 	//	SkeletalEntity rightHand =
@@ -994,12 +999,9 @@ public class MyGame extends VariableFrameRateGame {
 			//setEarParameters(sm);
 			
 			stationSound.play();
-
 	}
 	
 
-	
-	
 	private int getThrottleSign() {
 		return playerController.getThrottleSign();
 	}
@@ -1027,4 +1029,9 @@ public class MyGame extends VariableFrameRateGame {
 		}
 		return ret;
 	}
+	
+	public SceneManager getSceneManager() { return sm; }
+	public Engine getEngine() { return eng; }
+	public PhysicsEngine getPhysicsEngine() { return physicsEng; }
+	public NodeMaker getNodeMaker() { return nm; }
 }

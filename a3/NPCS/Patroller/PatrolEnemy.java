@@ -1,5 +1,9 @@
 package a3.NPCS.Patroller;
 
+import java.io.IOException;
+
+import a3.MyGame;
+import a3.SceneCreation.NodeMaker;
 import a3.myGameEngine.VectorMath;
 import ray.ai.behaviortrees.BTAction;
 import ray.ai.behaviortrees.BTCompositeType;
@@ -8,12 +12,17 @@ import ray.ai.behaviortrees.BTSequence;
 import ray.ai.behaviortrees.BTStatus;
 import ray.ai.behaviortrees.BTCondition;
 import ray.ai.behaviortrees.BehaviorTree;
+import ray.physics.PhysicsEngine;
+import ray.rage.Engine;
+import ray.rage.scene.SceneManager;
 import ray.rage.scene.SceneNode;
 
 //controls a Node that orbits a position and then chases enemies until too far away from defense position or enemy too far away.
 
 public class PatrolEnemy {
 	
+	MyGame g;
+	NodeMaker nm;
 	BehaviorTree bt = new BehaviorTree(BTCompositeType.SELECTOR);
 		
 	float thinkStartTime;
@@ -21,31 +30,60 @@ public class PatrolEnemy {
 	float lastThinkUpdateTime;
 	float lastTickUpdateTime;
 		
-	float defenseTether, enemyTether;
+	float radius = 5;
+	float defenseTether = 100;
+	float enemyTether = 100;
+	
+	float chaseSpeed;
+	float returnSpeed;
+	
+	float hitRange = 1.5f;
 		
 	boolean returning = false;
 	boolean chasing = false;
 	
 	SceneNode[] possibleTargets;
+	SceneNode[] lasers;
 		
 	SceneNode npc;
 	SceneNode target; //might replace with a position to guard
 	
-	float radius;
 	
 	PatrolStrategyContext context;
 		
-	public PatrolEnemy(SceneNode n, SceneNode t, float r, float dT, float eT) {
-		System.out.println("Patrol Enemy Constructor");///fdsafdsa
+	//construct with default values
+	public PatrolEnemy(SceneNode n, SceneNode t, MyGame g) throws IOException {
+		this.g = g;
 		npc = n;
 		target = t;
+		
+		nm = new NodeMaker(g.getEngine(), g.getSceneManager(), g.getPhysicsEngine());
+		
+		getLasers();
+		context = new PatrolStrategyContext(n, t, radius, defenseTether, enemyTether, lasers);
+		setupBehaviorTree();
+	}
+	
+	//construct with custom radius/tether values
+	public PatrolEnemy(SceneNode n, SceneNode t, MyGame g, float r, float dT, float eT) throws IOException {
+		this.g = g;
+		npc = n;
+		target = t;
+		
+		nm = new NodeMaker(g.getEngine(), g.getSceneManager(), g.getPhysicsEngine());
+		
 		radius = r;
 		defenseTether = dT;
 		enemyTether = eT;
-		
-		System.out.println("pec### " + n.getPhysicsObject() + " ###");
-		context = new PatrolStrategyContext(n, t, r, dT, eT);
+		getLasers();
+		context = new PatrolStrategyContext(n, t, r, dT, eT, lasers);
 		setupBehaviorTree();
+	}
+	
+	
+	
+	public void getLasers() throws IOException {
+		lasers = nm.makeNPCLasers(npc.getName());
 	}
 	
 	public void update(float time) {
@@ -140,8 +178,21 @@ public class PatrolEnemy {
 				returning = true;
 				context.returnHome();
 			}
+			//else if(laserCheck()) context.returnHome();
 			
 			return BTStatus.BH_SUCCESS;
+		}
+		
+		private boolean laserCheck() {
+			//System.out.println("laserCheck");
+			for(SceneNode l : lasers) {
+				System.out.println("distance: " + VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()));
+				if(VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()) < hitRange) {
+					System.out.println("laserChecked");
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 	

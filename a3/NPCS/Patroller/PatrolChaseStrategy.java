@@ -10,15 +10,23 @@ import a3.myGameEngine.VectorMath;
 
 public class PatrolChaseStrategy implements PatrolStrategy {
 
+	private PatrolStrategyContext context;
 	private SceneNode npc;
 	private SceneNode target;
 	private PhysicsObject npcPhys;
 	private float power = 10f;
 	
-	public PatrolChaseStrategy(SceneNode n, SceneNode t) {
+	SceneNode[] lasers;
+	
+	private float chaseSpeed = 0.05f;
+	float hitRange = 3f;
+	
+	public PatrolChaseStrategy(PatrolStrategyContext PSC, SceneNode n, SceneNode t, SceneNode[] ls) {
+		context = PSC;
 		npc = n;
 		target = t;
 		npcPhys = npc.getPhysicsObject();
+		lasers = ls;
 	}
 	
 	@Override
@@ -28,20 +36,63 @@ public class PatrolChaseStrategy implements PatrolStrategy {
 		Vector3 start = npc.getWorldPosition();
 		Vector3 end = target.getWorldPosition();
 		
-		//System.out.println("distance: " + VectorMath.distance(start, end));
+		Vector3 direction = end.sub(start);
 		
+		direction = direction.mult(chaseSpeed);
 		
-		float[] xyz = new float[3];
-		xyz[0] = end.x() - start.x();
-		xyz[1] = end.y() - start.y();
-		xyz[2] = end.z() - start.z();
-		npcPhys.setLinearVelocity(xyz);
-		/*
-		x = power * (end.x() - start.x()) * deltaTime;
-		y = power * (end.y() - start.y()) * deltaTime;
-		z = power * (end.z() - start.z()) * deltaTime;
-		npcPhys.applyForce(x, y, z, 0, 0, 0);*/
+		npcPhys.setLinearVelocity(direction.toFloatArray());
 		
-		//System.out.println("get linear velocity: " + Arrays.toString(npcPhys.getLinearVelocity()));
+		shooting(deltaTime);
+		laserCheck();
+	}
+	
+	private int shootCycle = 0;
+	float timeSinceLastShot = 0;
+	float fireRate = 1.0f;
+	
+	private void shooting(float deltaTime) {
+		timeSinceLastShot += deltaTime;
+		if(timeSinceLastShot > 1/fireRate) {
+			shoot();
+		}
+	}
+	
+	private float laserSpeed = 10;
+	
+	private void shoot() {
+		
+		timeSinceLastShot = 0;
+		
+		PhysicsObject p1 = lasers[shootCycle].getPhysicsObject();
+		
+		Vector3 to = target.getWorldPosition();
+		Vector3 from = npc.getWorldPosition();
+		Vector3 start = to.sub(from).normalize();
+		Vector3 forward = start;
+		
+		double[] d1 = p1.getTransform();
+		
+		d1[12] = start.x() + from.x();
+		d1[13] = start.y() + from.y();
+		d1[14] = start.z() + from.z();
+		
+		p1.setTransform(d1);
+		
+		p1.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
+		
+		shootCycle += 1;
+		shootCycle%=(lasers.length);
+	}
+	
+	private void laserCheck() {
+		
+		for(SceneNode l : lasers) {
+			//System.out.println("distance: " + VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()));
+			if(VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()) < hitRange) {
+				System.out.println("hit");
+				context.returnHome();
+				break;
+			}
+		}
 	}
 }
