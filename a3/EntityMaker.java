@@ -24,18 +24,18 @@ public class EntityMaker {
 	
 	public Entity earth(String name) throws IOException {
 		
-		Entity planet = sm.createEntity(name, "sphere.obj");
+		Entity planet = sm.createEntity(name, "EnemyCraftVer2-b.obj");
 		planet.setPrimitive(Primitive.TRIANGLES);
 		//planet.setPrimitive(Primitive.TRIANGLES);
 		
-		Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
+		//Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
 			
-		Texture tex = eng.getTextureManager().getAssetByPath("earth-day.jpeg");
+		//Texture tex = eng.getTextureManager().getAssetByPath("earth-day.jpeg");
 			
-		TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
-		texState.setTexture(tex);
-		planet.setRenderState(texState);
-		planet.setMaterial(mat);
+	//	TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
+	//	texState.setTexture(tex);
+	//	planet.setRenderState(texState);
+	//	planet.setMaterial(mat);
 			
 			
 		return planet;
