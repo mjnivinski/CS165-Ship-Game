@@ -42,8 +42,6 @@ public class ShipController {
 	private float throttleAccel = 1f;
 	private float throttleRate;
 	
-	
-	
 	//these are the physics object transform indexes. in the physicsObject.getTransform();
 	//it returns a double[] with 16 elements
 	//12 = x
@@ -58,7 +56,6 @@ public class ShipController {
 	//private float currentSpeed;
 	
 	boolean firing = false;
-	
 	
 	SceneNode[] lasers;
 	SceneNode[] throttleIndicator;

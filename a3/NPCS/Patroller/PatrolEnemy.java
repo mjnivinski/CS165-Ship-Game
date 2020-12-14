@@ -60,7 +60,7 @@ public class PatrolEnemy {
 		nm = new NodeMaker(g.getEngine(), g.getSceneManager(), g.getPhysicsEngine());
 		
 		getLasers();
-		context = new PatrolStrategyContext(n, t, radius, defenseTether, enemyTether, lasers);
+		context = new PatrolStrategyContext(this, n, t, radius, defenseTether, enemyTether, lasers);
 		setupBehaviorTree();
 	}
 	
@@ -76,7 +76,7 @@ public class PatrolEnemy {
 		defenseTether = dT;
 		enemyTether = eT;
 		getLasers();
-		context = new PatrolStrategyContext(n, t, r, dT, eT, lasers);
+		context = new PatrolStrategyContext(this, n, t, r, dT, eT, lasers);
 		setupBehaviorTree();
 	}
 	
@@ -178,22 +178,15 @@ public class PatrolEnemy {
 				returning = true;
 				context.returnHome();
 			}
-			//else if(laserCheck()) context.returnHome();
 			
 			return BTStatus.BH_SUCCESS;
 		}
-		
-		private boolean laserCheck() {
-			//System.out.println("laserCheck");
-			for(SceneNode l : lasers) {
-				System.out.println("distance: " + VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()));
-				if(VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()) < hitRange) {
-					System.out.println("laserChecked");
-					return true;
-				}
-			}
-			return false;
-		}
+	}
+	
+	public void npcHit() {
+		chasing = false;
+		returning = true;
+		context.returnHome();
 	}
 	
 	private class PatrolCheck extends BTCondition{

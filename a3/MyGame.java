@@ -767,7 +767,7 @@ public class MyGame extends VariableFrameRateGame {
 	@Override
 	protected void update(Engine engine) {
 		
-		//System.out.println("update");
+		//System.out.println("update");//
 		
 		updateDefaults(engine);
 		
@@ -780,7 +780,11 @@ public class MyGame extends VariableFrameRateGame {
 		
 
 		npc1.update(engine.getElapsedTimeMillis());
-
+		
+		
+		//System.out.println("x:" + shipN.getLocalPosition().x());
+		//System.out.println("y:" + shipN.getLocalPosition().y());
+		//System.out.println("z:" + shipN.getLocalPosition().z());
 		Object1N.moveLeft(.3f);
 		Object3N.moveRight(.1f);
 		Object4N.moveForward(.1f);
@@ -953,8 +957,7 @@ public class MyGame extends VariableFrameRateGame {
 			getSceneNode("TessN");
 			
 			//tessN.setLocalPosition(8000.0f, 8000.0f, 8000.0f);
-			tessN.moveForward(8000);
-			
+			tessN.moveDown(8000);
 		}
 	}
 

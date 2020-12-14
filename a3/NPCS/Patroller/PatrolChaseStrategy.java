@@ -10,7 +10,7 @@ import a3.myGameEngine.VectorMath;
 
 public class PatrolChaseStrategy implements PatrolStrategy {
 
-	private PatrolStrategyContext context;
+	private PatrolEnemy patrolEnemy;
 	private SceneNode npc;
 	private SceneNode target;
 	private PhysicsObject npcPhys;
@@ -21,8 +21,8 @@ public class PatrolChaseStrategy implements PatrolStrategy {
 	private float chaseSpeed = 0.05f;
 	float hitRange = 3f;
 	
-	public PatrolChaseStrategy(PatrolStrategyContext PSC, SceneNode n, SceneNode t, SceneNode[] ls) {
-		context = PSC;
+	public PatrolChaseStrategy(PatrolEnemy pe, SceneNode n, SceneNode t, SceneNode[] ls) {
+		patrolEnemy = pe;
 		npc = n;
 		target = t;
 		npcPhys = npc.getPhysicsObject();
@@ -90,7 +90,7 @@ public class PatrolChaseStrategy implements PatrolStrategy {
 			//System.out.println("distance: " + VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()));
 			if(VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()) < hitRange) {
 				System.out.println("hit");
-				context.returnHome();
+				patrolEnemy.npcHit();
 				break;
 			}
 		}
