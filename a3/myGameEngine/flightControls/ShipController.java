@@ -313,7 +313,7 @@ public class ShipController {
 		}
 	}
 	
-	private float laserSpeed = 50;
+	private float laserSpeed = 400;
 	private void shoot() {
 		timeSinceLastShot = 0;
 		

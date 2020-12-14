@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import a3.MyGame;
 import ray.physics.PhysicsEngine;
-import ray.physics.PhysicsEngineFactory;
 import ray.physics.PhysicsObject;
 import ray.rage.Engine;
 import ray.rage.asset.material.Material;
@@ -33,11 +32,36 @@ public class NodeMaker {
 	}
 	
 	public SceneNode[] makeLasers() throws IOException {
-		int laserCount = 4;
+		int laserCount = 16;
 		SceneNode[] list = new SceneNode[laserCount];
 		
 		for(int i=0; i<list.length; i++) {
 			String s = "playerLasers" + Integer.toString(i);
+			list[i] = makeLaser(s);
+		}
+		
+		return list;
+	}
+	
+	public SceneNode[] makeGhostLasers() throws IOException {
+		
+		int laserCount = 16;
+		SceneNode[] list = new SceneNode[laserCount];
+		
+		for(int i=0; i<list.length; i++) {
+			String s = "ghostLasers" + Integer.toString(i);
+			list[i] = makeLaser(s);
+		}
+		
+		return list;
+	}
+	
+	public SceneNode[] makeNPCLasers(String name) throws IOException {
+		int laserCount = 4;
+		SceneNode[] list = new SceneNode[laserCount];
+		
+		for(int i=0; i<list.length; i++) {
+			String s = name + "npcLasers" + Integer.toString(i);
 			list[i] = makeLaser(s);
 		}
 		
@@ -51,20 +75,18 @@ public class NodeMaker {
 		Vector3 position = Vector3f.createFrom(10000,10000,10000);
 		ln.setLocalPosition(position);
 		
-		//Entity le = sm.createEntity(name + "laser", "LaserBolt.obj");
-
 		Entity le = sm.createEntity(name + "laser", "otherLaser.obj");
 
 		le.setPrimitive(Primitive.TRIANGLES);
 		
 		ln.attachObject(le);
 		
-		float scale = 1f;
+		float scale = 0.5f;
 		
 		ln.setLocalScale(Vector3f.createFrom(scale,scale,scale));
 		
 		float mass = 1.0f;
-		float up[] = {0,1,0};
+		//float up[] = {0,1,0};
 		double[] temptf;
 		
 		temptf = MyGame.toDoubleArray(ln.getLocalTransform().toFloatArray());

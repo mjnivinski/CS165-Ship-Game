@@ -8,7 +8,7 @@ import ray.rage.scene.SceneNode;
 public class PatrolStrategyContext {
 	PatrolStrategy strategy;
 	
-	//PatrolChaseStrategy PCS; don't need a PCS because when it is created we give it a target, so its just gonna be instnatiated each time the chase begins
+	//PatrolChaseStrategy PCS; don't need a PCS because when it is created we give it a target, so its just going be instantiated each time the chase begins
 	private PatrolReturnStrategy PRS;
 	private PatrolPatrolStrategy PPS;
 	
@@ -19,7 +19,9 @@ public class PatrolStrategyContext {
 	float defenseTether;
 	float enemyTether;
 	
-	public PatrolStrategyContext(SceneNode n, SceneNode t, float radius, float dT, float eT) {
+	SceneNode[] lasers;
+	
+	public PatrolStrategyContext(SceneNode n, SceneNode t, float radius, float dT, float eT, SceneNode[] ls) {
 		System.out.println("Patrol Context Constructor");
 		npc = n;
 		target = t;
@@ -27,10 +29,13 @@ public class PatrolStrategyContext {
 		defenseTether = dT;
 		enemyTether = eT;
 		
+		lasers = ls;
+		
 		System.out.println("### " + npc.getPhysicsObject() + " ###");
 		
 		PRS = new PatrolReturnStrategy(n, t, radius);
-		PPS = new PatrolPatrolStrategy(n,t,enemyTether);
+		//PPS = new PatrolPatrolStrategy(n,t,enemyTether);
+		PPS = new PatrolPatrolStrategy(n,t.getWorldPosition(),enemyTether);
 		
 		strategy = PPS;
 	}
@@ -39,7 +44,7 @@ public class PatrolStrategyContext {
 	public void chaseEnemy(SceneNode t) {
 		System.out.println("chase begins");
 		npc.getPhysicsObject().setLinearVelocity(new float[]{1,1,1});
-		strategy = new PatrolChaseStrategy(npc,t);
+		strategy = new PatrolChaseStrategy(this, npc,t, lasers);
 		chaseTarget = t;
 	}
 	
