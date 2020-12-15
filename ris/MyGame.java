@@ -297,9 +297,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 	private void createAnimations(SceneManager sm) throws IOException {
  
-
-    //Right Hand	
-  	
+		//Right Hand
     	SkeletalEntity rightHand =
 				sm.createSkeletalEntity("rightHandAv", "MyFettHandVer5.rkm", "MyFettHandVer5.rks");
     	
@@ -325,6 +323,7 @@ public class MyGame extends VariableFrameRateGame {
     			
     			System.out.println("right here");
     			shipN.attachChild(rightHandN);
+    			rightHandN.moveDown(0.5f);
     			
 		
 	}
@@ -618,8 +617,6 @@ public class MyGame extends VariableFrameRateGame {
 		temptf = toDoubleArray(shipN.getLocalTransform().toFloatArray());
 		PhysicsObject shipPhysicsObject = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
 		shipN.setPhysicsObject(shipPhysicsObject);
-		
-		
 	}
 
 	//seperate methods for keyboards/gamepads
@@ -660,7 +657,6 @@ public class MyGame extends VariableFrameRateGame {
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.U, controlTest8,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
-			
 			
 		}
 	}
@@ -808,11 +804,11 @@ public class MyGame extends VariableFrameRateGame {
 	
 	private void throttleDownAndBackAnimation()
 	{ 
-
+		System.out.println("throttleDownAndBackAnimation");
 		SkeletalEntity rightHand =
-	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-	rightHand.stopAnimation();
-	rightHand.playAnimation("throttleDownAndBackAnimation", 0.5f, NONE, 0);
+				(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+		rightHand.stopAnimation();
+		rightHand.playAnimation("throttleDownAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
