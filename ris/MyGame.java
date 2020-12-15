@@ -79,9 +79,9 @@ public class MyGame extends VariableFrameRateGame {
 	public static boolean isTerrain;
 	
 	public IAudioManager audioMgr;
-	Sound backgroundMusic, flagUp, stationSound;
+	Sound backgroundMusic, stationSound, NPCSound, laserFireSound, shipNoiseSound;
 	
-	
+
 	
 	//Declaration area
 	Random random = new Random();
@@ -102,7 +102,7 @@ public class MyGame extends VariableFrameRateGame {
 	//private CameraController cameraController;
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
-	private SceneNode shipN, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, 
+	private SceneNode shipN, shipNBlue, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, 
 	flagPlatformdN, laserBoltN, SecondShipN, Object4N, Object3N, Object2N, Object1N, stationBlueN, Object2bN, BlueCockpitN;
 	
 	private PhysicsObject shipPhysObj;
@@ -292,7 +292,7 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 			    	createAllNodes(sm);
 			    	
-			    	createAnimations(sm);
+			   // 	createAnimations(sm);
 			    	
 			    	
 
@@ -302,7 +302,7 @@ public class MyGame extends VariableFrameRateGame {
 		setupNetworking();
 		
 		print("setup audio");
-		//initAudio(sm);
+		initAudio(sm);
 		print("setup physics");
 		setupPhysics();
 		nm = new NodeMaker(eng, sm, physicsEng);
@@ -472,11 +472,26 @@ public class MyGame extends VariableFrameRateGame {
 					      TextureManager tm1 = eng.getTextureManager();
 					        Texture blueTexture2 = tm1.getAssetByPath("cockpitMk3jB-Blue.png");
 					        RenderSystem rs2 = sm.getRenderSystem();
-					        TextureState state1 = (TextureState)rs.createRenderState(RenderState.Type.TEXTURE);
+					        TextureState state1 = (TextureState)rs2.createRenderState(RenderState.Type.TEXTURE);
 					        state1.setTexture(blueTexture2);
 					        BlueCockpitE.setRenderState(state1);
 				    	
 
+					        
+					    	Entity shipBlueE = sm.createEntity("ghostShip2", "GhostShips-c.obj");
+					    	shipBlueE.setPrimitive(Primitive.TRIANGLES);
+					
+					    	shipNBlue = sm.getRootSceneNode().createChildSceneNode(shipBlueE.getName() + "Node");
+					    	shipNBlue.moveUp(25f);
+					    	BlueCockpitN.moveForward(20f);
+					    	shipNBlue.attachObject(shipBlueE);
+					    	
+						      TextureManager tm5 = eng.getTextureManager();
+						        Texture blueTexture5 = tm5.getAssetByPath("GhostShips-cBlue.png");
+						        RenderSystem rs5 = sm.getRenderSystem();
+						        TextureState state5 = (TextureState)rs5.createRenderState(RenderState.Type.TEXTURE);
+						        state5.setTexture(blueTexture5);
+						        shipBlueE.setRenderState(state5);
 				    	
 		/*	
 				    	
@@ -496,6 +511,10 @@ public class MyGame extends VariableFrameRateGame {
 		    	dropShipN.moveUp(55f);
 		    	dropShipN.moveRight(4f);
 		    	dropShipN.attachObject(dropShipE);
+		    	
+		    	
+		    	
+		    	
 		    	
 		
 		    	
@@ -778,16 +797,21 @@ public class MyGame extends VariableFrameRateGame {
 		//System.out.println("x:" + shipN.getLocalPosition().x());
 		//System.out.println("y:" + shipN.getLocalPosition().y());
 		//System.out.println("z:" + shipN.getLocalPosition().z());
+
 		Object1N.moveLeft(.3f);
 		Object3N.moveRight(.1f);
 		Object4N.moveBackward(.1f);
+		dropShipN.moveForward(.08f);
+		//dropShipN.roll(Degreef.createFrom(1));
+
 		
-		
+		/*
 	
 			SkeletalEntity rightHand =
 		(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
 		rightHand.update();
+		*/
 		
 		//System.out.println("update");
 		
@@ -797,7 +821,7 @@ public class MyGame extends VariableFrameRateGame {
 		//print("" + stationSound);
 		//stationSound.setLocation(stationN.getWorldPosition());
 	//	oceanSound.setLocation(earthN.getWorldPosition());
-		//setEarParameters(sm);
+		setEarParameters(sm);
 		
 		Matrix4 mat;
 		physicsEng.update(eng.getElapsedTimeMillis());
@@ -880,7 +904,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 	
 	
-	private void throttleUpAndBackAnimatio()
+	private void throttleUpAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
@@ -940,7 +964,7 @@ public class MyGame extends VariableFrameRateGame {
 				
 		@Override
 		public void performAction(float arg0, Event e) {
-			throttleUpAndBackAnimatio();
+			throttleUpAndBackAnimation();
 		}
 	}
 	
@@ -976,7 +1000,8 @@ public class MyGame extends VariableFrameRateGame {
 	public void setEarParameters(SceneManager sm)
 	{ 
 		
-		SceneNode shipN = sm.getSceneNode("myShipNode");
+		
+		SceneNode shipN = eng.getSceneManager().getSceneNode("shipNode");
 		Vector3 avDir = shipN.getWorldForwardAxis();
 		// note - should get the camera's forward direction
 		// - avatar direction plus azimuth
@@ -992,7 +1017,7 @@ public class MyGame extends VariableFrameRateGame {
 		Configuration configuration = sm.getConfiguration();
 		String sfxPath = configuration.valueOf("assets.sounds.path");
 		String musicPath = configuration.valueOf("assets.music.path");
-		AudioResource theMusic, theStation;
+		AudioResource theMusic, theStation, npcBeeps, theShipNoise, theFrickinLasers;
 		audioMgr = AudioManagerFactory.createAudioManager("ray.audio.joal.JOALAudioManager");
 		
 		print("audioMgr: " + audioMgr);
@@ -1005,12 +1030,20 @@ public class MyGame extends VariableFrameRateGame {
 		
 		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
 		theStation = audioMgr.createAudioResource(sfxPath + "Cartoon-warp-02.wav", AudioResourceType.AUDIO_SAMPLE);
+		npcBeeps = audioMgr.createAudioResource(sfxPath + "Robot_blip-Marianne_Gagnon-120342607.wav", AudioResourceType.AUDIO_SAMPLE);
+		theShipNoise = audioMgr.createAudioResource(sfxPath + "RocketThrusters-SoundBible.com-1432176431.wav", AudioResourceType.AUDIO_SAMPLE);
+		theFrickinLasers = audioMgr.createAudioResource(sfxPath + "LaserBlasts-SoundBible.com-108608437.wav", AudioResourceType.AUDIO_SAMPLE);
+		
 
-	
+		//  NPCSound, laserFireSound, shipNoiseSound;
+		
 
 		
 		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 4, true);
 		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 400, true);
+		NPCSound = new Sound(npcBeeps, SoundType.SOUND_EFFECT, 400, true);
+		laserFireSound = new Sound(theFrickinLasers, SoundType.SOUND_EFFECT, 400, true);
+		shipNoiseSound = new Sound(theShipNoise, SoundType.SOUND_EFFECT, 400, true);
 		
 	
 			backgroundMusic.initialize(audioMgr);
@@ -1025,7 +1058,7 @@ public class MyGame extends VariableFrameRateGame {
 			SceneNode stationN = sm.getSceneNode("stationNode");
 			stationSound.setLocation(stationN.getWorldPosition());
 			
-			//setEarParameters(sm);
+			setEarParameters(sm);
 			
 			stationSound.play();
 	}
