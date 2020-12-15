@@ -151,7 +151,7 @@ public class MyGame extends VariableFrameRateGame {
 		//Game game = new MyGame("yes", 5);
 		
 		//FSEM();
-		chooseTeam();
+		//chooseTeam();
 		
 		try {
 			game.startup();
