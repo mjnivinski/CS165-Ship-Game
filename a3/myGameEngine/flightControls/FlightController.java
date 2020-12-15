@@ -84,7 +84,7 @@ public class FlightController {
 		setupInput(im);
 		this.physics = physics;
 		
-		shipController = new ShipController(eng, this, target, sm, physics);
+		shipController = new ShipController(game, eng, this, target, sm, physics);
 		
 		cameraN.setLocalPosition(cameraOffset);
 		
