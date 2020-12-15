@@ -114,6 +114,8 @@ public class MyGame extends VariableFrameRateGame {
 	
 	throttleUp controlTest;
 	throttleDown controlTest2;
+	throttleLeft controlTest3;
+	throttleRight controlTest4;
 	destroyTerrain controlTest8;
 	
 	
@@ -275,7 +277,7 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 			    	createAllNodes(sm);
 			    	
-			   // 	createAnimations(sm);
+			    	createAnimations(sm);
 			    	
 			    	
 
@@ -285,7 +287,6 @@ public class MyGame extends VariableFrameRateGame {
 		setupNetworking();
 		
 		print("setup audio");
-		//TODO
 		//initAudio(sm);
 		print("setup physics");
 		setupPhysics();
@@ -316,10 +317,10 @@ public class MyGame extends VariableFrameRateGame {
     			
     		
     			
-    			rightHand.loadAnimation("throttleUpAnimation", "MyFettHandVer5_Thrust_Up.rka");
-    			rightHand.loadAnimation("throttleUpReturnAnimation", "MyFettHandVer5_Thrust_Up_Return.rka");
-    			rightHand.loadAnimation("throttleDownAnimation", "MyFettHandVer5_Thrust_Down.rka");
-    			rightHand.loadAnimation("throttleDownReturnAnimation", "MyFettHandVer5_Thrust_Down_Return.rka");
+    			rightHand.loadAnimation("throttleUpAndBackAnimation", "ThrustUpAndBack.rka");
+    			rightHand.loadAnimation("throttleDownAndBackAnimation", "ThrustDownAndBack.rka");
+    			rightHand.loadAnimation("throttleLeftAndBackAnimation", "ThrustLeftandBack.rka");
+    			rightHand.loadAnimation("throttleRightAndBackAnimation", "ThrustRightandBack.rka");
     			
 		
 	}
@@ -638,6 +639,8 @@ public class MyGame extends VariableFrameRateGame {
 		
 		controlTest = new throttleUp();
 		controlTest2 = new throttleDown();
+		controlTest3 = new throttleLeft();
+		controlTest4 = new throttleRight();
 		controlTest8 = new destroyTerrain();
 		
 		
@@ -647,19 +650,18 @@ public class MyGame extends VariableFrameRateGame {
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.P, controlTest2,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.K, controlTest3,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.L, controlTest4,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.U, controlTest8,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			
 			
 		}
 	}
 	
-	private class ControlTest extends AbstractInputAction {
-		@Override
-		public void performAction(float arg0, Event e) {
-			animationThrottleUp();
-		}
-	}
-	
+
 	
 	public void setupGhostAvatar(GhostAvatar ghost) throws IOException {
 		
@@ -788,43 +790,45 @@ public class MyGame extends VariableFrameRateGame {
 		return shipN.getWorldPosition();
 	}
 	
-	private void animationThrottleUp()
+	
+	
+	private void throttleUpAndBackAnimatio()
 	{ 
 
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 	rightHand.stopAnimation();
-	rightHand.playAnimation("throttleUpAnimation", 0.5f, NONE, 0);
+	rightHand.playAnimation("throttleUpAndBackAnimatio", 0.5f, NONE, 0);
 
 	}
 	
-	private void animationThrottleUpReturn()
+	private void throttleDownAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 	rightHand.stopAnimation();
-	rightHand.playAnimation("throttleUpReturnAnimation", 0.5f, NONE, 0);
+	rightHand.playAnimation("throttleDownAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
-	private void animationThrottleDown()
+	private void throttleLeftAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 	rightHand.stopAnimation();
-	rightHand.playAnimation("throttleDownAnimation", 0.5f, NONE, 0);
+	rightHand.playAnimation("throttleLeftAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
-	private void animationThrottleDownReturn()
+	private void throttleRightAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 	rightHand.stopAnimation();
-	rightHand.playAnimation("throttleDownReturnAnimation", 0.5f, NONE, 0);
+	rightHand.playAnimation("throttleRightAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
@@ -848,7 +852,7 @@ public class MyGame extends VariableFrameRateGame {
 				
 		@Override
 		public void performAction(float arg0, Event e) {
-			 animationThrottleUp();
+			throttleUpAndBackAnimatio();
 		}
 	}
 	
@@ -857,7 +861,24 @@ public class MyGame extends VariableFrameRateGame {
 		
 		@Override
 		public void performAction(float arg0, Event e) {
-			 animationThrottleDownReturn();
+			throttleDownAndBackAnimation();
+		}
+	}
+	
+	private class throttleLeft extends AbstractInputAction {
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			throttleLeftAndBackAnimation();
+		}
+	}
+	
+	
+	private class throttleRight extends AbstractInputAction {
+		
+		@Override
+		public void performAction(float arg0, Event e) {
+			throttleRightAndBackAnimation();
 		}
 	}
 	
