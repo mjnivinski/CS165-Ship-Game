@@ -113,11 +113,6 @@ public class MyGame extends VariableFrameRateGame {
 	
 	throttleUp controlTest;
 	throttleDown controlTest2;
-	throttleUpReturn controlTest3;
-	throttleDownReturn controlTest4;
-	flagOut controlTest5;
-	flagIn controlTest6;
-	flagOutExtended controlTest7;
 	destroyTerrain controlTest8;
 	
 	
@@ -324,32 +319,6 @@ public class MyGame extends VariableFrameRateGame {
     			rightHand.loadAnimation("throttleDownAnimation", "MyFettHandVer5_Thrust_Down.rka");
     			rightHand.loadAnimation("throttleDownReturnAnimation", "MyFettHandVer5_Thrust_Down_Return.rka");
     			
-    			
-    //FlagPlatform
-    			
-		    	SkeletalEntity flagPlatform =
-						sm.createSkeletalEntity("flagAv", "FlagIndicatorVer2.rkm", "FlagIndicatorVer2.rks");
-		    	
-		    	Texture tex7 = sm.getTextureManager().getAssetByPath("FlagshipIndicatorVer2.png");
-		    	TextureState tstate7 = (TextureState) sm.getRenderSystem()
-		    	.createRenderState(RenderState.Type.TEXTURE);
-		    	tstate6.setTexture(tex7);
-		    	flagPlatform.setRenderState(tstate7);
-		    	
-		    	SceneNode flagPlatformN =
-		    			sm.getRootSceneNode().createChildSceneNode("FlagNode");	
-		    	flagPlatformN.attachObject(flagPlatform);
-		    	flagPlatformN.scale(0.1f, 0.1f, 0.1f);
-		    	flagPlatformN.translate(0, 0.5f, 0);
-		    	
-		    	flagPlatformN.moveBackward(1f);
-		    	
-		    			
-		    	flagPlatform.loadAnimation("flagLitAnimation", "FlagLit.rka");
-		    	flagPlatform.loadAnimation("flagUnlitAnimation", "FlagUnlit.rka");
-		    	flagPlatform.loadAnimation("flagLitExtendAnimation", "FlagLitExtended.rka");
-    	
-
 		
 	}
 
@@ -735,28 +704,14 @@ public class MyGame extends VariableFrameRateGame {
 		
 		controlTest = new throttleUp();
 		controlTest2 = new throttleDown();
-		controlTest3 = new throttleUpReturn();
-		controlTest4 = new throttleDownReturn();
-		controlTest5 = new flagOut();
-		controlTest6 = new flagIn();
 		controlTest8 = new destroyTerrain();
 		
-//animationThrottleUp()
 		
 		for (int i = 0; i < keyboards.size(); i++) {
-			
 			
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.O, controlTest,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.P, controlTest2,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.K, controlTest3,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.L, controlTest4,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.I, controlTest5,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.J, controlTest6,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.U, controlTest8,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
@@ -825,10 +780,6 @@ public class MyGame extends VariableFrameRateGame {
 		
 	//	rightHand.update();
 		
-  // 	SkeletalEntity flagPlatform =
-  //  		(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
-
-  // 	flagPlatform.update();
 		
 		
 		//System.out.println("station world position is " + stationN.getWorldPosition());
@@ -943,38 +894,6 @@ public class MyGame extends VariableFrameRateGame {
 
 	}
 	
-	private void animationFlagUp()
-	{ 
-
-	 	SkeletalEntity flagPlatform =
-    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
-	 	flagPlatform.stopAnimation();
-	 	flagPlatform.playAnimation("flagLitAnimation", 0.5f, NONE, 0);
-	 	flagPlatform.playAnimation("flagLitExtendAnimation", 0.5f, LOOP, 0);
-	}
-	
-	private void animationFlagDown()
-	{ 
-
-	 	SkeletalEntity flagPlatform =
-    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
-	 	flagPlatform.stopAnimation();
-	 	flagPlatform.playAnimation("flagUnlitAnimation", 0.5f, NONE, 0);
-
-	}
-	
-	
-	
-	private void animationFlagUpExtended()
-	{ 
-
-	 	SkeletalEntity flagPlatform =
-    			(SkeletalEntity) eng.getSceneManager().getEntity("flagAv");
-	 	flagPlatform.stopAnimation();
-	 	flagPlatform.playAnimation("flagLitExtendAnimation", 0.5f, LOOP, 0);
-
-	}
-	
 	
 	
 	private class destroyTerrain extends AbstractInputAction {
@@ -999,13 +918,6 @@ public class MyGame extends VariableFrameRateGame {
 		}
 	}
 	
-	private class throttleUpReturn extends AbstractInputAction {
-		
-		@Override
-		public void performAction(float arg0, Event e) {
-			 animationThrottleUpReturn();
-		}
-	}
 	
 	private class throttleDown extends AbstractInputAction {
 		
@@ -1015,37 +927,8 @@ public class MyGame extends VariableFrameRateGame {
 		}
 	}
 	
-	private class throttleDownReturn extends AbstractInputAction {
-		
-		@Override
-		public void performAction(float arg0, Event e) {
-			 animationThrottleDown();
-		}
-	}
+
 	
-	private class flagOut extends AbstractInputAction {
-		
-		@Override
-		public void performAction(float arg0, Event e) {
-			animationFlagUp();
-		}
-	}
-	
-	private class flagIn extends AbstractInputAction {
-		
-		@Override
-		public void performAction(float arg0, Event e) {
-			animationFlagDown();
-		}
-	}
-	
-	private class flagOutExtended extends AbstractInputAction {
-		
-		@Override
-		public void performAction(float arg0, Event e) {
-			animationFlagUpExtended();
-		}
-	}
 	
 	public void setEarParameters(SceneManager sm)
 	{ 
@@ -1066,7 +949,7 @@ public class MyGame extends VariableFrameRateGame {
 		Configuration configuration = sm.getConfiguration();
 		String sfxPath = configuration.valueOf("assets.sounds.path");
 		String musicPath = configuration.valueOf("assets.music.path");
-		AudioResource theMusic, theFlag, theStation;
+		AudioResource theMusic, theStation;
 		audioMgr = AudioManagerFactory.createAudioManager("ray.audio.joal.JOALAudioManager");
 		
 		print("audioMgr: " + audioMgr);
@@ -1077,22 +960,19 @@ public class MyGame extends VariableFrameRateGame {
 		print("here though");
 		
 		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
-	//	theFlag = audioMgr.createAudioResource(sfxPath + "energy_station.mp3", AudioResourceType.AUDIO_SAMPLE);
 		theStation = audioMgr.createAudioResource(sfxPath + "Cartoon-warp-02.wav", AudioResourceType.AUDIO_SAMPLE);
 
 	
 
 		
 		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 4, true);
-	//	flagUp = new Sound(theFlag, SoundType.SOUND_EFFECT, 25, false);
 		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 400, true);
 		
 	
 			backgroundMusic.initialize(audioMgr);
 			backgroundMusic.play();
 			
-		//	flagUp.initialize(audioMgr);
-			
+
 			stationSound.initialize(audioMgr);
 			stationSound.setMaxDistance(10.0f);
 			stationSound.setMinDistance(0.5f);
