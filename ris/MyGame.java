@@ -89,7 +89,7 @@ public class MyGame extends VariableFrameRateGame {
 	Random random = new Random();
 	
 	SceneManager sm;
-	Engine eng;
+	static Engine eng;
 	EntityMaker eMaker;
 	NodeMaker nm;
 	
@@ -301,7 +301,7 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 			    	createAllNodes(sm);
 			    	
-			   // 	createAnimations(sm);
+			    	createAnimations(sm);
 			    	
 			    	
 
@@ -765,6 +765,7 @@ public class MyGame extends VariableFrameRateGame {
 		SceneManager sm = engine.getSceneManager();
 		SceneNode stationN = sm.getSceneNode("stationNode");
 		SceneNode patrolNPC = sm.getSceneNode("PatrolEnemyNode");
+		SceneNode Object1N = sm.getSceneNode("object1Node");
 		
 		playerController.update();
 		
@@ -783,13 +784,13 @@ public class MyGame extends VariableFrameRateGame {
 		//dropShipN.roll(Degreef.createFrom(1));
 
 		
-		/*
+		
 	
 			SkeletalEntity rightHand =
 		(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
 		rightHand.update();
-		*/
+		
 		
 		//System.out.println("update");
 		
@@ -884,42 +885,38 @@ public class MyGame extends VariableFrameRateGame {
 	
 	
 	
-	private void throttleUpAndBackAnimation()
+	public static void throttleUpAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-	rightHand.stopAnimation();
 	rightHand.playAnimation("throttleUpAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
-	private void throttleDownAndBackAnimation()
+	public static void throttleDownAndBackAnimation()
 	{ 
 		System.out.println("throttleDownAndBackAnimation");
 		SkeletalEntity rightHand =
 				(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-		rightHand.stopAnimation();
 		rightHand.playAnimation("throttleDownAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
-	private void throttleLeftAndBackAnimation()
+	public static void throttleLeftAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-	rightHand.stopAnimation();
 	rightHand.playAnimation("throttleLeftAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
-	private void throttleRightAndBackAnimation()
+	public static void throttleRightAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-	rightHand.stopAnimation();
 	rightHand.playAnimation("throttleRightAndBackAnimation", 0.5f, NONE, 0);
 
 	}
@@ -987,7 +984,7 @@ public class MyGame extends VariableFrameRateGame {
 		//audioMgr.getEar().setLocation(stationN.getWorldPosition());
 		//audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
 		audioMgr.getEar().setLocation(shipN.getWorldPosition());
-		audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,0,0));
+		audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
 
 	}
 	
@@ -1033,17 +1030,17 @@ public class MyGame extends VariableFrameRateGame {
 			stationSound.initialize(audioMgr);
 			stationSound.setMaxDistance(10.0f);
 			stationSound.setMinDistance(0.5f);
-			stationSound.setRollOff(5f);
+			stationSound.setRollOff(5.0f);
 			
 			shipNoiseSound.initialize(audioMgr);
 			shipNoiseSound.setMaxDistance(10.0f);
 			shipNoiseSound.setMinDistance(0.5f);
-			shipNoiseSound.setRollOff(5f);
+			shipNoiseSound.setRollOff(5.0f);
 			
 			NPCSound.initialize(audioMgr);
 			NPCSound.setMaxDistance(10.0f);
 			NPCSound.setMinDistance(0.5f);
-			NPCSound.setRollOff(5f);
+			NPCSound.setRollOff(5.0f);
 			
 			laserFireSound.initialize(audioMgr);
 			laserFireSound.setMaxDistance(5.0f);
@@ -1066,7 +1063,7 @@ public class MyGame extends VariableFrameRateGame {
 			
 			shipNoiseSound.play();
 			stationSound.play();
-			NPCSound.play();
+		//	NPCSound.play();
 	}
 	
 	public static void playFireSound()
