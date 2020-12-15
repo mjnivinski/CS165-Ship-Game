@@ -408,7 +408,13 @@ public class ShipController {
 		shootCycle += 2;
 		shootCycle%=(lasers.length);
 		
+<<<<<<< HEAD
+		ris.MyGame.playFireSound();
+		
+		
+=======
 		game.shootNetworking();
+>>>>>>> a895a92b4a2e598759b7bd97da56700870180b2a
 	}
 	
 	public void setControllerThrottle(float v) { controllerThrottle = v;}
