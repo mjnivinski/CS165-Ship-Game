@@ -79,7 +79,9 @@ public class MyGame extends VariableFrameRateGame {
 	public static boolean isTerrain;
 	
 	public IAudioManager audioMgr;
-	Sound backgroundMusic, stationSound, NPCSound, laserFireSound, shipNoiseSound;
+	Sound backgroundMusic, stationSound, NPCSound;
+	static Sound laserFireSound;
+	Sound shipNoiseSound;
 	
 
 	
@@ -287,11 +289,13 @@ public class MyGame extends VariableFrameRateGame {
 		setupNetworking();
 		
 		print("setup audio");
-		initAudio(sm);
+	
 		print("setup physics");
 		setupPhysics();
 		setupPatrolNPC(eng,sm);
 		setupInputs(sm);
+		initAudio(sm);
+		
 		print("setup done");
 	}
 	
@@ -714,6 +718,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 		SceneManager sm = engine.getSceneManager();
 		SceneNode stationN = sm.getSceneNode("stationNode");
+		SceneNode patrolNPC = sm.getSceneNode("PatrolEnemyNode");
 		
 		playerController.update();
 		
@@ -746,8 +751,10 @@ public class MyGame extends VariableFrameRateGame {
 		
 		//print("" + stationN.getWorldPosition());
 		//print("" + stationSound);
-		//stationSound.setLocation(stationN.getWorldPosition());
-	//	oceanSound.setLocation(earthN.getWorldPosition());
+		stationSound.setLocation(stationN.getWorldPosition());
+		NPCSound.setLocation(patrolNPC.getWorldPosition());
+		laserFireSound.setLocation(shipN.getWorldPosition());
+		shipNoiseSound.setLocation(Object1N.getWorldPosition());
 		setEarParameters(sm);
 		
 		Matrix4 mat;
@@ -912,7 +919,6 @@ public class MyGame extends VariableFrameRateGame {
 	public void setEarParameters(SceneManager sm)
 	{ 
 		
-		
 		SceneNode shipN = eng.getSceneManager().getSceneNode("shipNode");
 		Vector3 avDir = shipN.getWorldForwardAxis();
 		// note - should get the camera's forward direction
@@ -921,6 +927,7 @@ public class MyGame extends VariableFrameRateGame {
 		//audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,1,0));
 		audioMgr.getEar().setLocation(shipN.getWorldPosition());
 		audioMgr.getEar().setOrientation(avDir, Vector3f.createFrom(0,0,0));
+
 	}
 	
 	public void initAudio(SceneManager sm)
@@ -951,11 +958,11 @@ public class MyGame extends VariableFrameRateGame {
 		
 
 		
-		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 4, true);
+		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 2, true);
 		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 400, true);
-		NPCSound = new Sound(npcBeeps, SoundType.SOUND_EFFECT, 400, true);
-		laserFireSound = new Sound(theFrickinLasers, SoundType.SOUND_EFFECT, 400, true);
-		shipNoiseSound = new Sound(theShipNoise, SoundType.SOUND_EFFECT, 400, true);
+		NPCSound = new Sound(npcBeeps, SoundType.SOUND_EFFECT, 20, true);
+		laserFireSound = new Sound(theFrickinLasers, SoundType.SOUND_EFFECT, 400, false);
+		shipNoiseSound = new Sound(theShipNoise, SoundType.SOUND_EFFECT, 100, true);
 		
 	
 			backgroundMusic.initialize(audioMgr);
@@ -966,13 +973,44 @@ public class MyGame extends VariableFrameRateGame {
 			stationSound.setMaxDistance(10.0f);
 			stationSound.setMinDistance(0.5f);
 			stationSound.setRollOff(5f);
-		
+			
+			shipNoiseSound.initialize(audioMgr);
+			shipNoiseSound.setMaxDistance(10.0f);
+			shipNoiseSound.setMinDistance(0.5f);
+			shipNoiseSound.setRollOff(5f);
+			
+			NPCSound.initialize(audioMgr);
+			NPCSound.setMaxDistance(10.0f);
+			NPCSound.setMinDistance(0.5f);
+			NPCSound.setRollOff(5f);
+			
+			laserFireSound.initialize(audioMgr);
+			laserFireSound.setMaxDistance(5.0f);
+			laserFireSound.setMinDistance(0.5f);
+			laserFireSound.setRollOff(2.5f);
+			
+			
 			SceneNode stationN = sm.getSceneNode("stationNode");
-			stationSound.setLocation(stationN.getWorldPosition());
+		
+			SceneNode patrolNPC = sm.getSceneNode("PatrolEnemyNode");
+			
+			SceneNode shipN = sm.getSceneNode("shipNode");
+			
+			SceneNode Object1N = sm.getSceneNode("object1Node");
+			
+			shipNoiseSound.setLocation(Object1N.getWorldPosition());
+			NPCSound.setLocation(patrolNPC.getWorldPosition());
 			
 			setEarParameters(sm);
 			
+			shipNoiseSound.play();
 			stationSound.play();
+			NPCSound.play();
+	}
+	
+	public static void playFireSound()
+	{
+		laserFireSound.play();
 	}
 	
 

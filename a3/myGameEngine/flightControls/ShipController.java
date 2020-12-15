@@ -407,6 +407,8 @@ public class ShipController {
 		shootCycle += 2;
 		shootCycle%=(lasers.length);
 		
+		ris.MyGame.playFireSound();
+		
 		
 	}
 	
