@@ -348,6 +348,12 @@ public class MyGame extends VariableFrameRateGame {
     			rightHand.loadAnimation("throttleLeftAndBackAnimation", "ThrustLeftandBack.rka");
     			rightHand.loadAnimation("throttleRightAndBackAnimation", "ThrustRightandBack.rka");
     			
+    			
+    			rightHand.loadAnimation("throttleUpAndPause", "ThrustUpAndPause.rka");
+    			rightHand.loadAnimation("throttleDownAndPause", "ThrustDownAndPause.rka");
+    			rightHand.loadAnimation("throttleBackFromUp", "FromUp_GoDown_andPause.rka");
+    			rightHand.loadAnimation("throttleBackFromDown", "FromDown_GoUp_andPause.rka");
+    			
     		
     			System.out.println("right here");
     			shipN.attachChild(rightHandN);
@@ -921,6 +927,48 @@ public class MyGame extends VariableFrameRateGame {
 
 	}
 	
+	/*
+	 throttleUpAndPauseAnimation()
+	 throttleDownAndPauseAnimation()
+	 throttleBackFromUpAnimation()
+	 throttleBackFromDownAnimation()
+	 */
+	
+	public static void throttleUpAndPauseAnimation()
+	{ 
+
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	rightHand.playAnimation("throttleUpAndPause", 0.5f, NONE, 0);
+
+	}
+	
+	public static void throttleDownAndPauseAnimation()
+	{ 
+		System.out.println("throttleDownAndBackAnimation");
+		SkeletalEntity rightHand =
+				(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+		rightHand.playAnimation("throttleDownAndPause", 0.5f, NONE, 0);
+
+	}
+	
+	public static void throttleBackFromUpAnimation()
+	{ 
+
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	rightHand.playAnimation("throttleBackFromUp", 0.5f, NONE, 0);
+
+	}
+	
+	public static void throttleBackFromDownAnimation()
+	{ 
+
+		SkeletalEntity rightHand =
+	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+	rightHand.playAnimation("throttleBackFromDown", 0.5f, NONE, 0);
+
+	}
 	
 	
 	private class destroyTerrain extends AbstractInputAction {
