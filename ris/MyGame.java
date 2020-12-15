@@ -798,7 +798,7 @@ public class MyGame extends VariableFrameRateGame {
 		SkeletalEntity rightHand =
 	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 	rightHand.stopAnimation();
-	rightHand.playAnimation("throttleUpAndBackAnimatio", 0.5f, NONE, 0);
+	rightHand.playAnimation("throttleUpAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
