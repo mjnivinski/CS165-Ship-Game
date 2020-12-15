@@ -20,6 +20,8 @@ public class ProtocolClient extends GameConnectionClient {
 		this.game = game;
 		this.id = UUID.randomUUID();
 		this.ghostAvatars = new Vector<GhostAvatar>();
+		
+		
 	}
 
 	private void print(String s) {

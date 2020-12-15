@@ -66,8 +66,7 @@ public class FlightController {
 	
 	KeyboardFireWeapon KFW;
 	
-	//Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0.4f, -0.5f);
-	Vector3f offset = (Vector3f) Vector3f.createFrom(0, 0f, -1.7f);
+	Vector3 cameraOffset = Vector3f.createFrom(0, 0f, -1.7f);
 	
 	float deltaTime;
 	
@@ -87,7 +86,7 @@ public class FlightController {
 		
 		shipController = new ShipController(eng, this, target, sm, physics);
 		
-		cameraN.setLocalPosition(offset);
+		cameraN.setLocalPosition(cameraOffset);
 		
 		camera.setPo((Vector3f) cameraN.getWorldPosition());
 		

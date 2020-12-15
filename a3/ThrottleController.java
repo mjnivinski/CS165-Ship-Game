@@ -23,6 +23,7 @@ public class ThrottleController {
 		this.eng = eng;
 		this.g = g;
 		this.ship = ship;
+		
 	}
 	
 	private void createAnimations(SceneManager sm) throws IOException {
