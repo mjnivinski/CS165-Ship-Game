@@ -1,2 +1,2 @@
-javac a3\*.java
+javac ris\*.java
 PAUSE

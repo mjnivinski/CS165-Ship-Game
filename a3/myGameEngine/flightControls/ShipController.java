@@ -11,6 +11,7 @@ import ray.rage.scene.Tessellation;
 import ray.rml.Degreef;
 import ray.rml.Vector3;
 import ray.rml.Vector3f;
+import ris.MyGame;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
@@ -21,6 +22,7 @@ import java.util.*;
 
 public class ShipController {
 	
+	MyGame game;
 	SceneManager sm;
 	ScriptEngine jsEngine;
 	File paramFile;
@@ -72,10 +74,11 @@ public class ShipController {
 	
 	NodeMaker nm;
 	
-	public ShipController(Engine e, FlightController f, SceneNode ship, SceneManager sm, PhysicsEngine physics) throws IOException {
+	public ShipController(MyGame g, Engine e, FlightController f, SceneNode ship, SceneManager sm, PhysicsEngine physics) throws IOException {
 		
 		setupJavascript();
 		
+		game = g;
 		this.sm = sm;
 		eng = e;
 		this.physics =physics;
@@ -402,14 +405,16 @@ public class ShipController {
 		p1.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
 		p2.setLinearVelocity(forward.mult(laserSpeed).toFloatArray());
 		
-		//System.out.println("later still: " + lasers[shootCycle].getWorldForwardAxis());
-		
 		shootCycle += 2;
 		shootCycle%=(lasers.length);
 		
+<<<<<<< HEAD
 		ris.MyGame.playFireSound();
 		
 		
+=======
+		game.shootNetworking();
+>>>>>>> a895a92b4a2e598759b7bd97da56700870180b2a
 	}
 	
 	public void setControllerThrottle(float v) { controllerThrottle = v;}

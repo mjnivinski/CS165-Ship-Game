@@ -137,6 +137,7 @@ public class MyGame extends VariableFrameRateGame {
 		this.serverAddress = serverAddr;
 		this.serverPort = sPort;
 		this.serverProtocol = ProtocolType.UDP;
+		
 	}
 
 	//faster than typing System.out.println();
@@ -165,6 +166,7 @@ public class MyGame extends VariableFrameRateGame {
 	private void setupNetworking() {
 		print("setupNetworking");
 		gameObjectsToRemove = new Vector<UUID>();
+		
 		isConnected = false;
 		try {
 			protClient = new ProtocolClient(InetAddress.getByName(serverAddress), serverPort, serverProtocol, this);
@@ -173,7 +175,7 @@ public class MyGame extends VariableFrameRateGame {
 		catch(IOException e) {e.printStackTrace(); }
 		
 		
-		
+		print("little later");
 		if(protClient == null) {
 			print("missing protocol host");
 		}
@@ -229,6 +231,17 @@ public class MyGame extends VariableFrameRateGame {
 		this.camera = camera;
 		camera.setMode('r');
 	}
+	
+	private int team;
+	private void selectShip() throws IOException {
+		if(team == 0) {
+			makePlayerGrey();
+		}
+		else {
+			makePlayerBlue();
+		}
+	}
+
 
 	@Override
 	protected void setupScene(Engine eng, SceneManager sm) throws IOException {
@@ -236,11 +249,13 @@ public class MyGame extends VariableFrameRateGame {
 		this.eng = eng;
 		eMaker = new EntityMaker(eng,sm);
 		
-		
+		//selectShip();
 		
 		print("Setup Scene");
-		setupPlanets(eng, sm);
+		//setupPlanets(eng, sm);
 		setupShip(eng, sm);
+		
+		
 		
 		
 		
@@ -292,6 +307,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 		print("setup physics");
 		setupPhysics();
+		nm = new NodeMaker(eng, sm, physicsEng);
 		setupPatrolNPC(eng,sm);
 		setupInputs(sm);
 		initAudio(sm);
@@ -314,7 +330,7 @@ public class MyGame extends VariableFrameRateGame {
     	SceneNode rightHandN =
     			sm.getRootSceneNode().createChildSceneNode("rightHandNode");
     			rightHandN.attachObject(rightHand);
-    			rightHandN.scale(0.1f, 0.1f, 0.1f);
+    			rightHandN.scale(0.1f, 0.1f, 0.1f);//
     			//rightHandN.translate(0, 0.5f, 0);
     		
     		
@@ -554,25 +570,53 @@ public class MyGame extends VariableFrameRateGame {
 		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
 	}
 	
+	private void makePlayerGrey() throws IOException {
+		print("makePlayerGrey");
+		Entity shipE = sm.createEntity("ship", "cockpitMk3j.obj");
+		shipE.setPrimitive(Primitive.TRIANGLES);
+
+		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
+		shipN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
+
+		//TODO
+		//set start location for this team
+		shipN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
+		shipN.attachObject(shipE);
+		shipN.yaw(Degreef.createFrom(180));
+
+		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
+	}
+	
+	private void makePlayerBlue() throws IOException {
+		print("makePlayerBlue");
+		Entity shipE = sm.createEntity("ship", "blueCockpit.obj");
+		shipE.setPrimitive(Primitive.TRIANGLES);
+
+		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
+		shipN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
+		
+		//TODO
+		//set start location for this team
+		shipN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
+		shipN.attachObject(shipE);
+		shipN.yaw(Degreef.createFrom(180));
+
+		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
+	}
+	
 	private void setupPatrolNPC(Engine eng, SceneManager sm) throws IOException{
 		print("setupPatrolNPC");
 		
 		patrolNPC = sm.getRootSceneNode().createChildSceneNode("PatrolEnemyNode");
 		
-		
 		patrolNPC.attachObject(eMaker.earth("the EARTH"));
 		
-		
-		
-		String engine = "ray.physics.JBullet.JBulletPhysicsEngine";
 		float mass = 1.0f;
-		float up[] = {0,1,0};
 		double[] temptf;
 		
 		temptf = toDoubleArray(patrolNPC.getLocalTransform().toFloatArray());
 		PhysicsObject npcPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
 		patrolNPC.setPhysicsObject(npcPhysObj);
-		print("PATROL NPC PHYSICS: " + patrolNPC.getPhysicsObject() + " ##########################");
 		
 		npc1 = new PatrolEnemy(patrolNPC,stationN, this,5,100,100);
 		SceneNode[] targets = {shipN};
@@ -686,7 +730,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 
 	
-	public void setupGhostAvatar(GhostAvatar ghost) throws IOException {
+	public void setupGhostAvatar(GhostAvatar ghost, int team) throws IOException {
 		
 		SceneManager sm = eng.getSceneManager();
 		
@@ -694,17 +738,46 @@ public class MyGame extends VariableFrameRateGame {
 		
 		print("setupGhostShip");
 		
+		/*
+		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
+		shipE.setPrimitive(Primitive.TRIANGLES);
+
+		ghostN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");*/
+		
+		if(team==0) {
+			makeGreyGhost(ghostN,ghost);
+		}else {
+			makeBlueGhost(ghostN,ghost);
+		}
+
+		ghostN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
+		//ghostN.attachObject(shipE);
+		ghostN.yaw(Degreef.createFrom(180));
+		
+		float mass = 1.0f;
+		double[] temptf;
+		temptf = MyGame.toDoubleArray(ghostN.getLocalTransform().toFloatArray());
+		PhysicsObject shipPhysicsObject = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
+		ghostN.setPhysicsObject(shipPhysicsObject);
+		
+		ghost.setNode(ghostN);
+	}
+	
+	private void makeGreyGhost(SceneNode ghostN, GhostAvatar ghost) throws IOException {
 		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
 		ghostN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
-
-		ghostN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
 		ghostN.attachObject(shipE);
-		ghostN.yaw(Degreef.createFrom(180));
-		
-		ghost.setNode(ghostN);
+	}
+	
+	private void makeBlueGhost(SceneNode ghostN, GhostAvatar ghost) throws IOException {
+		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
+		shipE.setPrimitive(Primitive.TRIANGLES);
+
+		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
+		ghostN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
 	}
 	
 	@Override
@@ -771,13 +844,14 @@ public class MyGame extends VariableFrameRateGame {
 	
 	
 	float networkTimer = 0;
+	float tickRate = 100;
 	protected void processNetworking(float deltaTime) {
 		
 		networkTimer += deltaTime/1000;
 		
-		if(networkTimer > 0.3f) {
+		if(networkTimer > 1/tickRate) {
 			networkTimer = 0;
-			protClient.sendMoveMessage(getPlayerPosition());
+			protClient.sendMoveMessage(getPlayerPosition(), getPlayerDirection());
 		}
 		
 		if(protClient!=null) {
@@ -789,6 +863,12 @@ public class MyGame extends VariableFrameRateGame {
 			while(it.hasNext()) {
 				
 			}*/
+		}
+	}
+	
+	public void shootNetworking() {
+		if(protClient!=null) {
+			protClient.sendShootMessage();
 		}
 	}
 
@@ -819,6 +899,14 @@ public class MyGame extends VariableFrameRateGame {
 	
 	public Vector3 getPlayerPosition() {
 		return shipN.getWorldPosition();
+	}
+	
+	public Vector3 getPlayerDirection() {
+		return Vector3f.createFrom(shipN.getPhysicsObject().getLinearVelocity());
+	}
+	
+	public int getPlayerTeam() {
+		return team;
 	}
 	
 	
