@@ -1,6 +1,6 @@
 # Blender v2.90.1 OBJ File: 'cockpitMk3h.blend'
 # www.blender.org
-mtllib cockpitMk3j.mtl
+mtllib blueCockpit.mtl
 o Cube
 v 0.901276 -0.578732 2.135045
 v 0.735083 -2.322250 2.242013

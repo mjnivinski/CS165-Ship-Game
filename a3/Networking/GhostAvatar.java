@@ -34,6 +34,7 @@ public class GhostAvatar {
 	public SceneNode getNode() {return node; }
 	
 	public UUID getID() { return id; }
+	public int getTeam() { return team; }
 	
 	private Vector3 ahead;
 	private PhysicsObject phys;

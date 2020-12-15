@@ -149,6 +149,7 @@ public class MyGame extends VariableFrameRateGame {
 		//Game game = new MyGame("yes", 5);
 		
 		//FSEM();
+		//chooseTeam();
 		
 		try {
 			game.startup();
@@ -173,7 +174,6 @@ public class MyGame extends VariableFrameRateGame {
 		catch(IOException e) {e.printStackTrace(); }
 		
 		
-		print("little later");
 		if(protClient == null) {
 			print("missing protocol host");
 		}
@@ -211,6 +211,14 @@ public class MyGame extends VariableFrameRateGame {
 		System.out.println("fullScreen: " + fullScreen);
 	}
 	
+	static int chooseTeam;
+	private static void chooseTeam() {
+		chooseTeam = JOptionPane.showConfirmDialog(null,  "Join Grey Team? (No Joins Blue Team)", "Blue", JOptionPane.YES_NO_OPTION);
+		//0 is yes
+		//1 is no
+		System.out.println("chooseTeam: " + chooseTeam);
+	}
+	
 	@Override
 	protected void setupCameras(SceneManager sm, RenderWindow rw) {
 		
@@ -230,9 +238,8 @@ public class MyGame extends VariableFrameRateGame {
 		camera.setMode('r');
 	}
 	
-	private int team;
 	private void selectShip() throws IOException {
-		if(team == 0) {
+		if(chooseTeam == 0) {
 			makePlayerGrey();
 		}
 		else {
@@ -308,6 +315,8 @@ public class MyGame extends VariableFrameRateGame {
 		nm = new NodeMaker(eng, sm, physicsEng);
 		setupPatrolNPC(eng,sm);
 		setupInputs(sm);
+		
+		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
 		print("setup done");
 	}
 	
@@ -597,7 +606,22 @@ public class MyGame extends VariableFrameRateGame {
 		shipN.attachObject(shipE);
 		shipN.yaw(Degreef.createFrom(180));
 
-		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
+		
+		
+		Entity BlueCockpitE = sm.createEntity("BlueCockput", "cockpitMk3j.obj");
+        BlueCockpitE.setPrimitive(Primitive.TRIANGLES);
+        //BlueCockpitN = sm.getRootSceneNode().createChildSceneNode(BlueCockpitE.getName() + "Node");
+        //BlueCockpitN.moveForward(0.0f);
+        //BlueCockpitN.moveUp(25f);
+        //BlueCockpitN.moveRight(0f);
+        //BlueCockpitN.attachObject(BlueCockpitE);
+
+        TextureManager tm1 = eng.getTextureManager();
+        Texture blueTexture2 = tm1.getAssetByPath("cockpitMk3jB-Blue.png");
+        RenderSystem rs2 = sm.getRenderSystem();
+        TextureState state1 = (TextureState)rs2.createRenderState(RenderState.Type.TEXTURE);
+        state1.setTexture(blueTexture2);
+        BlueCockpitE.setRenderState(state1);
 	}
 	
 	private void setupPatrolNPC(Engine eng, SceneManager sm) throws IOException{
@@ -619,51 +643,6 @@ public class MyGame extends VariableFrameRateGame {
 		
 		npc1.setTargets(targets);
 		print("done setting up patrolNPC");
-	}
-
-	//same initialization as ship, with a few rotation controllers.
-	private void setupPlanets(Engine eng, SceneManager sm) throws IOException {
-		/*
-		for(int i=0; i<earthPlanets.length; i++) {
-			earthPlanets[i] = setupPlanet(eng,sm,"earthPlanet" + i, "earth-day.jpeg");
-			earthPlanets[i].setLocalPosition(Vector3f.createFrom(0,planetHeight,0));
-		}
-		
-		earthPlanets[0].setLocalPosition(-3,planetHeight,-10);
-		earthPlanets[1].setLocalPosition(3,planetHeight,-10);
-		earthPlanets[2].setLocalPosition(20,planetHeight,-20);
-		earthPlanets[3].setLocalPosition(14,planetHeight,-30);
-		earthPlanets[4].setLocalPosition(20,planetHeight,-5);
-		earthPlanets[5].setLocalPosition(-10,planetHeight,-20);
-		earthPlanets[6].setLocalPosition(-20,planetHeight,-15);
-		earthPlanets[7].setLocalPosition(-30,planetHeight,-5);
-		earthPlanets[8].setLocalPosition(30,planetHeight,-5);
-		earthPlanets[9].setLocalPosition(0,planetHeight,-40);
-		earthPlanets[10].setLocalPosition(-15,planetHeight,-40);
-		earthPlanets[11].setLocalPosition(15,planetHeight,-40);
-		earthPlanets[12].setLocalPosition(-10,planetHeight,-15);*/
-	}
-	
-	private SceneNode setupPlanet(Engine eng, SceneManager sm, String name, String texName) throws IOException {
-		
-		/*
-		Entity planetE = sm.createEntity(name, "sphere.obj");
-		planetE.setPrimitive(Primitive.TRIANGLES);
-		
-		Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
-		
-		Texture tex = eng.getTextureManager().getAssetByPath(texName);
-		
-		TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
-		texState.setTexture(tex);
-		planetE.setRenderState(texState);
-		planetE.setMaterial(mat);
-		*/
-		//SceneNode planetN = sm.getRootSceneNode().createChildSceneNode(planetE.getName() + "Node");
-		SceneNode planetN = sm.getRootSceneNode().createChildSceneNode(name + "Node");
-		planetN.attachObject(eMaker.earth(name));
-		
-		return planetN;
 	}
 	
 	private void setupPhysics() {
@@ -728,22 +707,13 @@ public class MyGame extends VariableFrameRateGame {
 	
 	public void setupGhostAvatar(GhostAvatar ghost, int team) throws IOException {
 		
-		SceneManager sm = eng.getSceneManager();
-		
-		SceneNode ghostN = ghost.getNode();
-		
-		print("setupGhostShip");
-		
-		/*
-		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
-		shipE.setPrimitive(Primitive.TRIANGLES);
-
-		ghostN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");*/
+		System.out.println("setting up ghost " + ghost.getID().toString());
+		SceneNode ghostN = sm.getRootSceneNode().createChildSceneNode(ghost.getID().toString());
 		
 		if(team==0) {
-			makeGreyGhost(ghostN,ghost);
+			ghostN = makeGreyGhost(ghostN,ghost);
 		}else {
-			makeBlueGhost(ghostN,ghost);
+			ghostN = makeBlueGhost(ghostN,ghost);
 		}
 
 		ghostN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
@@ -759,21 +729,25 @@ public class MyGame extends VariableFrameRateGame {
 		ghost.setNode(ghostN);
 	}
 	
-	private void makeGreyGhost(SceneNode ghostN, GhostAvatar ghost) throws IOException {
+	private SceneNode makeGreyGhost(SceneNode ghostN, GhostAvatar ghost) throws IOException {
 		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
 		ghostN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
 		ghostN.attachObject(shipE);
+		return ghostN;
 	}
 	
-	private void makeBlueGhost(SceneNode ghostN, GhostAvatar ghost) throws IOException {
-		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
+	private SceneNode makeBlueGhost(SceneNode ghostN, GhostAvatar ghost) throws IOException {
+		//print("makeBlueGhost()");
+		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "blueGhost.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
 		ghostN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
+		ghostN.attachObject(shipE);
+		return ghostN;
 	}
 	
 	@Override
@@ -899,7 +873,7 @@ public class MyGame extends VariableFrameRateGame {
 	}
 	
 	public int getPlayerTeam() {
-		return team;
+		return chooseTeam;
 	}
 	
 	

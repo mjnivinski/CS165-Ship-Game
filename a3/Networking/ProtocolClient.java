@@ -33,7 +33,7 @@ public class ProtocolClient extends GameConnectionClient {
 		String strMessage = (String) msg;
 		String[] msgTokens = strMessage.split(",");
 
-		System.out.println("packet recieved: " + strMessage);
+		//System.out.println("packet recieved: " + strMessage);
 
 		if (msgTokens.length > 0) {
 			if (msgTokens[0].compareTo("join") == 0) { // receive "join"
@@ -56,8 +56,7 @@ public class ProtocolClient extends GameConnectionClient {
 				removeGhostAvatar(remID);
 			}
 
-			if ((msgTokens[0].compareTo("dsfr") == 0) || // Received "dsfr" which means provides client with updated
-					msgTokens[0].compareTo("create") == 0) {
+			if ((msgTokens[0].compareTo("dsfr") == 0)) {
 
 				// format create,remoteid,x,y,z or dsfr,remoteid,x,y,z
 				UUID ghostID = UUID.fromString(msgTokens[1]);
@@ -72,6 +71,8 @@ public class ProtocolClient extends GameConnectionClient {
 			}
 			
 			if(msgTokens[0].compareTo("create") == 0) {
+				
+				System.out.println("create message recieved");
 				
 				UUID ghostId = UUID.fromString(msgTokens[1]);
 				Vector3 ghostPosition = Vector3f.createFrom(Float.parseFloat(msgTokens[2]), Float.parseFloat(msgTokens[3]), Float.parseFloat(msgTokens[4]));
@@ -133,11 +134,13 @@ public class ProtocolClient extends GameConnectionClient {
 	}
 
 	public void sendCreateMessage(Vector3 pos, Vector3 linear, int team) {
+		System.out.println("send create message");
 		// format: create,localid,x,y,z
 		try {
 			String message = new String("create," + id.toString());
 			message += "," + pos.x() + "," + pos.y() + "," + pos.z();
 			message += "," + linear.x() + "," + linear.y() + "," + linear.z();
+			message += "," + String.valueOf(team);
 			sendPacket(message);
 		} catch (IOException e) {
 			e.printStackTrace();
