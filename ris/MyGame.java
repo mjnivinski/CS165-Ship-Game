@@ -792,7 +792,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 	
 	
-	private void throttleUpAndBackAnimatio()
+	private void throttleUpAndBackAnimation()
 	{ 
 
 		SkeletalEntity rightHand =
@@ -852,7 +852,7 @@ public class MyGame extends VariableFrameRateGame {
 				
 		@Override
 		public void performAction(float arg0, Event e) {
-			throttleUpAndBackAnimatio();
+			throttleUpAndBackAnimation();
 		}
 	}
 	
