@@ -256,11 +256,9 @@ public class MyGame extends VariableFrameRateGame {
 		this.eng = eng;
 		eMaker = new EntityMaker(eng,sm);
 		
-		//selectShip();
 		
 		print("Setup Scene");
-		//setupPlanets(eng, sm);
-		setupShip(eng, sm);
+		setupShip();
 		
 		
 		
@@ -569,8 +567,15 @@ public class MyGame extends VariableFrameRateGame {
 	}
 
 	//ship is setup with code provided
-	private void setupShip(Engine eng, SceneManager sm) throws IOException {
+	private void setupShip() throws IOException {
 		print("setupShip");
+		
+		if(chooseTeam == 0) {
+			makePlayerGrey();
+		}
+		else makePlayerBlue();
+		
+		/*
 		Entity shipE = sm.createEntity("ship", "cockpitMk3j.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
@@ -582,6 +587,7 @@ public class MyGame extends VariableFrameRateGame {
 		shipN.yaw(Degreef.createFrom(180));
 
 		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
+		*/
 	}
 	
 	private void makePlayerGrey() throws IOException {
@@ -617,7 +623,7 @@ public class MyGame extends VariableFrameRateGame {
 
 		
 		
-		Entity BlueCockpitE = sm.createEntity("BlueCockput", "cockpitMk3j.obj");
+		Entity BlueCockpitE = sm.createEntity("BlueCockpit", "cockpitMk3j.obj");
         BlueCockpitE.setPrimitive(Primitive.TRIANGLES);
         //BlueCockpitN = sm.getRootSceneNode().createChildSceneNode(BlueCockpitE.getName() + "Node");
         //BlueCockpitN.moveForward(0.0f);
