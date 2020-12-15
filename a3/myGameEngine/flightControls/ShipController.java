@@ -21,6 +21,7 @@ import java.util.*;
 
 public class ShipController {
 	
+	SceneManager sm;
 	ScriptEngine jsEngine;
 	File paramFile;
 	long fileLastModifiedTime;
@@ -75,6 +76,7 @@ public class ShipController {
 		
 		setupJavascript();
 		
+		this.sm = sm;
 		eng = e;
 		this.physics =physics;
 		FC = f;
@@ -90,17 +92,40 @@ public class ShipController {
 		setupParams();
 	}
 	
-	
+	private SceneNode throttleBase;
 	private Vector3[] throttlePositions;
 	private void setupThrottleIndicator() throws IOException {
+		
+		throttleBase = sm.getRootSceneNode().createChildSceneNode("throttleBase");
 		
 		throttleIndicator = nm.makeThrottleIndicators();
 		
 		throttlePositions = new Vector3[throttleIndicator.length];
 		
+		ship.attachChild(throttleBase);
+		
+		throttleBase.setLocalPosition(throttleIndicator[4].getLocalPosition());
+		
+		
+		throttleBase.roll(Degreef.createFrom(90));
+		throttleBase.yaw(Degreef.createFrom(-45));
+		//throttleBase.pitch(Degreef.createFrom(45));
+		
+		
+		Vector3 position = throttleBase.getLocalPosition().add(-0.5f,0,0);
+		throttleBase.setLocalPosition(position);
+		
+		print("throttleBase.getLocalPosition(): " + throttleBase.getLocalPosition());
+		
+		
 		for(int i=0; i<throttleIndicator.length;i++) {
+			
+			
 			throttlePositions[i] = throttleIndicator[i].getLocalPosition();
+			throttleBase.attachChild(throttleIndicator[i]);
 		}
+		
+		
 	}
 	
 	private void setupParams() {
@@ -154,7 +179,13 @@ public class ShipController {
 	float deltaTime;
 	public void update() {
 		
+		
+		
 		deltaTime = eng.getElapsedTimeMillis()/1000;
+		
+		//throttleBase.pitch(Degreef.createFrom(10 * deltaTime));
+		
+		
 		
 		long modTime = paramFile.lastModified();
 		if (modTime > fileLastModifiedTime)
@@ -177,12 +208,13 @@ public class ShipController {
 	}
 	
 	//updates the throttle hud
+	private Vector3 farAway = Vector3f.createFrom(10000,10000,1000);
 	float throttleGuage;
 	private void throttleUpdate() {
 		throttleGuage = throttle*throttleIndicator.length;
 		
 		for(int i=0;i<throttleIndicator.length;i++) {
-			throttleIndicator[i].setLocalPosition(10000,10000,10000);
+			throttleIndicator[i].setLocalPosition(farAway);
 		}
 		
 		if(throttleGuage < 0.1) return;
@@ -192,7 +224,7 @@ public class ShipController {
 		}
 		
 		if(throttleGuage < throttleIndicator.length) {
-			throttleIndicator[throttleIndicator.length-1].setLocalPosition(10000,10000,10000);
+			throttleIndicator[throttleIndicator.length-1].setLocalPosition(farAway);
 		}
 	}
 	

@@ -2,7 +2,7 @@ package a3.SceneCreation;
 
 import java.io.IOException;
 
-import a3.MyGame;
+import ris.MyGame;
 import ray.physics.PhysicsEngine;
 import ray.physics.PhysicsObject;
 import ray.rage.Engine;
@@ -14,6 +14,7 @@ import ray.rage.rendersystem.states.TextureState;
 import ray.rage.scene.Entity;
 import ray.rage.scene.SceneManager;
 import ray.rage.scene.SceneNode;
+import ray.rml.Degreef;
 import ray.rml.Vector3;
 import ray.rml.Vector3f;
 
@@ -96,12 +97,12 @@ public class NodeMaker {
 		
 		ln.lookAt(ship);
 		
-		System.out.println("location: " + ln.getWorldPosition());
 		
 		return ln;
 	}
 	
-	float throttleGap = 0.2f;
+	private Vector3 throttleOffset;
+	private float throttleGap = 0.05f;
 	public SceneNode[] makeThrottleIndicators() throws IOException {
 		SceneNode[] theHud = new SceneNode[10];
 		
@@ -110,7 +111,7 @@ public class NodeMaker {
 		}
 		
 		for(int i=0;i<10;i++) {
-			theHud[i].setLocalPosition(-1 * i*throttleGap + (throttleGap*10/2),0,1);
+			theHud[i].setLocalPosition(-1 * i*throttleGap + (throttleGap*10/2),0,0);
 			
 		}
 		return theHud;
@@ -120,25 +121,18 @@ public class NodeMaker {
 		
 		SceneNode ti = sm.getRootSceneNode().createChildSceneNode(name);
 		
-		Entity tie = sm.createEntity(name, "sphere.obj");
+		Entity tie = sm.createEntity(name, "throttleIndicator.obj");
 		tie.setPrimitive(Primitive.TRIANGLES);
-		
-		Material mat = sm.getMaterialManager().getAssetByPath("default.mtl");
-		
-		Texture tex = eng.getTextureManager().getAssetByPath("earth-day.jpeg");
-		
-		TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
-		texState.setTexture(tex);
-		tie.setRenderState(texState);
-		tie.setMaterial(mat);
 		
 		ti.attachObject(tie);
 		
-		float scale = 0.1f;
+		float scale = 0.04f;
 		
 		ti.setLocalScale(Vector3f.createFrom(scale,scale,scale));
 		
 		ship.attachChild(ti);
+		
+		ti.pitch(Degreef.createFrom(270));
 		
 		return ti;
 	}

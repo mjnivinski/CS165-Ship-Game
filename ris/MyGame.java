@@ -1,4 +1,4 @@
-package a3;
+package ris;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import a3.EntityMaker;
 import a3.NPCS.Patroller.PatrolEnemy;
 import a3.NPCS.Patroller.PatrolStrategyContext;
 import a3.Networking.GhostAvatar;
@@ -185,6 +186,7 @@ public class MyGame extends VariableFrameRateGame {
 			
 			protClient.sendJoinMessage();
 		}
+		
 	}
 
 	@Override
@@ -628,74 +630,6 @@ public class MyGame extends VariableFrameRateGame {
 		return planetN;
 	}
 	
-	/*
-	private void setupFloor() throws IOException {
-		Engine eng = getEngine();
-		SceneManager sm = eng.getSceneManager();
-		ManualObject floor = floor(eng, sm);
-		
-		SceneNode floorN = sm.getRootSceneNode().createChildSceneNode("floorN");
-		floorN.attachObject(floor);
-		floorN.setLocalPosition(0,-1,0);
-		floorN.setLocalScale(Vector3f.createFrom(100,100,100));
-	}
-	*/
-	
-	/*
-	private ManualObject floor(Engine eng, SceneManager sm) throws IOException {
-		ManualObject floor = sm.createManualObject("floor");
-		ManualObjectSection floorSec = floor.createManualSection("floorSec");
-		floor.setGpuShaderProgram(sm.getRenderSystem().getGpuShaderProgram(GpuShaderProgram.Type.RENDERING));
-		
-		float[] vertices = new float[] {
-			-1f,0,1f,//bottom right
-			1f,0,1f,//top right
-			1f,0,-1f,//top left
-			-1f,0,1f,
-			1f,0,-1f,
-			-1f,0,-1f
-		};
-		
-		float[] texcoords = new float[] {
-				1,0, 1,1, 0,1,
-				1,0, 0,1, 0,0
-		};
-		
-		float[] normals = new float[] {
-				0,1f,0,
-				0,1f,0,
-				0,1f,0,
-				0,1f,0,
-				0,1f,0,
-				0,1f,0
-		};
-		
-		int[] indices = new int[] {
-				0,1,2,3,4,5
-		};
-		
-		FloatBuffer vertBuf = BufferUtil.directFloatBuffer(vertices);
-		FloatBuffer texBuf = BufferUtil.directFloatBuffer(texcoords);
-		FloatBuffer normBuf = BufferUtil.directFloatBuffer(normals);
-		IntBuffer indexBuf = BufferUtil.directIntBuffer(indices);
-
-		floorSec.setVertexBuffer(vertBuf);
-		floorSec.setTextureCoordsBuffer(texBuf);
-		floorSec.setNormalsBuffer(normBuf);
-		floorSec.setIndexBuffer(indexBuf);
-
-		Texture tex = eng.getTextureManager().getAssetByPath("carpet.png");
-		TextureState texState = (TextureState) sm.getRenderSystem().createRenderState(RenderState.Type.TEXTURE);
-		texState.setTexture(tex);
-		FrontFaceState faceState = (FrontFaceState) sm.getRenderSystem().createRenderState(RenderState.Type.FRONT_FACE);
-
-		floor.setDataSource(DataSource.INDEX_BUFFER);
-		floor.setRenderState(texState);
-		floor.setRenderState(faceState);
-		
-		return floor;
-	}*/
-	
 	private void setupPhysics() {
 		System.out.println("setupPhysics");
 		String engine = "ray.physics.JBullet.JBulletPhysicsEngine";
@@ -1110,6 +1044,18 @@ public class MyGame extends VariableFrameRateGame {
 	private int getThrottleSign() {
 		return playerController.getThrottleSign();
 	}
+	
+	private int getPitchSign() {
+		return playerController.getPitchSign();
+	}
+
+	private int getRollSign() {
+		return playerController.getRollSign();
+	}
+
+	private int getYawSign() {
+		return playerController.getYawSign();
+}
 	
 	private float[] toFloatArray(double[] arr)
 	{ 

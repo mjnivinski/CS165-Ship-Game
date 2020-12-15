@@ -84,12 +84,10 @@ public class PatrolChaseStrategy implements PatrolStrategy {
 		shootCycle%=(lasers.length);
 	}
 	
+	//checks for collision between npc laser and player ship
 	private void laserCheck() {
-		
 		for(SceneNode l : lasers) {
-			//System.out.println("distance: " + VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()));
 			if(VectorMath.distance(l.getWorldPosition(), target.getWorldPosition()) < hitRange) {
-				System.out.println("hit");
 				patrolEnemy.npcHit();
 				break;
 			}

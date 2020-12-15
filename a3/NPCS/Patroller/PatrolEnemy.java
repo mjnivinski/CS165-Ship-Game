@@ -2,7 +2,7 @@ package a3.NPCS.Patroller;
 
 import java.io.IOException;
 
-import a3.MyGame;
+import ris.MyGame;
 import a3.SceneCreation.NodeMaker;
 import a3.myGameEngine.VectorMath;
 import ray.ai.behaviortrees.BTAction;
@@ -142,7 +142,7 @@ public class PatrolEnemy {
 			//check and see if we should change to PatrolPatrolStrategy
 			//print("return action");
 			if(!context.stillReturning()) {
-				print("returning complete");
+				//print("returning complete");
 				returning = false;
 				context.patrolHome();
 			}

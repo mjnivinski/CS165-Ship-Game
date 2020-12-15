@@ -5,7 +5,7 @@ import java.net.InetAddress;
 import java.util.UUID;
 import java.util.Vector;
 
-import a3.MyGame;
+import ris.MyGame;
 import ray.networking.client.GameConnectionClient;
 import ray.rml.Vector3;
 import ray.rml.Vector3f;

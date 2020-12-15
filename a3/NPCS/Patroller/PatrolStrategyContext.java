@@ -44,7 +44,7 @@ public class PatrolStrategyContext {
 	
 	
 	public void chaseEnemy(SceneNode t) {
-		System.out.println("chase begins");
+		//System.out.println("chase begins");
 		npc.getPhysicsObject().setLinearVelocity(new float[]{1,1,1});
 		strategy = new PatrolChaseStrategy(patrolEnemy, npc,t, lasers);
 		chaseTarget = t;

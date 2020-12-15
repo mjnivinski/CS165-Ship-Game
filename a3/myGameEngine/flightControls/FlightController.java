@@ -3,7 +3,7 @@ package a3.myGameEngine.flightControls;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import a3.MyGame;
+import ris.MyGame;
 import a3.myGameEngine.DeadZones;
 import a3.myGameEngine.SimpleMath;
 import net.java.games.input.Controller;
@@ -479,6 +479,30 @@ public class FlightController {
 		int sign = 0;
 		if(throttle > 0) sign = 1;
 		else if(throttle < 0) sign = -1;
+		
+		return sign;
+	}
+	public int getPitchSign() {
+		float pitch = shipController.getThrottle();
+		int sign = 0;
+		if(pitch > 0) sign = 1;
+		else if(pitch < 0) sign = -1;
+		
+		return sign;
+	}
+	public int getRollSign() {
+		float roll = shipController.getThrottle();
+		int sign = 0;
+		if(roll > 0) sign = 1;
+		else if(roll < 0) sign = -1;
+		
+		return sign;
+	}
+	public int getYawSign() {
+		float yaw = shipController.getThrottle();
+		int sign = 0;
+		if(yaw > 0) sign = 1;
+		else if(yaw < 0) sign = -1;
 		
 		return sign;
 	}
