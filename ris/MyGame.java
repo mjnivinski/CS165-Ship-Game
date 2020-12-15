@@ -297,7 +297,7 @@ public class MyGame extends VariableFrameRateGame {
 	
 	private void createAnimations(SceneManager sm) throws IOException {
  
-		//Right Hand
+		//Right Handl
     	SkeletalEntity rightHand =
 				sm.createSkeletalEntity("rightHandAv", "MyFettHandVer5.rkm", "MyFettHandVer5.rks");
     	
@@ -370,7 +370,7 @@ public class MyGame extends VariableFrameRateGame {
 		    	Object2bN.moveLeft(4f);
 		    	Object2bN.attachObject(Object2bE);
 		    	
-		    	
+		    	//
 		    	Entity stationBlueE = sm.createEntity("stationBlue", "SpaceStationAlpha-b.obj");
 		    	stationBlueE.setPrimitive(Primitive.TRIANGLES);
 		    	stationBlueN = sm.getRootSceneNode().createChildSceneNode(stationBlueE.getName() + "Node");
@@ -699,7 +699,7 @@ public class MyGame extends VariableFrameRateGame {
 		playerController.update();
 		
 
-		npc1.update(engine.getElapsedTimeMillis());
+		//npc1.update(engine.getElapsedTimeMillis());
 		
 		
 		//System.out.println("x:" + shipN.getLocalPosition().x());
@@ -711,12 +711,12 @@ public class MyGame extends VariableFrameRateGame {
 		
 		
 	
-	//	SkeletalEntity rightHand =
-	//(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+			SkeletalEntity rightHand =
+		(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
-	//	rightHand.update();
+		rightHand.update();
 		
-		
+		//System.out.println("update");
 		
 		//System.out.println("station world position is " + stationN.getWorldPosition());
 		
