@@ -314,15 +314,15 @@ public class MyGame extends VariableFrameRateGame {
     			rightHandN.attachObject(rightHand);
     			rightHandN.scale(0.1f, 0.1f, 0.1f);
     			//rightHandN.translate(0, 0.5f, 0);
-    			
+    		
     		
     			
     			rightHand.loadAnimation("throttleUpAndBackAnimation", "ThrustUpAndBack.rka");
-    			rightHand.loadAnimation("throttleDownAndBackAnimation", "ThrustDownAndBack.rka");
+    			rightHand.loadAnimation("throttleDownAndBackAnimation", "MyFettHandVer5_Thrust_Down.rka");
     			rightHand.loadAnimation("throttleLeftAndBackAnimation", "ThrustLeftandBack.rka");
     			rightHand.loadAnimation("throttleRightAndBackAnimation", "ThrustRightandBack.rka");
     			
-    			
+    		
     			System.out.println("right here");
     			shipN.attachChild(rightHandN);
     			
