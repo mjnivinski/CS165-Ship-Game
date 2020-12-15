@@ -313,7 +313,7 @@ public class MyGame extends VariableFrameRateGame {
     			sm.getRootSceneNode().createChildSceneNode("rightHandNode");
     			rightHandN.attachObject(rightHand);
     			rightHandN.scale(0.1f, 0.1f, 0.1f);
-    			rightHandN.translate(0, 0.5f, 0);
+    			//rightHandN.translate(0, 0.5f, 0);
     			
     		
     			
@@ -321,6 +321,10 @@ public class MyGame extends VariableFrameRateGame {
     			rightHand.loadAnimation("throttleDownAndBackAnimation", "ThrustDownAndBack.rka");
     			rightHand.loadAnimation("throttleLeftAndBackAnimation", "ThrustLeftandBack.rka");
     			rightHand.loadAnimation("throttleRightAndBackAnimation", "ThrustRightandBack.rka");
+    			
+    			
+    			System.out.println("right here");
+    			shipN.attachChild(rightHandN);
     			
 		
 	}
@@ -912,6 +916,7 @@ public class MyGame extends VariableFrameRateGame {
 			System.out.println("The Audio Manager failed to initialize :(");
 			return;
 		}
+		
 		print("here though");
 		
 		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
