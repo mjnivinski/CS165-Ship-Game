@@ -316,7 +316,7 @@ public class MyGame extends VariableFrameRateGame {
     		
     			
     			rightHand.loadAnimation("throttleUpAndBackAnimation", "ThrustUpAndBack.rka");
-    			rightHand.loadAnimation("throttleDownAndBackAnimation", "ThrustDownAndBack.rka");
+    			rightHand.loadAnimation("throttleDownAndBackAnimation", "ThrustDownAndBack2.rka");
     			rightHand.loadAnimation("throttleLeftAndBackAnimation", "ThrustLeftandBack.rka");
     			rightHand.loadAnimation("throttleRightAndBackAnimation", "ThrustRightandBack.rka");
     			
