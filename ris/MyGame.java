@@ -106,7 +106,8 @@ public class MyGame extends VariableFrameRateGame {
 	private Camera camera;
 	//private SceneNode dolphinN, stationN;
 	private SceneNode shipN, shipNBlue, stationN, terrainContN, enemyCraftN, dropShipN, rightHandN, 
-	flagPlatformdN, laserBoltN, SecondShipN, Object4N, Object3N, Object2N, Object1N, stationBlueN, Object2bN, BlueCockpitN;
+	flagPlatformdN, laserBoltN, SecondShipN, Object4N, Object3N, Object2N, Object1N, stationBlueN, Object2bN, BlueCockpitN,
+	asteroidM1, asteroidM2, asteroidM3, asteroidM4, asteroidM5, asteroidM6, asteroidM7, asteroidM8;
 	
 	private PhysicsObject shipPhysObj;
 	
@@ -498,7 +499,7 @@ public class MyGame extends VariableFrameRateGame {
 				    //	Object1N.setLocalScale(20, 20, 20);
 				    	Object1N.attachObject(Object1E);
 				    	
-				    	
+				    /*	
 
 				    	
 				    	Entity BlueCockpitE = sm.createEntity("BlueCockput", "cockpitMk3j.obj");
@@ -532,7 +533,7 @@ public class MyGame extends VariableFrameRateGame {
 						        TextureState state5 = (TextureState)rs5.createRenderState(RenderState.Type.TEXTURE);
 						        state5.setTexture(blueTexture5);
 						        shipBlueE.setRenderState(state5);
-				    	
+				    	*/
 		/*	
 				    	
 	
@@ -587,7 +588,139 @@ public class MyGame extends VariableFrameRateGame {
 
 				//this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
 				shipN.attachChild(headlightNode);
+				
+				setupAsteroidField(sm);
 		
+	}
+	
+	private void setupAsteroidField(SceneManager sm) throws IOException {
+		Entity asteroidM1E = sm.createEntity("asteroidM1", "Object3.obj");
+		asteroidM1E.setPrimitive(Primitive.TRIANGLES);
+    	asteroidM1 = sm.getRootSceneNode().createChildSceneNode(asteroidM1E.getName() + "Node");
+    	asteroidM1.moveForward(100.0f);
+    	asteroidM1.moveUp(100f);
+    	asteroidM1.moveLeft(612f);
+    	asteroidM1.setLocalScale(20, 20, 20);
+    	asteroidM1.attachObject(asteroidM1E);
+		/*
+		
+		RotationController rc9 =
+		    	new RotationController(Vector3f.createUnitVectorY(), .01f);
+		    	rc9.addNode(asteroidM1);
+		    	sm.addController(rc9);
+		    	*/
+		    	
+		    	Entity asteroidM2E = sm.createEntity("asteroidM2", "Object4.obj");
+		    	asteroidM2E.setPrimitive(Primitive.TRIANGLES);
+		    	asteroidM2 = sm.getRootSceneNode().createChildSceneNode(asteroidM2E.getName() + "Node");
+		    	asteroidM2.moveForward(100.0f);
+		    	asteroidM2.moveUp(150f);
+		    	asteroidM2.moveLeft(600f);
+		    	asteroidM2.setLocalScale(64, 64, 64);
+		    	asteroidM2.attachObject(asteroidM2E);
+				
+				/*
+				RotationController rc10 =
+				    	new RotationController(Vector3f.createUnitVectorZ(), -.06f);
+				    	rc10.addNode(asteroidM2);
+				    	sm.addController(rc10);
+		    	*/
+		    	Entity asteroidM3E = sm.createEntity("asteroidM3", "Object4.obj");
+		    	asteroidM3E.setPrimitive(Primitive.TRIANGLES);
+		    	asteroidM3 = sm.getRootSceneNode().createChildSceneNode(asteroidM3E.getName() + "Node");
+		    	asteroidM3.moveForward(106.0f);
+		    	asteroidM3.moveUp(112f);
+		    	asteroidM3.moveLeft(577f);
+		    	asteroidM3.setLocalScale(30, 30, 30);
+		    	asteroidM3.attachObject(asteroidM3E);
+				/*
+				
+				RotationController rc11 =
+				    	new RotationController(Vector3f.createUnitVectorZ(), .4f);
+				    	rc11.addNode(asteroidM3);
+				    	sm.addController(rc11);
+				    	*/
+						Entity asteroidM4E = sm.createEntity("asteroidM4", "Object3.obj");
+						asteroidM4E.setPrimitive(Primitive.TRIANGLES);
+						asteroidM4 = sm.getRootSceneNode().createChildSceneNode(asteroidM4E.getName() + "Node");
+						asteroidM4.moveForward(115.0f);
+						asteroidM4.moveUp(145f);
+						asteroidM4.moveRight(560f);
+						asteroidM4.setLocalScale(12, 12, 12);
+						asteroidM4.attachObject(asteroidM4E);
+						
+						/*
+						RotationController rc12 =
+						    	new RotationController(Vector3f.createUnitVectorY(), -.01f);
+						    	rc12.addNode(asteroidM4);
+						    	sm.addController(rc12);
+						    	
+						    	*/
+								Entity asteroidM5E = sm.createEntity("asteroidM5", "Object3.obj");
+								asteroidM5E.setPrimitive(Primitive.TRIANGLES);
+								asteroidM5 = sm.getRootSceneNode().createChildSceneNode(asteroidM5E.getName() + "Node");
+						    	asteroidM5.moveForward(100.0f);
+						    	asteroidM5.moveUp(135f);
+						    	asteroidM5.moveLeft(637f);
+						    	asteroidM5.setLocalScale(35, 20, 35);
+						    	asteroidM5.attachObject(asteroidM5E);
+								
+								
+								RotationController rc13 =
+								    	new RotationController(Vector3f.createUnitVectorY(), .07f);
+								    	rc13.addNode(asteroidM5);
+								    	sm.addController(rc13);
+								    	
+								    	
+								    	Entity asteroidM6E = sm.createEntity("asteroidM6", "Object4.obj");
+								    	asteroidM6E.setPrimitive(Primitive.TRIANGLES);
+								    	asteroidM6 = sm.getRootSceneNode().createChildSceneNode(asteroidM6E.getName() + "Node");
+								    	asteroidM6.moveForward(115.0f);
+								    	asteroidM6.moveUp(200f);
+								    	asteroidM6.moveLeft(612f);
+								    	asteroidM6.setLocalScale(90, 90, 90);
+								    	asteroidM6.attachObject(asteroidM6E);
+										
+									/*	
+										RotationController rc14 =
+										    	new RotationController(Vector3f.createUnitVectorZ(), -.06f);
+										    	rc14.addNode(asteroidM6);
+										    	sm.addController(rc14);*/
+								    	
+								    	Entity asteroidM7E = sm.createEntity("asteroidM7", "Object4.obj");
+								    	asteroidM7E.setPrimitive(Primitive.TRIANGLES);
+								    	asteroidM7 = sm.getRootSceneNode().createChildSceneNode(asteroidM7E.getName() + "Node");
+								    	asteroidM7.moveForward(130.0f);
+								    	asteroidM7.moveUp(127f);
+								    	asteroidM7.moveLeft(577f);
+								    	asteroidM7.setLocalScale(5, 10, 15);
+								    	asteroidM7.attachObject(asteroidM7E);
+										
+										
+										RotationController rc15 =
+										    	new RotationController(Vector3f.createUnitVectorZ(), .4f);
+										    	rc15.addNode(asteroidM3);
+										    	sm.addController(rc15);
+										    	
+												Entity asteroidM8E = sm.createEntity("asteroidM8", "Object3.obj");
+												asteroidM8E.setPrimitive(Primitive.TRIANGLES);
+												asteroidM8 = sm.getRootSceneNode().createChildSceneNode(asteroidM8E.getName() + "Node");
+												asteroidM8.moveForward(155.0f);
+												asteroidM8.moveUp(100f);
+												asteroidM8.moveRight(400f);
+												asteroidM8.setLocalScale(88, 100, 88);
+												asteroidM8.attachObject(asteroidM8E);
+												
+												/*
+												RotationController rc16 =
+												    	new RotationController(Vector3f.createUnitVectorY(), .2f);
+												    	rc16.addNode(asteroidM8);
+												    	sm.addController(rc16);
+												    	
+						    	*/
+						    	
+
+		    	
 	}
 	
 	private SceneNode lightHolder;
