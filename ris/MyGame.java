@@ -299,7 +299,7 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 			    	createAllNodes(sm);
 			    	
-			    	//createAnimations(sm);
+			    	createAnimations(sm);
 			    	
 			    	
 
@@ -357,6 +357,26 @@ public class MyGame extends VariableFrameRateGame {
     			shipN.attachChild(rightHandN);
     			rightHandN.moveDown(0.5f);
     			
+    			//AnimationStar
+    			
+    			SkeletalEntity movingStar = 
+    					sm.createSkeletalEntity("movingStar", "Object6.rkm", "Object6.rks");
+    			
+    	    	Texture tex8 = sm.getTextureManager().getAssetByPath("Object6.png");
+    	    	TextureState tstate8 = (TextureState) sm.getRenderSystem()
+    	    	.createRenderState(RenderState.Type.TEXTURE);
+    	    	tstate8.setTexture(tex8);
+    	   	movingStar.setRenderState(tstate8);
+    	   	
+        	SceneNode movingStarN =
+        			sm.getRootSceneNode().createChildSceneNode("movingStarNode");
+        	movingStarN.attachObject(movingStar);
+        	movingStarN.scale(0.1f, 0.1f, 0.1f);//
+        	movingStarN.setLocalPosition(50.0f, 77.0f, 50.0f);
+        	
+        	movingStar.loadAnimation("Object6", "Object6.rka");
+        	
+        	movingStar.playAnimation("throttleUpAndBackAnimation", 0.5f, LOOP, 0);
 		
 	}
 
@@ -778,7 +798,7 @@ public class MyGame extends VariableFrameRateGame {
 		SceneNode stationN = sm.getSceneNode("stationNode");
 		SceneNode patrolNPC = sm.getSceneNode("PatrolEnemyNode");
 		SceneNode Object1N = sm.getSceneNode("object1Node");
-		
+		SceneNode movingStarN = sm.getSceneNode("movingStarNode");
 		playerController.update();
 		
 
@@ -793,8 +813,11 @@ public class MyGame extends VariableFrameRateGame {
 		Object3N.moveRight(.1f);
 		Object4N.moveBackward(.1f);
 		dropShipN.moveForward(.08f);
+		
+		movingStarN.moveForward(.2f);
+		movingStarN.moveLeft(.2f);
 		//dropShipN.roll(Degreef.createFrom(1));
-/*
+
 		
 		
 	
@@ -802,7 +825,11 @@ public class MyGame extends VariableFrameRateGame {
 		(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
 		rightHand.update();
-		*/
+		
+					SkeletalEntity movingStar =
+		(SkeletalEntity) eng.getSceneManager().getEntity("movingStar");
+		movingStar.update();
+		
 		
 		//System.out.println("update");
 		
