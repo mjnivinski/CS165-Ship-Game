@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-import a3.EntityMaker;
-import a3.ThrottleController;
-import a3.NPCS.Patroller.PatrolEnemy;
-import a3.NPCS.Patroller.PatrolStrategyContext;
-import a3.Networking.GhostAvatar;
-import a3.Networking.ProtocolClient;
-import a3.SceneCreation.NodeMaker;
-import a3.myGameEngine.flightControls.FlightController;
+//import a3.EntityMaker;
+//import a3.ThrottleController;
+//import a3.NPCS.Patroller.PatrolEnemy;
+//import a3.NPCS.Patroller.PatrolStrategyContext;
+//import a3.Networking.GhostAvatar;
+//import a3.Networking.ProtocolClient;
+//import a3.SceneCreation.NodeMaker;
+//import a3.myGameEngine.flightControls.FlightController;
 import net.java.games.input.Controller;
 import net.java.games.input.Event;
 import ray.audio.AudioManagerFactory;
@@ -138,6 +138,8 @@ public class MyGame extends VariableFrameRateGame {
 	private float pitchDegrees = 80;
 	
 	private int shipLives = 3;
+	
+	private PatrolEnemy[] npcs;
 
 	public MyGame(String serverAddr, int sPort) {
 		super();
@@ -157,7 +159,7 @@ public class MyGame extends VariableFrameRateGame {
 		//Game game = new MyGame("yes", 5);
 		
 		//FSEM();
-		//chooseTeam();
+		chooseTeam();
 		
 		try {
 			game.startup();
@@ -324,6 +326,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 		tc = new ThrottleController(sm,eng,this,shipN);
 		setupLights();
+		setupScoreIndicator();
 		
 		print("setup done");
 	}
@@ -438,7 +441,7 @@ public class MyGame extends VariableFrameRateGame {
 		    	stationBlueN.moveLeft(4f);
 		    	stationBlueN.attachObject(stationBlueE);
 		    	
-		    	print("stationBlueN: " + stationBlueN.getWorldPosition());
+		    	print("stationBlueN: " + stationBlueN.getWorldPosition());//fd
 				
 				
 				RotationController rc4 =
@@ -453,6 +456,8 @@ public class MyGame extends VariableFrameRateGame {
 				    	Object2N.moveUp(25f);
 				    	Object2N.moveRight(4f);
 				    	Object2N.attachObject(Object2E);
+				    	
+				    	print("yea");
 				    	
 					      TextureManager tm = eng.getTextureManager();
 					        Texture blueTexture = tm.getAssetByPath("stationBlue.png");
@@ -565,7 +570,6 @@ public class MyGame extends VariableFrameRateGame {
 		    	
 				camera.getParentNode().moveUp(2);
 				
-				shipN.setLocalPosition(0,2,-4);
 				shipN.attachChild(camera.getParentNode());
 				camera.getParentNode().setLocalPosition(0,0,0);
 				print("ship position: " + shipN.getWorldPosition());
@@ -797,7 +801,8 @@ public class MyGame extends VariableFrameRateGame {
 
 		//TODO
 		//set start location for this team
-		shipN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
+		shipN.setLocalPosition(startPositionZero);
+		print("shipLocation: " + shipN.getLocalPosition());
 		shipN.attachObject(shipE);
 		shipN.yaw(Degreef.createFrom(180));
 
@@ -814,7 +819,7 @@ public class MyGame extends VariableFrameRateGame {
 		
 		//TODO
 		//set start location for this team
-		shipN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
+		shipN.setLocalPosition(startPositionOne);
 		shipN.attachObject(shipE);
 		shipN.yaw(Degreef.createFrom(180));
 
@@ -836,8 +841,50 @@ public class MyGame extends VariableFrameRateGame {
         BlueCockpitE.setRenderState(state1);
 	}
 	
+	private SceneNode[] lives;
+	private Vector3 scorePosition = Vector3f.createFrom(0.8f,-0.3f,-0.8f);
+	//private Vector3 scorePosition = Vector3f.createFrom(0,0,0);
+	private SceneNode scoreHolder;
+	private Vector3[] livesPositions;
+	private void setupScoreIndicator() throws IOException {
+		lives = nm.makeScoreIndicators();
+		livesPositions = new Vector3[lives.length];
+		
+		scoreHolder = sm.getRootSceneNode().createChildSceneNode("scoreHolder");
+		
+		for(int i=0; i<lives.length;i++) {
+			livesPositions[i] = lives[i].getLocalPosition();
+			scoreHolder.attachChild(lives[i]);
+		}
+		
+		shipN.attachChild(scoreHolder);
+		
+		scoreHolder.setLocalPosition(scorePosition);
+		
+		//scoreHolder.roll(Degreef.createFrom(90));
+		
+		
+		scoreHolder.roll(Degreef.createFrom(90));
+		scoreHolder.pitch(Degreef.createFrom(40));
+		
+		scoreHolder.moveBackward(1);
+		scoreHolder.moveLeft(0.1f);
+	}
+	
+	private void livesUpdate() {
+		for(SceneNode n : lives) {
+			n.setLocalPosition(10000,10000,10000);
+		}
+		for(int i=0; i<shipLives;i++) {
+			lives[i].setLocalPosition(livesPositions[i]);
+		}
+		if(shipLives == 0) {
+			System.exit(0);
+		}
+	}
+	
 	private void setupPatrolNPC(Engine eng, SceneManager sm) throws IOException{
-		print("setupPatrolNPC");
+		/*print("setupPatrolNPC");
 		
 		patrolNPC = sm.getRootSceneNode().createChildSceneNode("PatrolEnemyNode");
 		
@@ -850,11 +897,44 @@ public class MyGame extends VariableFrameRateGame {
 		PhysicsObject npcPhysObj = physicsEng.addSphereObject(physicsEng.nextUID(), mass, temptf, 1.0f);
 		patrolNPC.setPhysicsObject(npcPhysObj);
 		
-		npc1 = new PatrolEnemy(patrolNPC,stationN, this,5,100,100);
+		Vector3 position = Vector3f.createFrom(4,27,0);
+		npc1 = new PatrolEnemy(patrolNPC,this,position);
 		SceneNode[] targets = {shipN};
 		
 		npc1.setTargets(targets);
-		print("done setting up patrolNPC");
+		print("done setting up patrolNPC");*/
+		
+		
+		//SceneNode npc1 = nm.makeNPC("npc1");
+		
+		npcs = new PatrolEnemy[10];
+		
+		Vector3 position1 = Vector3f.createFrom(20,35,145);
+		npcs[0] = npcFactory("npcOne", position1);
+		
+		Vector3 position2 = Vector3f.createFrom(0,27,145);
+		npcs[1] = npcFactory("npcTwo", position1);
+		
+		Vector3 position3 = Vector3f.createFrom(-20,27,145);
+		npcs[2] = npcFactory("npcThree", position1);
+		
+		
+	}
+	
+	private PatrolEnemy npcFactory(String name, Vector3 position) throws IOException {
+		SceneNode node = nm.makeNPC(name, position);
+		PatrolEnemy pe = new PatrolEnemy(node,this,position);
+		SceneNode[] targets = new SceneNode[] {shipN};
+		pe.setTargets(targets);
+		return pe;
+	}
+	
+	private void npcUpdates() {
+		for(PatrolEnemy p : npcs) {
+			if(p!=null) {
+				p.update(eng.getElapsedTimeMillis());
+			}
+		}
 	}
 	
 	private void setupPhysics() {
@@ -902,16 +982,16 @@ public class MyGame extends VariableFrameRateGame {
 		
 		for (int i = 0; i < keyboards.size(); i++) {
 			
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.O, controlTest,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
-			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.P, controlTest2,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
+			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.O, controlTest,
+			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
+			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.P, controlTest2,
+			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
 			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.K, controlTest3,
 			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.L, toggleLights,
 					InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
-			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.U, controlTest8,
-			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.U, controlTest8,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
 		}
 	}
@@ -966,6 +1046,8 @@ public class MyGame extends VariableFrameRateGame {
 	@Override
 	protected void update(Engine engine) {
 		
+		livesUpdate();
+		
 		//System.out.println("update");//
 		
 		updateDefaults(engine);
@@ -974,13 +1056,16 @@ public class MyGame extends VariableFrameRateGame {
 		
 		SceneManager sm = engine.getSceneManager();
 		SceneNode stationN = sm.getSceneNode("stationNode");
-		SceneNode patrolNPC = sm.getSceneNode("PatrolEnemyNode");
 		SceneNode Object1N = sm.getSceneNode("object1Node");
 		SceneNode movingStarN = sm.getSceneNode("movingStarNode");
 		playerController.update();
 		
+		print("shipN: " + shipN.getLocalPosition());
+		
+		//scoreHolder.roll(Degreef.createFrom(10 * engine.getElapsedTimeMillis()/1000));
 
-		//npc1.update(engine.getElapsedTimeMillis());
+		npcUpdates();
+		
 		
 		//System.out.println("x:" + shipN.getLocalPosition().x());
 		//System.out.println("y:" + shipN.getLocalPosition().y());
@@ -1017,7 +1102,6 @@ public class MyGame extends VariableFrameRateGame {
 		//print("" + stationN.getWorldPosition());
 		//print("" + stationSound);
 		stationSound.setLocation(stationN.getWorldPosition());
-		NPCSound.setLocation(patrolNPC.getWorldPosition());
 		laserFireSound.setLocation(shipN.getWorldPosition());
 		shipNoiseSound.setLocation(Object1N.getWorldPosition());
 		setEarParameters(sm);
@@ -1056,10 +1140,12 @@ public class MyGame extends VariableFrameRateGame {
 		}
 	}
 	
-	Vector3 startPositionZero = Vector3f.createFrom(10,10,10);
-	Vector3 startPositionOne = Vector3f.createFrom(0,0,0);
-	private void hit() {
+	Vector3 startPositionZero = Vector3f.createFrom(0,35,-90);
+	Vector3 startPositionOne = Vector3f.createFrom(0,35,380);
+	public void hit() {
 		//Return player to starting position based on team
+		
+		shipLives--;
 		
 		if(getPlayerTeam() == 0) {
 			double[] transform = shipN.getPhysicsObject().getTransform();
@@ -1313,11 +1399,11 @@ public class MyGame extends VariableFrameRateGame {
 		
 
 		
-		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 2, true);
+		backgroundMusic = new Sound(theMusic, SoundType.SOUND_MUSIC, 1, true);
 		stationSound = new Sound(theStation, SoundType.SOUND_EFFECT, 400, true);
 		NPCSound = new Sound(npcBeeps, SoundType.SOUND_EFFECT, 20, true);
-		laserFireSound = new Sound(theFrickinLasers, SoundType.SOUND_EFFECT, 400, false);
-		shipNoiseSound = new Sound(theShipNoise, SoundType.SOUND_EFFECT, 100, true);
+		laserFireSound = new Sound(theFrickinLasers, SoundType.SOUND_EFFECT, 2, false);
+		shipNoiseSound = new Sound(theShipNoise, SoundType.SOUND_EFFECT, 10, true);
 		
 	
 			backgroundMusic.initialize(audioMgr);
@@ -1347,14 +1433,12 @@ public class MyGame extends VariableFrameRateGame {
 			
 			SceneNode stationN = sm.getSceneNode("stationNode");
 		
-			SceneNode patrolNPC = sm.getSceneNode("PatrolEnemyNode");
 			
 			SceneNode shipN = sm.getSceneNode("shipNode");
 			
 			SceneNode Object1N = sm.getSceneNode("object1Node");
 			
 			shipNoiseSound.setLocation(Object1N.getWorldPosition());
-			NPCSound.setLocation(patrolNPC.getWorldPosition());
 			
 			setEarParameters(sm);
 			
