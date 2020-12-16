@@ -3,6 +3,7 @@ package a3.Networking;
 import java.io.IOException;
 import java.util.UUID;
 
+import a3.myGameEngine.VectorMath;
 import ray.physics.PhysicsObject;
 import ray.rage.scene.Entity;
 import ray.rage.scene.SceneNode;
@@ -85,5 +86,15 @@ public class GhostAvatar {
 		
 		shootCycle += 2;
 		shootCycle%=(lasers.length);
+	}
+	
+	public boolean hitCheck() {
+		SceneNode ship = g.getShip();
+		for(SceneNode n : lasers) {
+			if(VectorMath.distance(ship.getWorldPosition(), n.getWorldPosition()) < 2) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

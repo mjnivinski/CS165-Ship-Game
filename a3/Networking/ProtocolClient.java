@@ -217,4 +217,11 @@ public class ProtocolClient extends GameConnectionClient {
 		}
 		 
 	}
+	
+	public boolean hitUpdate() {
+		for(GhostAvatar ga : ghostAvatars) {
+			if(ga.hitCheck()) return true;
+		}
+		return false;
+	}
 }
