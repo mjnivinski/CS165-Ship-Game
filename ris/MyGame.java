@@ -377,7 +377,7 @@ public class MyGame extends VariableFrameRateGame {
         			sm.getRootSceneNode().createChildSceneNode("movingStarNode");
         	movingStarN.attachObject(movingStar);
         	movingStarN.scale(0.1f, 0.1f, 0.1f);//
-        	movingStarN.setLocalPosition(50.0f, 77.0f, 50.0f);
+        	movingStarN.setLocalPosition(0.0f, 0.0f, 0.0f);
         	
         	movingStar.loadAnimation("Object6", "Object6.rka");
         	
