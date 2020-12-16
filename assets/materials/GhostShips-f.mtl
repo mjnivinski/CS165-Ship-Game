@@ -1,4 +1,4 @@
-# Blender MTL File: 'GhostShips-c.blend'
+# Blender MTL File: 'GhostShips-d.blend'
 # Material Count: 1
 
 newmtl Material
@@ -12,3 +12,4 @@ d 1.000000
 illum 2
 # texture
 map_Kd GhostShips-c.png
+

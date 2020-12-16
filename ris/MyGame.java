@@ -299,7 +299,7 @@ public class MyGame extends VariableFrameRateGame {
 	    	
 			    	createAllNodes(sm);
 			    	
-			    	createAnimations(sm);
+			    	//createAnimations(sm);
 			    	
 			    	
 
@@ -494,7 +494,7 @@ public class MyGame extends VariableFrameRateGame {
 				    	
 
 					        
-					    	Entity shipBlueE = sm.createEntity("ghostShip2", "GhostShips-c.obj");
+					    	Entity shipBlueE = sm.createEntity("ghostShip2", "GhostShips-f.obj");
 					    	shipBlueE.setPrimitive(Primitive.TRIANGLES);
 					
 					    	shipNBlue = sm.getRootSceneNode().createChildSceneNode(shipBlueE.getName() + "Node");
@@ -745,7 +745,7 @@ public class MyGame extends VariableFrameRateGame {
 	}
 	
 	private SceneNode makeGreyGhost(SceneNode ghostN, GhostAvatar ghost) throws IOException {
-		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-c.obj");
+		Entity shipE = sm.createEntity("ghostShip" + ghost.getID() , "GhostShips-f.obj");
 		shipE.setPrimitive(Primitive.TRIANGLES);
 
 		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
@@ -794,7 +794,7 @@ public class MyGame extends VariableFrameRateGame {
 		Object4N.moveBackward(.1f);
 		dropShipN.moveForward(.08f);
 		//dropShipN.roll(Degreef.createFrom(1));
-
+/*
 		
 		
 	
@@ -802,7 +802,7 @@ public class MyGame extends VariableFrameRateGame {
 		(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		
 		rightHand.update();
-		
+		*/
 		
 		//System.out.println("update");
 		
