@@ -156,7 +156,7 @@ public class MyGame extends VariableFrameRateGame {
 		Game game = new MyGame(args[0], Integer.parseInt(args[1]));
 		//Game game = new MyGame("yes", 5);
 		
-		//FSEM();
+		FSEM();
 		chooseTeam();
 		
 		try {
@@ -455,7 +455,6 @@ public class MyGame extends VariableFrameRateGame {
 				    	Object2N.moveRight(4f);
 				    	Object2N.attachObject(Object2E);
 				    	
-				    	print("yea");
 				    	
 					      TextureManager tm = eng.getTextureManager();
 					        Texture blueTexture = tm.getAssetByPath("stationBlue.png");
@@ -465,6 +464,7 @@ public class MyGame extends VariableFrameRateGame {
 					        stationBlueE.setRenderState(state);
 		    	
 		    	
+					        //here though
 		    	Entity Object3E = sm.createEntity("object3", "Object3.obj");
 		    	Object3E.setPrimitive(Primitive.TRIANGLES);
 		    	Object3N = sm.getRootSceneNode().createChildSceneNode(Object3E.getName() + "Node");
@@ -1058,7 +1058,6 @@ public class MyGame extends VariableFrameRateGame {
 		SceneNode movingStarN = sm.getSceneNode("movingStarNode");
 		playerController.update();
 		
-		print("shipN: " + shipN.getLocalPosition());
 		
 		//scoreHolder.roll(Degreef.createFrom(10 * engine.getElapsedTimeMillis()/1000));
 
@@ -1383,8 +1382,6 @@ public class MyGame extends VariableFrameRateGame {
 			System.out.println("The Audio Manager failed to initialize :(");
 			return;
 		}
-		
-		print("here though");
 		
 		theMusic = audioMgr.createAudioResource(musicPath + "bensound-epic.wav", AudioResourceType.AUDIO_STREAM);
 		theStation = audioMgr.createAudioResource(sfxPath + "Cartoon-warp-02.wav", AudioResourceType.AUDIO_SAMPLE);

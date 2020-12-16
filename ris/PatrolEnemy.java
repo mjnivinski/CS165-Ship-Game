@@ -176,7 +176,6 @@ public class PatrolEnemy {
 
 		@Override
 		protected boolean check() {
-			print("chase Check");
 			if(chasing) return true;
 
 			return false;

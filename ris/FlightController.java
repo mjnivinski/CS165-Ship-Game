@@ -74,7 +74,6 @@ public class FlightController {
 	
 	
 	public FlightController(MyGame g, Camera c, SceneNode cN, SceneNode t, InputManager im, SceneManager sm, PhysicsEngine physics) throws IOException {
-		print("ch-ch-ch-changes");
 		game = g;
 		camera = c;
 		cameraN = cN;
