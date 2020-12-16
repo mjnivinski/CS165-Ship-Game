@@ -66,8 +66,6 @@ import static ray.rage.scene.SkeletalEntity.EndType.*;
 import ray.audio.*;
 //import com.jogamp.openal.ALFactory;
 
-
-
 public class MyGame extends VariableFrameRateGame {
 
 	private String serverAddress;
