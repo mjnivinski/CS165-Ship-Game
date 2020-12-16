@@ -122,6 +122,8 @@ public class MyGame extends VariableFrameRateGame {
 	throttleRight controlTest4;
 	destroyTerrain controlTest8;
 	
+	ToggleLights toggleLights;
+	
 	
 
 	private InputManager im;
@@ -134,13 +136,14 @@ public class MyGame extends VariableFrameRateGame {
 	private float speedScale = 4;
 	private float yawDegrees = 80;
 	private float pitchDegrees = 80;
+	
+	private int shipLives = 3;
 
 	public MyGame(String serverAddr, int sPort) {
 		super();
 		this.serverAddress = serverAddr;
 		this.serverPort = sPort;
 		this.serverProtocol = ProtocolType.UDP;
-		
 	}
 
 	//faster than typing System.out.println();
@@ -320,7 +323,7 @@ public class MyGame extends VariableFrameRateGame {
 		initAudio(sm);
 		
 		tc = new ThrottleController(sm,eng,this,shipN);
-		
+		setupLights();
 		
 		print("setup done");
 	}
@@ -566,7 +569,7 @@ public class MyGame extends VariableFrameRateGame {
 
 				sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
 
-				Light plight = sm.createLight("testLamp1", Light.Type.POINT);
+				Light plight = sm.createLight("testLamp0", Light.Type.POINT);
 				plight.setAmbient(new Color(.3f, .3f, .3f));
 				plight.setDiffuse(new Color(.7f, .7f, .7f));
 				plight.setSpecular(new Color(1.0f, 1.0f, 1.0f));
@@ -720,8 +723,54 @@ public class MyGame extends VariableFrameRateGame {
 		    	
 	}
 	
+	private SceneNode lightHolder;
 	private void setupLights() {
 		
+		lightHolder = sm.getRootSceneNode().createChildSceneNode("lightHolder");
+		
+		
+		
+		Light headlight1 = sm.createLight("headlight1", Light.Type.SPOT);
+		headlight1.setConeCutoffAngle(Degreef.createFrom(10));
+		headlight1.setSpecular(Color.white);
+		headlight1.setRange(10f);
+
+		SceneNode headlightNode1 = sm.getRootSceneNode().createChildSceneNode("headlightNode1");
+		headlightNode1.attachObject(headlight1);
+		
+		Light headlight2 = sm.createLight("headlight2", Light.Type.SPOT);
+		headlight2.setConeCutoffAngle(Degreef.createFrom(10));
+		headlight2.setSpecular(Color.white);
+		headlight2.setRange(10f);
+
+		SceneNode headlightNode2 = sm.getRootSceneNode().createChildSceneNode("headlightNode2");
+		headlightNode2.attachObject(headlight2);
+		
+		Light headlight3 = sm.createLight("headlight3", Light.Type.SPOT);
+		headlight3.setConeCutoffAngle(Degreef.createFrom(10));
+		headlight3.setSpecular(Color.white);
+		headlight3.setRange(10f);
+
+		SceneNode headlightNode3 = sm.getRootSceneNode().createChildSceneNode("headlightNode3");
+		headlightNode3.attachObject(headlight3);
+		
+		headlightNode1.setLocalPosition(-0.3f,0,0);
+		headlightNode3.setLocalPosition(0.3f,0,0);
+		
+		
+		//lightHolder.attachObject(headlightNode1);
+		lightHolder.attachChild(headlightNode1);
+		//lightHolder.attachObject(headlightNode2);
+		lightHolder.attachChild(headlightNode2);
+		//lightHolder.attachObject(headlightNode3);
+		lightHolder.attachChild(headlightNode3);
+		
+		lightHolder.pitch(Degreef.createFrom(-90));
+		
+		//lightHolder.moveBackward(2);
+
+		//this.getEngine().getSceneManager().getSceneNode("myShipNode").attachChild(headlightNode);
+		shipN.attachChild(lightHolder);
 	}
 
 	//ship is setup with code provided
@@ -732,20 +781,6 @@ public class MyGame extends VariableFrameRateGame {
 			makePlayerGrey();
 		}
 		else makePlayerBlue();
-		
-		/*
-		Entity shipE = sm.createEntity("ship", "cockpitMk3j.obj");
-		shipE.setPrimitive(Primitive.TRIANGLES);
-
-		//SceneNode dolphinN = sm.getRootSceneNode().createChildSceneNode(dolphinE.getName() + "Node");
-		shipN = sm.getRootSceneNode().createChildSceneNode(shipE.getName() + "Node");
-
-		shipN.setLocalPosition((Vector3f) Vector3f.createFrom(-2, 0, 0));
-		shipN.attachObject(shipE);
-		shipN.yaw(Degreef.createFrom(180));
-
-		sm.getAmbientLight().setIntensity(new Color(.1f, .1f, .1f));
-		*/
 	}
 	
 	private void makePlayerGrey() throws IOException {
@@ -859,17 +894,18 @@ public class MyGame extends VariableFrameRateGame {
 		controlTest4 = new throttleRight();
 		controlTest8 = new destroyTerrain();
 		
+		toggleLights = new ToggleLights();
 		
 		for (int i = 0; i < keyboards.size(); i++) {
 			
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.O, controlTest,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
 			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.P, controlTest2,
-					InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
 			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.K, controlTest3,
 			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
-			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.L, controlTest4,
-			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
+			im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.L, toggleLights,
+					InputManager.INPUT_ACTION_TYPE.ON_PRESS_ONLY);
 			//im.associateAction(keyboards.get(i), net.java.games.input.Component.Identifier.Key.U, controlTest8,
 			//		InputManager.INPUT_ACTION_TYPE.ON_PRESS_AND_RELEASE);
 			
@@ -942,7 +978,6 @@ public class MyGame extends VariableFrameRateGame {
 
 		//npc1.update(engine.getElapsedTimeMillis());
 		
-		
 		//System.out.println("x:" + shipN.getLocalPosition().x());
 		//System.out.println("y:" + shipN.getLocalPosition().y());
 		//System.out.println("z:" + shipN.getLocalPosition().z());
@@ -1002,6 +1037,11 @@ public class MyGame extends VariableFrameRateGame {
 		
 		networkTimer += deltaTime/1000;
 		
+		if(protClient.hitUpdate()) {
+			hit();
+			shipLives--;
+		}
+		
 		if(networkTimer > 1/tickRate) {
 			networkTimer = 0;
 			protClient.sendMoveMessage(getPlayerPosition(), getPlayerDirection());
@@ -1009,13 +1049,31 @@ public class MyGame extends VariableFrameRateGame {
 		
 		if(protClient!=null) {
 			protClient.processPackets();
+		}
+	}
+	
+	Vector3 startPositionZero = Vector3f.createFrom(10,10,10);
+	Vector3 startPositionOne = Vector3f.createFrom(0,0,0);
+	private void hit() {
+		//Return player to starting position based on team
+		
+		if(getPlayerTeam() == 0) {
+			double[] transform = shipN.getPhysicsObject().getTransform();
 			
-			//remove ghost avatars for players who have left the game
-			/*Iterator<UUID> it = gameObjectsToRemove.iterator();
+			transform[12] = startPositionZero.x();
+			transform[13] = startPositionZero.y();
+			transform[14] = startPositionZero.z();
 			
-			while(it.hasNext()) {
-				
-			}*/
+			shipN.getPhysicsObject().setTransform(transform);
+		}
+		else {
+			double[] transform = shipN.getPhysicsObject().getTransform();
+			
+			transform[12] = startPositionOne.x();
+			transform[13] = startPositionOne.y();
+			transform[14] = startPositionOne.z();
+			
+			shipN.getPhysicsObject().setTransform(transform);
 		}
 	}
 	
@@ -1190,6 +1248,22 @@ public class MyGame extends VariableFrameRateGame {
 		}
 	}
 	
+	private class ToggleLights extends AbstractInputAction {
+		
+		private boolean on = true;
+		@Override
+		public void performAction(float arg0, Event e) {
+			if(on) {
+				lightHolder.setLocalPosition(10000,10000,10000);
+				on=false;
+			}
+			else {
+				lightHolder.setLocalPosition(0,0,0);
+				on=true;
+			}
+		}
+	}
+	
 
 	
 	
@@ -1335,4 +1409,5 @@ public class MyGame extends VariableFrameRateGame {
 	public Engine getEngine() { return eng; }
 	public PhysicsEngine getPhysicsEngine() { return physicsEng; }
 	public NodeMaker getNodeMaker() { return nm; }
+	public SceneNode getShip() { return shipN; }
 }
