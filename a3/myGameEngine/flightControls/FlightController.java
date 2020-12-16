@@ -480,6 +480,11 @@ public class FlightController {
 	}
 	
 	public int getThrottleSign() {
+		return shipController.getThrottleSign();
+	}
+	
+	/*
+	public int getThrottleSign() {
 		float throttle = shipController.getThrottle();
 		int sign = 0;
 		if(throttle > 0) sign = 1;
@@ -487,6 +492,7 @@ public class FlightController {
 		
 		return sign;
 	}
+	*/
 	public int getPitchSign() {
 		float pitch = shipController.getThrottle();
 		int sign = 0;

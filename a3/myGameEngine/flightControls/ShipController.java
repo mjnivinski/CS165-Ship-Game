@@ -413,6 +413,29 @@ public class ShipController {
 		game.shootNetworking();
 	}
 	
+	public int getThrottleSign() {
+		float value = keyVsGamepad(throttleUp, throttleDown, controllerThrottle);
+		//System.out.println("controllerThrottle: " + controllerThrottle);
+		//System.out.println("throttleUp: " + throttleUp);
+		//System.out.println("throttleDown: " + throttleDown);
+		
+		//System.out.println("value: " + value);
+		
+		throttle+= throttleAccel * value * deltaTime;
+		
+		if(throttle > 1) throttle = 1;
+		//if(throttle < 0) throttle = 0;
+		if(throttle < 0.01f) throttle = 0.01f;
+		
+		int valueInt;
+		if(value > 0) valueInt = 1;
+		else if (value < 0) valueInt = -1;
+		else valueInt = 0;
+		
+		//System.out.println("valueInt: " + valueInt);
+		return valueInt;
+	}
+	
 	public void setControllerThrottle(float v) { controllerThrottle = v;}
 	public void setControllerRoll(float v) { controllerRoll = v;}
 	public void setControllerPitch(float v) { controllerPitch = v;}
