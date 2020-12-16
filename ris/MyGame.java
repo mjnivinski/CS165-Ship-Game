@@ -381,7 +381,7 @@ public class MyGame extends VariableFrameRateGame {
         	
         	movingStar.loadAnimation("Object6", "Object6.rka");
         	
-        	movingStar.playAnimation("throttleUpAndBackAnimation", 0.5f, LOOP, 0);
+        	movingStar.playAnimation("Object6", 0.5f, LOOP, 0);
 		
 	}
 
