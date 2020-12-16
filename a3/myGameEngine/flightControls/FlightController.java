@@ -338,7 +338,7 @@ public class FlightController {
 		public void performAction(float arg0, Event e) {
 			//print("rollLeft");
 			shipController.setRollLeft(-1 * e.getValue());
-			ris.MyGame.throttleLeftAndBackAnimation();
+		//	ris.MyGame.throttleLeftAndBackAnimation();
 		}
 	}
 	
@@ -347,7 +347,7 @@ public class FlightController {
 		public void performAction(float arg0, Event e) {
 			//print("rollRight");
 			shipController.setRollRight(-1 * e.getValue());
-			ris.MyGame.throttleRightAndBackAnimation();
+		//	ris.MyGame.throttleRightAndBackAnimation();
 		}
 	}
 	
