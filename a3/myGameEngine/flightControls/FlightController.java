@@ -369,7 +369,7 @@ public class FlightController {
 		@Override
 		public void performAction(float arg0, Event e) {
 			shipController.setYawRight(e.getValue());
-			ris.MyGame.throttleRightAndBackAnimation();
+		//	ris.MyGame.throttleRightAndBackAnimation();
 		}
 	}
 	
@@ -377,7 +377,7 @@ public class FlightController {
 		@Override
 		public void performAction(float arg0, Event e) {
 			shipController.setYawLeft(e.getValue());
-			ris.MyGame.throttleLeftAndBackAnimation();
+		//	ris.MyGame.throttleLeftAndBackAnimation();
 		}
 	}
 	
@@ -385,7 +385,7 @@ public class FlightController {
 		@Override
 		public void performAction(float arg0, Event e) {
 			shipController.setThrottleUp(e.getValue());
-			ris.MyGame.throttleUpAndBackAnimation();
+		//	ris.MyGame.throttleUpAndBackAnimation();
 		}
 	}
 	
@@ -393,7 +393,7 @@ public class FlightController {
 		@Override
 		public void performAction(float arg0, Event e) {
 			shipController.setThrottleDown(e.getValue());
-			ris.MyGame.throttleDownAndBackAnimation();
+		//	ris.MyGame.throttleDownAndBackAnimation();
 		}
 	}
 	
