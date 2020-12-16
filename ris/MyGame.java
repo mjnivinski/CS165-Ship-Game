@@ -414,6 +414,8 @@ public class MyGame extends VariableFrameRateGame {
 		stationN.attachObject(stationE);
 		stationN.moveUp(10);
 		
+		print("stationN: " + stationN.getWorldPosition());
+		
 		RotationController rc2 =
 		    	new RotationController(Vector3f.createUnitVectorY(), .03f);
 		    	rc2.addNode(stationN);
@@ -435,6 +437,8 @@ public class MyGame extends VariableFrameRateGame {
 		    	stationBlueN.moveUp(25f);
 		    	stationBlueN.moveLeft(4f);
 		    	stationBlueN.attachObject(stationBlueE);
+		    	
+		    	print("stationBlueN: " + stationBlueN.getWorldPosition());
 				
 				
 				RotationController rc4 =
