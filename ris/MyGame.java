@@ -379,12 +379,12 @@ public class MyGame extends VariableFrameRateGame {
         	SceneNode movingStarN =
         			sm.getRootSceneNode().createChildSceneNode("movingStarNode");
         	movingStarN.attachObject(movingStar);
-        	movingStarN.scale(0.1f, 0.1f, 0.1f);//
+        	//movingStarN.scale(0.1f, 0.1f, 0.1f);//
         	movingStarN.setLocalPosition(0.0f, 55f, 0.0f);
         	
         	movingStar.loadAnimation("Object6", "Object6.rka");
         	
-        	movingStar.playAnimation("throttleUpAndBackAnimation", 0.5f, LOOP, 0);
+        	movingStar.playAnimation("Object6", 0.5f, LOOP, 0);
 		
 	}
 
