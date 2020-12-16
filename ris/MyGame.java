@@ -566,6 +566,10 @@ public class MyGame extends VariableFrameRateGame {
 				shipN.attachChild(headlightNode);
 		
 	}
+	
+	private void setupLights() {
+		
+	}
 
 	//ship is setup with code provided
 	private void setupShip() throws IOException {
@@ -899,23 +903,17 @@ public class MyGame extends VariableFrameRateGame {
 	}
 	
 	
-	//
 	public static void throttleUpAndBackAnimation()
 	{ 
-
-		SkeletalEntity rightHand =
-	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-	rightHand.playAnimation("throttleUpAndBackAnimation", 0.5f, NONE, 0);
+		SkeletalEntity rightHand = (SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+		rightHand.playAnimation("throttleUpAndBackAnimation", 0.5f, NONE, 0);
 
 	}
 	
 	public static void throttleDownAndBackAnimation()
 	{ 
-		System.out.println("throttleDownAndBackAnimation");
-		SkeletalEntity rightHand =
-				(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+		SkeletalEntity rightHand = (SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
 		rightHand.playAnimation("throttleDownAndBackAnimation", 0.5f, NONE, 0);
-
 	}
 	
 	public static void throttleLeftAndBackAnimation()
@@ -930,10 +928,8 @@ public class MyGame extends VariableFrameRateGame {
 	public static void throttleRightAndBackAnimation()
 	{ 
 
-		SkeletalEntity rightHand =
-	(SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
-	rightHand.playAnimation("throttleRightAndBackAnimation", 0.5f, NONE, 0);
-
+		SkeletalEntity rightHand = (SkeletalEntity) eng.getSceneManager().getEntity("rightHandAv");
+		rightHand.playAnimation("throttleRightAndBackAnimation", 0.5f, NONE, 0);
 	}
 	
 	/*
